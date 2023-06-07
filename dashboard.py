@@ -221,11 +221,12 @@ class Ui_Dashboard(object):
                 key = cv2.waitKey(1)
                 if key == ord('q'):
                     break
-            except:
+            except Exception as e:
                 if retries == count:
                     break
                 count+=1
                 print("Retry:", count)
+                print(e)
                 pass
 
         cv2.destroyAllWindows()
