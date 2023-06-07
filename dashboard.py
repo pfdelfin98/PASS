@@ -1,11 +1,14 @@
 import sys
+import os
 from PyQt5 import QtCore, QtGui, QtWidgets
-import facial_recognition
+import face_recognition
 import register_student
-import student_management 
+import student_management
 import admin_login
 import dashboard
 import cv2
+import pickle
+import numpy as np
 
 class Ui_Dashboard(object):
     def setupUi(self, MainWindow):
@@ -148,19 +151,85 @@ class Ui_Dashboard(object):
         #self.ui = facial_recognition.FacialRecognitionWindow()
         #self.ui.setupUi(self.facial_recognition_window)
         #self.facial_recognition_window.show()
-        video = cv2.VideoCapture(0)
+        # video = cv2.VideoCapture(0)
+
+        # while True:
+        #     suc, img = video.read()
+
+        #     cv2.imshow("frame", img)
+
+        #     if cv2.waitKey(1) & 0xFF == ord('q'):
+        #         break
+
+        # video.release()
+        # cv2.destroyAllWindows()
+        self.face_recognition_func()
+
+    def face_recognition_func(self):
+        cap = cv2.VideoCapture(0, cv2.CAP_DSHOW)
+
+        cap.set(cv2.CAP_PROP_FRAME_WIDTH, 640)
+        cap.set(cv2.CAP_PROP_FRAME_HEIGHT, 480)
+
+        # Importing student images
+        folderModePath = 'images'
+        pathList = os.listdir(folderModePath)
+        imgList = []
+        studentIds = []
+        for path in pathList:
+            imgList.append(cv2.imread(os.path.join(folderModePath, path)))
+
+        # Load the encoding file
+        print("Loading Encoding File ....")
+        file = open('FaceEncodeFile.p', 'rb')
+        encodeListKnownWithIds = pickle.load(file)
+        file.close()
+        encodeListKnown, studentIds = encodeListKnownWithIds
+        print("Encoding File Loaded")
+
+        retries = 3
+        count = 0
 
         while True:
-            suc, img = video.read()
+            try:
+                ret, frame = cap.read()
 
-            cv2.imshow("frame", img)
-            
-            if cv2.waitKey(1) & 0xFF == ord('q'):
-                break
+                imgS = cv2.resize(frame, (0, 0), None, 0.25, 0.25)
+                imgS = cv2.cvtColor(imgS, cv2.COLOR_BGR2RGB)
 
-        video.release()
+                faceCurFrame = face_recognition.face_locations(imgS)
+                encodeCurFrame = face_recognition.face_encodings(imgS, faceCurFrame)
+
+
+                for encodeFace, faceLoc in zip(encodeCurFrame, faceCurFrame):
+                    matches = face_recognition.compare_faces(encodeListKnown, encodeFace)
+                    faceDis = face_recognition.face_distance(encodeListKnown, encodeFace)
+
+                    matchIndex = np.argmin(faceDis)
+
+
+                    if matches[matchIndex]:
+                        name = studentIds[matchIndex].upper()
+                        y1, x2, y2, x1 = faceLoc
+                        y1, x2, y2, x1 = y1*4, x2*4, y2*4, x1*4
+                        cv2.rectangle(frame, (x1, y1), (x2, y2), (0, 255, 0), 2)
+                        cv2.rectangle(frame, (x1, y2-35), (x2, y2), (0, 255, 0), cv2.FILLED)
+                        cv2.putText(frame, name, (x1+6, y2-6), cv2.FONT_HERSHEY_SIMPLEX, 1, (255, 255, 255), 2)
+
+                cv2.imshow('frame', frame)
+
+                key = cv2.waitKey(1)
+                if key == ord('q'):
+                    break
+            except:
+                if retries == count:
+                    break
+                count+=1
+                print("Retry:", count)
+                pass
+
         cv2.destroyAllWindows()
-        
+
 
     def open_register_student(self):
         # Add your code to open register student here
