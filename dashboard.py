@@ -9,6 +9,8 @@ import dashboard
 import cv2
 import pickle
 import numpy as np
+import asyncio
+import time
 
 class Ui_Dashboard(object):
     def setupUi(self, MainWindow):
@@ -146,23 +148,7 @@ class Ui_Dashboard(object):
     def open_facial_recognition(self):
         # Add your code to open facial recognition here
         print("Opening Facial Recognition...")
-        # self.MainWindow.close()
-        #self.facial_recognition_window = QtWidgets.QMainWindow()
-        #self.ui = facial_recognition.FacialRecognitionWindow()
-        #self.ui.setupUi(self.facial_recognition_window)
-        #self.facial_recognition_window.show()
-        # video = cv2.VideoCapture(0)
 
-        # while True:
-        #     suc, img = video.read()
-
-        #     cv2.imshow("frame", img)
-
-        #     if cv2.waitKey(1) & 0xFF == ord('q'):
-        #         break
-
-        # video.release()
-        # cv2.destroyAllWindows()
         self.face_recognition_func()
 
     def face_recognition_func(self):
@@ -189,7 +175,9 @@ class Ui_Dashboard(object):
 
         retries = 3
         count = 0
-
+        x = 0
+        log_sent = False
+        match = ''
         while True:
             try:
                 ret, frame = cap.read()
@@ -204,17 +192,19 @@ class Ui_Dashboard(object):
                 for encodeFace, faceLoc in zip(encodeCurFrame, faceCurFrame):
                     matches = face_recognition.compare_faces(encodeListKnown, encodeFace)
                     faceDis = face_recognition.face_distance(encodeListKnown, encodeFace)
+                    valid_face_accuracy_value = 0.4
 
-                    matchIndex = np.argmin(faceDis)
+                    if any(faceDis <= valid_face_accuracy_value):
+
+                        matchIndex = np.argmin(faceDis)
 
 
-                    if matches[matchIndex]:
-                        name = studentIds[matchIndex].upper()
-                        y1, x2, y2, x1 = faceLoc
-                        y1, x2, y2, x1 = y1*4, x2*4, y2*4, x1*4
-                        cv2.rectangle(frame, (x1, y1), (x2, y2), (0, 255, 0), 2)
-                        cv2.rectangle(frame, (x1, y2-35), (x2, y2), (0, 255, 0), cv2.FILLED)
-                        cv2.putText(frame, name, (x1+6, y2-6), cv2.FONT_HERSHEY_SIMPLEX, 1, (255, 255, 255), 2)
+                        if matches[matchIndex]:
+                            name = studentIds[matchIndex].upper()
+                            y1, x2, y2, x1 = faceLoc
+                            y1, x2, y2, x1 = y1*4, x2*4, y2*4, x1*4
+                            cv2.rectangle(frame, (x1, y1), (x2, y2), (0, 255, 0), 2)
+                            cv2.putText(frame, name, (x1+6, y2-6), cv2.FONT_HERSHEY_SIMPLEX, 1, (255, 255, 255), 2)
 
                 cv2.imshow('frame', frame)
 
@@ -260,7 +250,6 @@ class Ui_Dashboard(object):
         self.admin_login_window.show()
 
 
-        
 if __name__ == "__main__":
     app = QtWidgets.QApplication(sys.argv)
     Dashboard = QtWidgets.QMainWindow()
@@ -268,5 +257,3 @@ if __name__ == "__main__":
     ui.setupUi(Dashboard)
     Dashboard.show()
     sys.exit(app.exec_())
-
-
