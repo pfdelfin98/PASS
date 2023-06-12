@@ -13,9 +13,6 @@ import register_student
 import student_management
 import admin_login
 import dashboard
-from edit_student import EditStudentDialog
-from delete_student import DeleteStudentDialog
-from view_logs import ViewLogsDialog
 from PyQt5.QtCore import QTimer
 
 class StudentManagementWindow(object):
@@ -139,16 +136,6 @@ class StudentManagementWindow(object):
         self.label_10.setStyleSheet("color:black;")
         self.label_10.setObjectName("label_10")
 
-        self.exportDataBtn = QtWidgets.QPushButton(self.centralwidget)
-        self.exportDataBtn.setGeometry(QtCore.QRect(1035, 90, 121, 40))
-        font = QtGui.QFont()
-        font.setFamily("Arial")
-        font.setPointSize(8)
-        self.exportDataBtn.setFont(font)
-        self.exportDataBtn.setObjectName("exportDataBtn")
-        self.exportDataBtn.setText("Export Data")
-        self.exportDataBtn.clicked.connect(self.export_data_to_excel)
-
         MainWindow.setCentralWidget(self.centralwidget)
         self.menubar = QtWidgets.QMenuBar(MainWindow)
         self.menubar.setGeometry(QtCore.QRect(0, 0, 1186, 21))
@@ -239,23 +226,15 @@ class StudentManagementWindow(object):
 
     def view_logs(self, student_id):
         print("Edit Student ID:", student_id)
-        dialog = ViewLogsDialog()
-        dialog.setupUi(student_id)
-        dialog.exec_()
 
 
     def edit_student(self, student_id):
         print("Edit Student ID:", student_id)
-        dialog = EditStudentDialog()
-        dialog.setupUi(student_id)
-        dialog.exec_()
+
 
     def delete_student(self, student_id):
         print("Delete Student ID:", student_id)
-        dialog = DeleteStudentDialog()
-        dialog.setupUi(student_id)
-        dialog.exec_()
-    
+
     def open_dashboard(self):
         print("Opening Dashboard...")
         self.MainWindow.hide()
@@ -385,55 +364,6 @@ class StudentManagementWindow(object):
         self.ui.setupUi(self.admin_login_window)
         self.admin_login_window.show()
 
-
-
-
-    def export_data_to_excel(self):
-        # Connect to the MySQL database
-        connection = pymysql.connect(
-            host='localhost',
-            user='root',
-            password='',
-            database='pass_db'
-        )
-
-        try:
-            # Create a cursor object to execute SQL queries
-            cursor = connection.cursor()
-
-            # Retrieve data from the tbl_student table
-            select_query = "SELECT first_name, middle_name, last_name, course FROM tbl_student"
-            cursor.execute(select_query)
-            student_data = cursor.fetchall()
-
-            # Create a new Excel workbook and select the active sheet
-            workbook = openpyxl.Workbook()
-            sheet = workbook.active
-
-            # Write the column headers
-            sheet['A1'] = 'First Name'
-            sheet['B1'] = 'Middle Name'
-            sheet['C1'] = 'Last Name'
-            sheet['D1'] = 'Course'
-
-            # Write the student data to the Excel sheet
-            for row_index, student in enumerate(student_data, start=2):
-                sheet.cell(row=row_index, column=1).value = student[0]  # First Name
-                sheet.cell(row=row_index, column=2).value = student[1]  # Middle Name
-                sheet.cell(row=row_index, column=3).value = student[2]  # Last Name
-                sheet.cell(row=row_index, column=4).value = student[3]  # Course
-
-            # Save the Excel file
-            workbook.save('student_data.xlsx')
-            print("Data exported to Excel successfully!")
-
-        except Exception as e:
-            print("Error exporting data to Excel:", str(e))
-
-        finally:
-            # Close the cursor and connection
-            cursor.close()
-            connection.close()
 
 
     # ...
