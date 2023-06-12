@@ -12,7 +12,7 @@ class Ui_MainWindow(object):
         self.centralwidget = QtWidgets.QWidget(MainWindow)
         self.centralwidget.setObjectName("centralwidget")
         self.frame = QtWidgets.QFrame(self.centralwidget)
-        self.frame.setGeometry(QtCore.QRect(0, 0, 421, 691))
+        self.frame.setGeometry(QtCore.QRect(0, 0, 421, 2000))
         self.frame.setStyleSheet("background-color: rgb(227, 30, 36);")
         self.frame.setFrameShape(QtWidgets.QFrame.StyledPanel)
         self.frame.setFrameShadow(QtWidgets.QFrame.Raised)
@@ -60,9 +60,7 @@ class Ui_MainWindow(object):
         self.frame_2 = QtWidgets.QFrame(self.centralwidget)
         self.frame_2.setGeometry(QtCore.QRect(470, 70, 391, 411))
         self.frame_2.setStyleSheet("background-color: rgb(255, 255, 255);\n"
-"border-radius: 5px;\n"
-" box-shadow: 3px 3px 5px rgba(0, 0, 0, 0.3);\n"
-"")
+"border-radius: 5px;")
         self.frame_2.setFrameShape(QtWidgets.QFrame.StyledPanel)
         self.frame_2.setFrameShadow(QtWidgets.QFrame.Raised)
         self.frame_2.setObjectName("frame_2")

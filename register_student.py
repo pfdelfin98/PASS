@@ -1,15 +1,21 @@
 import sys
+import os
 from PyQt5 import QtWidgets, QtGui, QtCore
 from PyQt5.QtWidgets import QMainWindow
-import facial_recognition
-import register_student
+from encodegenerator import encodegenerator
 import student_management 
 import admin_login
 import dashboard
 import pymysql
-from PyQt5 import QtCore, QtGui, QtWidgets
 from PyQt5.QtWidgets import QFileDialog
-import os
+from PyQt5 import QtCore, QtGui, QtWidgets
+import face_recognition
+from PyQt5.QtWidgets import QMainWindow, QTableWidget, QTableWidgetItem
+import register_student
+import cv2
+import pickle
+import numpy as np
+
 
 class RegisterStudentWindow(object):
     def setupUi(self, MainWindow):
@@ -20,7 +26,7 @@ class RegisterStudentWindow(object):
         self.centralwidget = QtWidgets.QWidget(MainWindow)
         self.centralwidget.setObjectName("centralwidget")
         self.frame = QtWidgets.QFrame(self.centralwidget)
-        self.frame.setGeometry(QtCore.QRect(-1, 1, 261, 691))
+        self.frame.setGeometry(QtCore.QRect(-1, 1, 261, 2000))
         self.frame.setStyleSheet("background-color: rgb(227, 30, 36);")
         self.frame.setFrameShape(QtWidgets.QFrame.StyledPanel)
         self.frame.setFrameShadow(QtWidgets.QFrame.Raised)
@@ -102,7 +108,7 @@ class RegisterStudentWindow(object):
 "")
         self.pushButton.setObjectName("pushButton")
         self.frame_3 = QtWidgets.QFrame(self.centralwidget)
-        self.frame_3.setGeometry(QtCore.QRect(260, 0, 931, 61))
+        self.frame_3.setGeometry(QtCore.QRect(261, -1, 2000, 61))
         self.frame_3.setStyleSheet("background-color: rgb(255, 255, 255);")
         self.frame_3.setFrameShape(QtWidgets.QFrame.StyledPanel)
         self.frame_3.setFrameShadow(QtWidgets.QFrame.Raised)
@@ -126,8 +132,7 @@ class RegisterStudentWindow(object):
         self.label_10.setObjectName("label_10")
         self.frame_2 = QtWidgets.QFrame(self.centralwidget)
         self.frame_2.setGeometry(QtCore.QRect(310, 160, 821, 391))
-        self.frame_2.setStyleSheet("background-color: rgb(255, 255, 255);\n"
-"box-shadow: 0px 0px 10px 2px rgba(0, 0, 0, 0.5);")
+        self.frame_2.setStyleSheet("background-color: rgb(255, 255, 255);\n")
         self.frame_2.setFrameShape(QtWidgets.QFrame.StyledPanel)
         self.frame_2.setFrameShadow(QtWidgets.QFrame.Raised)
         self.frame_2.setObjectName("frame_2")
@@ -329,6 +334,10 @@ class RegisterStudentWindow(object):
         course = self.comboBox.currentText()
         image_path = self.imageFilePath  # Use the imageFilePath attribute
 
+        if not (first_name and middle_name and last_name and image_path):
+            print("Please provide all the required student details.")
+            return
+
         db = pymysql.connect(
             host='localhost',
             user='root',
@@ -350,7 +359,7 @@ class RegisterStudentWindow(object):
         if image_path:
             image_filename = f"{first_name}-{last_name}-{student_id}{os.path.splitext(image_path)[1]}"
             
-            image_save_path = f"img/{image_filename}"  # Change 'img' to your desired folder path
+            image_save_path = f"images/{image_filename}"  # Change 'img' to your desired folder path
             
             # Save the image to the local drive
             os.rename(image_path, image_save_path)
@@ -361,6 +370,7 @@ class RegisterStudentWindow(object):
             cursor.execute(update_query, update_values)
             db.commit()
 
+        encodegenerator()
         cursor.close()
         db.close()
 
@@ -374,9 +384,10 @@ class RegisterStudentWindow(object):
         self.imageFilePath = None
 
 
+
     def open_dashboard(self):
         print("Opening Dashboard...")
-        self.MainWindow.close()
+        self.MainWindow.hide()
         self.dashboard_window = QMainWindow()
         self.ui = dashboard.Ui_Dashboard()
         self.ui.setupUi(self.dashboard_window)
@@ -386,28 +397,116 @@ class RegisterStudentWindow(object):
         # Add your code to open facial recognition here
         print("Opening Facial Recognition...")
         # self.MainWindow.close()
-        self.facial_recognition_window = facial_recognition.FacialRecognitionWindow()
-        self.facial_recognition_window.show()
+        #self.facial_recognition_window = QtWidgets.QMainWindow()
+        #self.ui = facial_recognition.FacialRecognitionWindow()
+        #self.ui.setupUi(self.facial_recognition_window)
+        #self.facial_recognition_window.show()
+        # video = cv2.VideoCapture(0)
+
+        # while True:
+        #     suc, img = video.read()
+
+        #     cv2.imshow("frame", img)
+
+        #     if cv2.waitKey(1) & 0xFF == ord('q'):
+        #         break
+
+        # video.release()
+        # cv2.destroyAllWindows()
+        self.face_recognition_func()
+
+    def face_recognition_func(self):
+        cap = cv2.VideoCapture(0, cv2.CAP_DSHOW)
+
+        cap.set(cv2.CAP_PROP_FRAME_WIDTH, 640)
+        cap.set(cv2.CAP_PROP_FRAME_HEIGHT, 480)
+
+        # Importing student images
+        folderModePath = 'images'
+        pathList = os.listdir(folderModePath)
+        imgList = []
+        studentIds = []
+        for path in pathList:
+            imgList.append(cv2.imread(os.path.join(folderModePath, path)))
+
+        # Load the encoding file
+        print("Loading Encoding File ....")
+        file = open('FaceEncodeFile.p', 'rb')
+        encodeListKnownWithIds = pickle.load(file)
+        file.close()
+        encodeListKnown, studentIds = encodeListKnownWithIds
+        print("Encoding File Loaded")
+
+        retries = 3
+        count = 0
+
+        while True:
+            try:
+                ret, frame = cap.read()
+
+                imgS = cv2.resize(frame, (0, 0), None, 0.25, 0.25)
+                imgS = cv2.cvtColor(imgS, cv2.COLOR_BGR2RGB)
+
+                faceCurFrame = face_recognition.face_locations(imgS)
+                encodeCurFrame = face_recognition.face_encodings(imgS, faceCurFrame)
+
+
+                for encodeFace, faceLoc in zip(encodeCurFrame, faceCurFrame):
+                    matches = face_recognition.compare_faces(encodeListKnown, encodeFace)
+                    faceDis = face_recognition.face_distance(encodeListKnown, encodeFace)
+
+                    matchIndex = np.argmin(faceDis)
+
+
+                    if matches[matchIndex]:
+                        name = studentIds[matchIndex].upper()
+                        y1, x2, y2, x1 = faceLoc
+                        y1, x2, y2, x1 = y1*4, x2*4, y2*4, x1*4
+                        cv2.rectangle(frame, (x1, y1), (x2, y2), (0, 255, 0), 2)
+                        cv2.rectangle(frame, (x1, y2-35), (x2, y2), (0, 255, 0), cv2.FILLED)
+                        cv2.putText(frame, name, (x1+6, y2-6), cv2.FONT_HERSHEY_SIMPLEX, 1, (255, 255, 255), 2)
+
+                cv2.imshow('frame', frame)
+
+                key = cv2.waitKey(1)
+                if key == ord('q'):
+                    break
+            except Exception as e:
+                if retries == count:
+                    break
+                count+=1
+                print("Retry:", count)
+                print(e)
+                pass
+
+        cv2.destroyAllWindows()
         
 
     def open_register_student(self):
         # Add your code to open register student here
         print("Opening Register Student...")
-        self.MainWindow.close()
-        self.register_student_window = register_student.RegisterStudentWindow()
-        self.register_student_window.show()
+        # self.MainWindow.hide()
+        # self.register_student_window = register_student.RegisterStudentWindow()
+        # self.register_student_window.show()
 
     def open_student_management(self):
         # Add your code to open student management here
-        print("Opening Student Management...")
-        self.MainWindow.close()
-        self.student_management_window = student_management.StudentManagementWindow()
+        print("Opening Student Management Page...")
+        self.MainWindow.hide()  # Hide the main window instead of closing it
+        # Create the student management window
+        self.student_management_window = QtWidgets.QMainWindow()
+        self.ui = student_management.StudentManagementWindow()
+        self.ui.setupUi(self.student_management_window)
+        # Set the parent widget of the table widget
+        self.ui.tableWidget.setParent(self.ui.centralwidget)
+        # Load the students in the table
+        self.ui.load_students()
         self.student_management_window.show()
 
     def open_login_page(self):
         # Add your code to open the login page here
         print("Opening Login Page...")
-        self.MainWindow.close()
+        self.MainWindow.hide()
         self.admin_login_window = QtWidgets.QMainWindow()
         self.ui = admin_login.Ui_MainWindow()
         self.ui.setupUi(self.admin_login_window)

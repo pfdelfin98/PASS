@@ -6,8 +6,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>1186</width>
-    <height>647</height>
+    <width>1185</width>
+    <height>649</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -261,9 +261,9 @@ color: white;
    <widget class="QLabel" name="label_10">
     <property name="geometry">
      <rect>
-      <x>310</x>
-      <y>80</y>
-      <width>261</width>
+      <x>290</x>
+      <y>90</y>
+      <width>381</width>
       <height>51</height>
      </rect>
     </property>
@@ -279,21 +279,20 @@ color: white;
      <string notr="true">color:black;</string>
     </property>
     <property name="text">
-     <string>Register Student</string>
+     <string>Student Management</string>
     </property>
    </widget>
-   <widget class="QFrame" name="frame_2">
+   <widget class="QFrame" name="tableFrame">
     <property name="geometry">
      <rect>
-      <x>310</x>
+      <x>290</x>
       <y>150</y>
-      <width>821</width>
-      <height>431</height>
+      <width>861</width>
+      <height>421</height>
      </rect>
     </property>
     <property name="styleSheet">
-     <string notr="true">background-color: rgb(255, 255, 255);
-box-shadow: 0px 0px 10px 2px rgba(0, 0, 0, 0.5);</string>
+     <string notr="true">background-color: rgb(255, 255, 255);</string>
     </property>
     <property name="frameShape">
      <enum>QFrame::StyledPanel</enum>
@@ -301,257 +300,6 @@ box-shadow: 0px 0px 10px 2px rgba(0, 0, 0, 0.5);</string>
     <property name="frameShadow">
      <enum>QFrame::Raised</enum>
     </property>
-    <widget class="QLabel" name="label_11">
-     <property name="geometry">
-      <rect>
-       <x>40</x>
-       <y>20</y>
-       <width>261</width>
-       <height>51</height>
-      </rect>
-     </property>
-     <property name="font">
-      <font>
-       <family>Arial</family>
-       <pointsize>16</pointsize>
-       <weight>75</weight>
-       <bold>true</bold>
-      </font>
-     </property>
-     <property name="styleSheet">
-      <string notr="true">color:black;</string>
-     </property>
-     <property name="text">
-      <string>New Student Form</string>
-     </property>
-    </widget>
-    <widget class="QLabel" name="label_12">
-     <property name="geometry">
-      <rect>
-       <x>40</x>
-       <y>80</y>
-       <width>161</width>
-       <height>51</height>
-      </rect>
-     </property>
-     <property name="font">
-      <font>
-       <family>Arial</family>
-       <pointsize>12</pointsize>
-       <weight>75</weight>
-       <bold>true</bold>
-      </font>
-     </property>
-     <property name="styleSheet">
-      <string notr="true">color: rgb(26, 26, 26);</string>
-     </property>
-     <property name="text">
-      <string>First Name</string>
-     </property>
-    </widget>
-    <widget class="QLabel" name="label_13">
-     <property name="geometry">
-      <rect>
-       <x>380</x>
-       <y>80</y>
-       <width>161</width>
-       <height>51</height>
-      </rect>
-     </property>
-     <property name="font">
-      <font>
-       <family>Arial</family>
-       <pointsize>12</pointsize>
-       <weight>75</weight>
-       <bold>true</bold>
-      </font>
-     </property>
-     <property name="styleSheet">
-      <string notr="true">color: rgb(26, 26, 26);</string>
-     </property>
-     <property name="text">
-      <string>Middle Name</string>
-     </property>
-    </widget>
-    <widget class="QLabel" name="label_14">
-     <property name="geometry">
-      <rect>
-       <x>40</x>
-       <y>180</y>
-       <width>161</width>
-       <height>51</height>
-      </rect>
-     </property>
-     <property name="font">
-      <font>
-       <family>Arial</family>
-       <pointsize>12</pointsize>
-       <weight>75</weight>
-       <bold>true</bold>
-      </font>
-     </property>
-     <property name="styleSheet">
-      <string notr="true">color: rgb(26, 26, 26);</string>
-     </property>
-     <property name="text">
-      <string>Last Name</string>
-     </property>
-    </widget>
-    <widget class="QLabel" name="label_15">
-     <property name="geometry">
-      <rect>
-       <x>380</x>
-       <y>180</y>
-       <width>161</width>
-       <height>51</height>
-      </rect>
-     </property>
-     <property name="font">
-      <font>
-       <family>Arial</family>
-       <pointsize>12</pointsize>
-       <weight>75</weight>
-       <bold>true</bold>
-      </font>
-     </property>
-     <property name="styleSheet">
-      <string notr="true">color: rgb(26, 26, 26);</string>
-     </property>
-     <property name="text">
-      <string>Course</string>
-     </property>
-    </widget>
-    <widget class="QPlainTextEdit" name="firstNameText">
-     <property name="geometry">
-      <rect>
-       <x>40</x>
-       <y>130</y>
-       <width>311</width>
-       <height>31</height>
-      </rect>
-     </property>
-     <property name="font">
-      <font>
-       <family>Arial</family>
-       <pointsize>12</pointsize>
-      </font>
-     </property>
-     <property name="styleSheet">
-      <string notr="true">border-radius:5px;
-background-color: rgb(247, 247, 247);</string>
-     </property>
-     <property name="placeholderText">
-      <string>First Name</string>
-     </property>
-    </widget>
-    <widget class="QPlainTextEdit" name="middleNameText">
-     <property name="geometry">
-      <rect>
-       <x>380</x>
-       <y>130</y>
-       <width>311</width>
-       <height>31</height>
-      </rect>
-     </property>
-     <property name="font">
-      <font>
-       <family>Arial</family>
-       <pointsize>12</pointsize>
-      </font>
-     </property>
-     <property name="styleSheet">
-      <string notr="true">border-radius:5px;
-background-color: rgb(247, 247, 247);</string>
-     </property>
-     <property name="placeholderText">
-      <string>Middle Name</string>
-     </property>
-    </widget>
-    <widget class="QPlainTextEdit" name="lastNameText">
-     <property name="geometry">
-      <rect>
-       <x>40</x>
-       <y>230</y>
-       <width>311</width>
-       <height>31</height>
-      </rect>
-     </property>
-     <property name="font">
-      <font>
-       <family>Arial</family>
-       <pointsize>12</pointsize>
-      </font>
-     </property>
-     <property name="styleSheet">
-      <string notr="true">border-radius:5px;
-background-color: rgb(247, 247, 247);</string>
-     </property>
-     <property name="placeholderText">
-      <string>Last Name</string>
-     </property>
-    </widget>
-    <widget class="QComboBox" name="comboBox">
-     <property name="geometry">
-      <rect>
-       <x>380</x>
-       <y>230</y>
-       <width>311</width>
-       <height>31</height>
-      </rect>
-     </property>
-     <property name="font">
-      <font>
-       <family>Arial</family>
-       <pointsize>12</pointsize>
-      </font>
-     </property>
-     <property name="styleSheet">
-      <string notr="true">border-radius:5px;
-background-color: rgb(247, 247, 247);</string>
-     </property>
-     <item>
-      <property name="text">
-       <string>Bachelor of Science In Information Technology</string>
-      </property>
-     </item>
-    </widget>
-    <widget class="QPushButton" name="addStudentBtn">
-     <property name="geometry">
-      <rect>
-       <x>570</x>
-       <y>360</y>
-       <width>211</width>
-       <height>31</height>
-      </rect>
-     </property>
-     <property name="font">
-      <font>
-       <family>Arial</family>
-       <pointsize>13</pointsize>
-       <kerning>true</kerning>
-      </font>
-     </property>
-     <property name="autoFillBackground">
-      <bool>false</bool>
-     </property>
-     <property name="styleSheet">
-      <string notr="true">background-color: rgb(255, 80, 80);
-color: rgb(255, 255, 255);
-border-radius: 5px;</string>
-     </property>
-     <property name="text">
-      <string>Submit</string>
-     </property>
-     <property name="autoDefault">
-      <bool>false</bool>
-     </property>
-     <property name="default">
-      <bool>false</bool>
-     </property>
-     <property name="flat">
-      <bool>false</bool>
-     </property>
-    </widget>
    </widget>
   </widget>
   <widget class="QMenuBar" name="menubar">
@@ -559,7 +307,7 @@ border-radius: 5px;</string>
     <rect>
      <x>0</x>
      <y>0</y>
-     <width>1186</width>
+     <width>1185</width>
      <height>21</height>
     </rect>
    </property>

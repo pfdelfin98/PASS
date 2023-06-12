@@ -5,12 +5,12 @@ import face_recognition
 import register_student
 import student_management
 import admin_login
-import dashboard
 import cv2
 import pickle
 import numpy as np
 import asyncio
 import time
+
 
 class Ui_Dashboard(object):
     def setupUi(self, MainWindow):
@@ -20,7 +20,7 @@ class Ui_Dashboard(object):
         self.centralwidget = QtWidgets.QWidget(MainWindow)
         self.centralwidget.setObjectName("centralwidget")
         self.frame = QtWidgets.QFrame(self.centralwidget)
-        self.frame.setGeometry(QtCore.QRect(0, 0, 261, 691))
+        self.frame.setGeometry(QtCore.QRect(-1, 1, 261, 2000))
         self.frame.setStyleSheet("background-color: rgb(227, 30, 36);")
         self.frame.setFrameShape(QtWidgets.QFrame.StyledPanel)
         self.frame.setFrameShadow(QtWidgets.QFrame.Raised)
@@ -92,7 +92,7 @@ class Ui_Dashboard(object):
 "")
         self.exitBtn_2.setObjectName("exitBtn_2")
         self.frame_3 = QtWidgets.QFrame(self.centralwidget)
-        self.frame_3.setGeometry(QtCore.QRect(261, -1, 931, 61))
+        self.frame_3.setGeometry(QtCore.QRect(261, -1, 2000, 61))
         self.frame_3.setStyleSheet("background-color: rgb(255, 255, 255);")
         self.frame_3.setFrameShape(QtWidgets.QFrame.StyledPanel)
         self.frame_3.setFrameShadow(QtWidgets.QFrame.Raised)
@@ -223,27 +223,28 @@ class Ui_Dashboard(object):
 
 
     def open_register_student(self):
-        # Add your code to open register student here
         print("Opening Register Student...")
-        self.MainWindow.close()
+        self.MainWindow.hide()
         self.register_student_window = QtWidgets.QMainWindow()
         self.ui = register_student.RegisterStudentWindow()
         self.ui.setupUi(self.register_student_window)
         self.register_student_window.show()
 
     def open_student_management(self):
-        # Add your code to open student management here
-        print("Opening Student Management...")
-        self.MainWindow.close()
+        print("Opening Student Management Page...")
+        self.MainWindow.hide() 
         self.student_management_window = QtWidgets.QMainWindow()
         self.ui = student_management.StudentManagementWindow()
         self.ui.setupUi(self.student_management_window)
+        # Set the parent widget of the table widget
+        self.ui.tableWidget.setParent(self.ui.centralwidget)
+        # Load the students in the table
+        self.ui.load_students()
         self.student_management_window.show()
 
     def open_login_page(self):
-        # Add your code to open the login page here
         print("Opening Login Page...")
-        self.MainWindow.close()
+        self.MainWindow.hide()
         self.admin_login_window = QtWidgets.QMainWindow()
         self.ui = admin_login.Ui_MainWindow()
         self.ui.setupUi(self.admin_login_window)
@@ -252,8 +253,8 @@ class Ui_Dashboard(object):
 
 if __name__ == "__main__":
     app = QtWidgets.QApplication(sys.argv)
-    Dashboard = QtWidgets.QMainWindow()
+    MainWindow = QtWidgets.QMainWindow()
     ui = Ui_Dashboard()
-    ui.setupUi(Dashboard)
-    Dashboard.show()
+    ui.setupUi(MainWindow)
+    MainWindow.show()
     sys.exit(app.exec_())

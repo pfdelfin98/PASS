@@ -195,7 +195,7 @@ color: white;
       <string>Logout</string>
      </property>
     </widget>
-    <widget class="QPushButton" name="dashboardBtn">
+    <widget class="QPushButton" name="pushButton">
      <property name="geometry">
       <rect>
        <x>1</x>
@@ -280,6 +280,22 @@ color: white;
     </property>
     <property name="text">
      <string>Dashboard</string>
+    </property>
+   </widget>
+   <widget class="QFrame" name="frame_2">
+    <property name="geometry">
+     <rect>
+      <x>310</x>
+      <y>160</y>
+      <width>841</width>
+      <height>391</height>
+     </rect>
+    </property>
+    <property name="frameShape">
+     <enum>QFrame::StyledPanel</enum>
+    </property>
+    <property name="frameShadow">
+     <enum>QFrame::Raised</enum>
     </property>
    </widget>
   </widget>
