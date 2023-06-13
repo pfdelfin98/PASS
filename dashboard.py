@@ -8,8 +8,6 @@ import admin_login
 import cv2
 import pickle
 import numpy as np
-import asyncio
-import time
 
 
 class Ui_Dashboard(object):
@@ -42,53 +40,53 @@ class Ui_Dashboard(object):
         self.label_9.setStyleSheet("color: rgb(255, 255, 255);")
         self.label_9.setObjectName("label_9")
         self.faceRecognitionBtn = QtWidgets.QPushButton(self.frame)
-        self.faceRecognitionBtn.setGeometry(QtCore.QRect(3, 200, 221, 31))
+        self.faceRecognitionBtn.setGeometry(QtCore.QRect(40, 200, 221, 31))
         font = QtGui.QFont()
         font.setFamily("Arial")
-        font.setPointSize(15)
+        font.setPointSize(12)
         self.faceRecognitionBtn.setFont(font)
         self.faceRecognitionBtn.setStyleSheet(" background-color: transparent;\n"
-"color: white;\n"
+"color: white;\n" "text-align: left;\n"
 "")
         self.faceRecognitionBtn.setObjectName("faceRecognitionBtn")
         self.registerStudentBtn = QtWidgets.QPushButton(self.frame)
-        self.registerStudentBtn.setGeometry(QtCore.QRect(15, 250, 211, 31))
+        self.registerStudentBtn.setGeometry(QtCore.QRect(40, 250, 221, 31))
         font = QtGui.QFont()
         font.setFamily("Arial")
-        font.setPointSize(15)
+        font.setPointSize(12)
         self.registerStudentBtn.setFont(font)
         self.registerStudentBtn.setStyleSheet(" background-color: transparent;\n"
-"color: white;\n"
+"color: white;\n" "text-align: left;\n"
 "")
         self.registerStudentBtn.setObjectName("registerStudentBtn")
         self.studentMgmtBtn = QtWidgets.QPushButton(self.frame)
-        self.studentMgmtBtn.setGeometry(QtCore.QRect(0, 300, 251, 31))
+        self.studentMgmtBtn.setGeometry(QtCore.QRect(40, 300, 221, 31))
         font = QtGui.QFont()
         font.setFamily("Arial")
-        font.setPointSize(15)
+        font.setPointSize(12)
         self.studentMgmtBtn.setFont(font)
         self.studentMgmtBtn.setStyleSheet(" background-color: transparent;\n"
-"color: white;\n"
+"color: white;\n" "text-align: left;\n"
 "")
         self.studentMgmtBtn.setObjectName("studentMgmtBtn")
         self.exitBtn = QtWidgets.QPushButton(self.frame)
-        self.exitBtn.setGeometry(QtCore.QRect(-73, 390, 251, 31))
+        self.exitBtn.setGeometry(QtCore.QRect(40, 390, 221, 31))
         font = QtGui.QFont()
         font.setFamily("Arial")
-        font.setPointSize(15)
+        font.setPointSize(12)
         self.exitBtn.setFont(font)
         self.exitBtn.setStyleSheet(" background-color: transparent;\n"
-"color: white;\n"
+"color: white;\n" "text-align: left;\n"
 "")
         self.exitBtn.setObjectName("exitBtn")
         self.exitBtn_2 = QtWidgets.QPushButton(self.frame)
-        self.exitBtn_2.setGeometry(QtCore.QRect(-60, 340, 251, 41))
+        self.exitBtn_2.setGeometry(QtCore.QRect(40, 340, 221, 31))
         font = QtGui.QFont()
         font.setFamily("Arial")
-        font.setPointSize(15)
+        font.setPointSize(12)
         self.exitBtn_2.setFont(font)
         self.exitBtn_2.setStyleSheet(" background-color: transparent;\n"
-"color: white;\n"
+"color: white;\n" "text-align: left;\n"
 "")
         self.exitBtn_2.setObjectName("exitBtn_2")
         self.frame_3 = QtWidgets.QFrame(self.centralwidget)
@@ -108,7 +106,7 @@ class Ui_Dashboard(object):
         self.label_10.setGeometry(QtCore.QRect(310, 90, 201, 51))
         font = QtGui.QFont()
         font.setFamily("Arial")
-        font.setPointSize(20)
+        font.setPointSize(15)
         font.setBold(True)
         font.setWeight(75)
         self.label_10.setFont(font)
@@ -148,7 +146,23 @@ class Ui_Dashboard(object):
     def open_facial_recognition(self):
         # Add your code to open facial recognition here
         print("Opening Facial Recognition...")
+        # self.MainWindow.close()
+        #self.facial_recognition_window = QtWidgets.QMainWindow()
+        #self.ui = facial_recognition.FacialRecognitionWindow()
+        #self.ui.setupUi(self.facial_recognition_window)
+        #self.facial_recognition_window.show()
+        # video = cv2.VideoCapture(0)
 
+        # while True:
+        #     suc, img = video.read()
+
+        #     cv2.imshow("frame", img)
+
+        #     if cv2.waitKey(1) & 0xFF == ord('q'):
+        #         break
+
+        # video.release()
+        # cv2.destroyAllWindows()
         self.face_recognition_func()
 
     def face_recognition_func(self):
@@ -175,9 +189,7 @@ class Ui_Dashboard(object):
 
         retries = 3
         count = 0
-        x = 0
-        log_sent = False
-        match = ''
+
         while True:
             try:
                 ret, frame = cap.read()
@@ -192,19 +204,17 @@ class Ui_Dashboard(object):
                 for encodeFace, faceLoc in zip(encodeCurFrame, faceCurFrame):
                     matches = face_recognition.compare_faces(encodeListKnown, encodeFace)
                     faceDis = face_recognition.face_distance(encodeListKnown, encodeFace)
-                    valid_face_accuracy_value = 0.4
 
-                    if any(faceDis <= valid_face_accuracy_value):
-
-                        matchIndex = np.argmin(faceDis)
+                    matchIndex = np.argmin(faceDis)
 
 
-                        if matches[matchIndex]:
-                            name = studentIds[matchIndex].upper()
-                            y1, x2, y2, x1 = faceLoc
-                            y1, x2, y2, x1 = y1*4, x2*4, y2*4, x1*4
-                            cv2.rectangle(frame, (x1, y1), (x2, y2), (0, 255, 0), 2)
-                            cv2.putText(frame, name, (x1+6, y2-6), cv2.FONT_HERSHEY_SIMPLEX, 1, (255, 255, 255), 2)
+                    if matches[matchIndex]:
+                        name = studentIds[matchIndex].upper()
+                        y1, x2, y2, x1 = faceLoc
+                        y1, x2, y2, x1 = y1*4, x2*4, y2*4, x1*4
+                        cv2.rectangle(frame, (x1, y1), (x2, y2), (0, 255, 0), 2)
+                        cv2.rectangle(frame, (x1, y2-35), (x2, y2), (0, 255, 0), cv2.FILLED)
+                        cv2.putText(frame, name, (x1+6, y2-6), cv2.FONT_HERSHEY_SIMPLEX, 1, (255, 255, 255), 2)
 
                 cv2.imshow('frame', frame)
 
@@ -236,9 +246,7 @@ class Ui_Dashboard(object):
         self.student_management_window = QtWidgets.QMainWindow()
         self.ui = student_management.StudentManagementWindow()
         self.ui.setupUi(self.student_management_window)
-        # Set the parent widget of the table widget
         self.ui.tableWidget.setParent(self.ui.centralwidget)
-        # Load the students in the table
         self.ui.load_students()
         self.student_management_window.show()
 
@@ -251,6 +259,7 @@ class Ui_Dashboard(object):
         self.admin_login_window.show()
 
 
+        
 if __name__ == "__main__":
     app = QtWidgets.QApplication(sys.argv)
     MainWindow = QtWidgets.QMainWindow()
@@ -258,3 +267,5 @@ if __name__ == "__main__":
     ui.setupUi(MainWindow)
     MainWindow.show()
     sys.exit(app.exec_())
+
+

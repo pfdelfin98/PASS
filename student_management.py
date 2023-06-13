@@ -54,63 +54,63 @@ class StudentManagementWindow(object):
         self.label_9.setStyleSheet("color: rgb(255, 255, 255);")
         self.label_9.setObjectName("label_9")
         self.faceRecognitionBtn = QtWidgets.QPushButton(self.frame)
-        self.faceRecognitionBtn.setGeometry(QtCore.QRect(3, 220, 221, 31))
+        self.faceRecognitionBtn.setGeometry(QtCore.QRect(40, 220, 221, 31))
         font = QtGui.QFont()
         font.setFamily("Arial")
-        font.setPointSize(15)
+        font.setPointSize(12)
         self.faceRecognitionBtn.setFont(font)
         self.faceRecognitionBtn.setStyleSheet(" background-color: transparent;\n"
-"color: white;\n"
+"color: white;\n" "text-align: left;\n"
 "")
         self.faceRecognitionBtn.setObjectName("faceRecognitionBtn")
         self.registerStudentBtn = QtWidgets.QPushButton(self.frame)
-        self.registerStudentBtn.setGeometry(QtCore.QRect(17, 270, 211, 31))
+        self.registerStudentBtn.setGeometry(QtCore.QRect(40, 270, 211, 31))
         font = QtGui.QFont()
         font.setFamily("Arial")
-        font.setPointSize(15)
+        font.setPointSize(12)
         self.registerStudentBtn.setFont(font)
         self.registerStudentBtn.setStyleSheet(" background-color: transparent;\n"
-"color: white;\n"
+"color: white;\n" "text-align: left;\n"
 "")
         self.registerStudentBtn.setObjectName("registerStudentBtn")
         self.studentMgmtBtn = QtWidgets.QPushButton(self.frame)
-        self.studentMgmtBtn.setGeometry(QtCore.QRect(0, 320, 251, 31))
+        self.studentMgmtBtn.setGeometry(QtCore.QRect(40, 320, 221, 31))
         font = QtGui.QFont()
         font.setFamily("Arial")
-        font.setPointSize(15)
+        font.setPointSize(12)
         self.studentMgmtBtn.setFont(font)
         self.studentMgmtBtn.setStyleSheet(" background-color: transparent;\n"
-"color: white;\n"
+"color: white;\n" "text-align: left;\n"
 "")
         self.studentMgmtBtn.setObjectName("studentMgmtBtn")
         self.exitBtn = QtWidgets.QPushButton(self.frame)
-        self.exitBtn.setGeometry(QtCore.QRect(-73, 410, 251, 31))
+        self.exitBtn.setGeometry(QtCore.QRect(40, 410, 221, 31))
         font = QtGui.QFont()
         font.setFamily("Arial")
-        font.setPointSize(15)
+        font.setPointSize(12)
         self.exitBtn.setFont(font)
         self.exitBtn.setStyleSheet(" background-color: transparent;\n"
-"color: white;\n"
+"color: white;\n" "text-align: left;\n"
 "")
         self.exitBtn.setObjectName("exitBtn")
         self.exitBtn_2 = QtWidgets.QPushButton(self.frame)
-        self.exitBtn_2.setGeometry(QtCore.QRect(-60, 360, 251, 41))
+        self.exitBtn_2.setGeometry(QtCore.QRect(40, 360, 221, 31))
         font = QtGui.QFont()
         font.setFamily("Arial")
-        font.setPointSize(15)
+        font.setPointSize(12)
         self.exitBtn_2.setFont(font)
         self.exitBtn_2.setStyleSheet(" background-color: transparent;\n"
-"color: white;\n"
+"color: white;\n" "text-align: left;\n"
 "")
         self.exitBtn_2.setObjectName("exitBtn_2")
         self.pushButton = QtWidgets.QPushButton(self.frame)
-        self.pushButton.setGeometry(QtCore.QRect(1, 176, 161, 31))
+        self.pushButton.setGeometry(QtCore.QRect(40, 176, 221, 31))
         font = QtGui.QFont()
         font.setFamily("Arial")
-        font.setPointSize(15)
+        font.setPointSize(12)
         self.pushButton.setFont(font)
         self.pushButton.setStyleSheet(" background-color: transparent;\n"
-"color: white;\n"
+"color: white;\n" "text-align: left;\n"
 "")
    
         
@@ -132,7 +132,7 @@ class StudentManagementWindow(object):
         self.label_10.setGeometry(QtCore.QRect(310, 90, 301, 51))
         font = QtGui.QFont()
         font.setFamily("Arial")
-        font.setPointSize(20)
+        font.setPointSize(15)
         font.setBold(True)
         font.setWeight(75)
         self.label_10.setFont(font)
@@ -416,7 +416,6 @@ class StudentManagementWindow(object):
             sheet['C1'] = 'Last Name'
             sheet['D1'] = 'Course'
 
-            # Write the student data to the Excel sheet
             for row_index, student in enumerate(student_data, start=2):
                 sheet.cell(row=row_index, column=1).value = student[0]  # First Name
                 sheet.cell(row=row_index, column=2).value = student[1]  # Middle Name
