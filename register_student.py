@@ -15,7 +15,8 @@ import register_student
 import cv2
 import pickle
 import numpy as np
-
+from success_dialog import SuccessDialog
+from error_dialog2 import ErrorDialog
 
 class RegisterStudentWindow(object):
     def setupUi(self, MainWindow):
@@ -336,6 +337,9 @@ class RegisterStudentWindow(object):
 
         if not (first_name and middle_name and last_name and image_path):
             print("Please provide all the required student details.")
+            dialog = ErrorDialog()
+            dialog.setupUi()
+            dialog.exec_()
             return
 
         db = pymysql.connect(
@@ -375,7 +379,10 @@ class RegisterStudentWindow(object):
         db.close()
 
         print("Student inserted successfully!")
-
+        dialog = SuccessDialog()
+        dialog.setupUi()
+        dialog.exec_()
+        
         self.firstNameText.clear()
         self.middleNameText.clear()
         self.lastNameText.clear()

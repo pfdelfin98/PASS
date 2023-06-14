@@ -2,6 +2,7 @@ import sys
 from PyQt5 import QtCore, QtGui, QtWidgets
 import pymysql
 import dashboard
+from error_login import ErrorDialog
 
 class Ui_MainWindow(object):
     def setupUi(self, MainWindow):
@@ -28,28 +29,32 @@ class Ui_MainWindow(object):
         self.label_5.setStyleSheet("color: rgb(255, 255, 255);")
         self.label_5.setObjectName("label_5")
         self.label_6 = QtWidgets.QLabel(self.frame)
-        self.label_6.setGeometry(QtCore.QRect(30, 310, 381, 41))
+        self.label_6.setGeometry(QtCore.QRect(23, 310, 381, 41))
         font = QtGui.QFont()
         font.setFamily("Arial")
-        font.setPointSize(12)
+        font.setPointSize(11)
+        font.setBold(True)
         self.label_6.setFont(font)
-        self.label_6.setStyleSheet("color: rgb(255, 255, 255);")
+        self.label_6.setStyleSheet("color: rgb(255, 255, 255);\n" "text-align: center;\n")
+      
         self.label_6.setObjectName("label_6")
         self.label_7 = QtWidgets.QLabel(self.frame)
-        self.label_7.setGeometry(QtCore.QRect(60, 350, 321, 20))
+        self.label_7.setGeometry(QtCore.QRect(53, 340, 381, 41))
         font = QtGui.QFont()
         font.setFamily("Arial")
-        font.setPointSize(12)
+        font.setPointSize(11)
+        font.setBold(True)
         self.label_7.setFont(font)
-        self.label_7.setStyleSheet("color: rgb(255, 255, 255);")
+        self.label_7.setStyleSheet("color: rgb(255, 255, 255);\n" "text-align: center;\n")
         self.label_7.setObjectName("label_7")
         self.label_8 = QtWidgets.QLabel(self.frame)
-        self.label_8.setGeometry(QtCore.QRect(80, 380, 261, 16))
+        self.label_8.setGeometry(QtCore.QRect(73, 370, 381, 41))
         font = QtGui.QFont()
         font.setFamily("Arial")
-        font.setPointSize(12)
+        font.setPointSize(11)
+        font.setBold(True)
         self.label_8.setFont(font)
-        self.label_8.setStyleSheet("color: rgb(255, 255, 255);")
+        self.label_8.setStyleSheet("color: rgb(255, 255, 255);\n" "text-align: center;\n")
         self.label_8.setObjectName("label_8")
         self.label_4 = QtWidgets.QLabel(self.frame)
         self.label_4.setGeometry(QtCore.QRect(130, 60, 170, 160))
@@ -175,6 +180,9 @@ class Ui_MainWindow(object):
         else:
             # Failed login
             print("Invalid username or password")
+            dialog = ErrorDialog()
+            dialog.setupUi()
+            dialog.exec_()
 
         # Close the database connection
         cursor.close()
