@@ -9,9 +9,11 @@ import pickle
 import numpy as np
 import pymysql
 from datetime import datetime, timedelta
-
+from PyQt5.QtWidgets import QMainWindow, QTableWidget, QTableWidgetItem, QPushButton, QFileDialog, QDialog, QVBoxLayout, QLabel
 from PyQt5 import QtCore, QtGui, QtWidgets
 from about_dialog import AboutDialog
+from PyQt5.QtCore import QTimer
+from datetime import datetime, timedelta
 
 
 class Ui_Dashboard(object):
@@ -25,6 +27,11 @@ class Ui_Dashboard(object):
         MainWindow.resize(1186, 640)
         self.centralwidget = QtWidgets.QWidget(MainWindow)
         self.centralwidget.setObjectName("centralwidget")
+                # Add table widget
+        self.tableWidget = QTableWidget(self.centralwidget)
+        self.tableWidget.setGeometry(QtCore.QRect(310, 150, 850, 450))
+        self.tableWidget.setObjectName("tableWidget")
+
         self.frame = QtWidgets.QFrame(self.centralwidget)
         self.frame.setGeometry(QtCore.QRect(-1, 1, 261, 2000))
         self.frame.setStyleSheet("background-color: rgb(227, 30, 36);")
@@ -207,6 +214,58 @@ class Ui_Dashboard(object):
             )
         )
         self.label_10.setText(_translate("MainWindow", "Dashboard"))
+
+
+    def load_logs(self):
+        connection = pymysql.connect(host='localhost', user='root', password='', db='pass_db')
+        self.connection = connection  # Store the connection reference to access it later
+        cursor = connection.cursor()
+
+        # Delete logs older than a week
+        delete_query = """
+        DELETE FROM tbl_logs
+        WHERE date_log < %s
+        """
+        week_ago = datetime.now() - timedelta(days=7)
+        cursor.execute(delete_query, (week_ago.date(),))
+        connection.commit()
+
+        # Fetch student logs data from the database and order by last ID and current date
+        query = """
+        SELECT tbl_student.first_name, tbl_student.last_name, tbl_logs.date_log, tbl_logs.time_log
+        FROM tbl_logs
+        LEFT JOIN tbl_student ON tbl_logs.student_id = tbl_student.id
+        WHERE tbl_logs.date_log = CURDATE()
+        ORDER BY tbl_logs.id DESC
+        """
+        cursor.execute(query)
+        logs = cursor.fetchall()
+
+        # Display logs in the table
+        row_count = len(logs)
+        column_count = 4
+
+        self.tableWidget.setRowCount(row_count)
+        self.tableWidget.setColumnCount(column_count)
+
+        header_labels = ["First Name", "Last Name", "Date Log", "Time Log"]
+        self.tableWidget.setHorizontalHeaderLabels(header_labels)
+
+        for row, log in enumerate(logs):
+            first_name, last_name, date_log, time_log = log
+            self.tableWidget.setItem(row, 0, QTableWidgetItem(first_name))
+            self.tableWidget.setItem(row, 1, QTableWidgetItem(last_name))
+            self.tableWidget.setItem(row, 2, QTableWidgetItem(str(date_log)))
+            self.tableWidget.setItem(row, 3, QTableWidgetItem(str(time_log)))
+
+        cursor.close()
+
+    # Schedule the next update after 1 second
+        QTimer.singleShot(1000, self.load_logs)
+
+    def start_loading_students(self):
+        # Start loading the students initially
+        self.load_logs()
 
     def open_facial_recognition(self):
         # Add your code to open facial recognition here
@@ -458,5 +517,6 @@ if __name__ == "__main__":
     MainWindow = QtWidgets.QMainWindow()
     ui = Ui_Dashboard()
     ui.setupUi(MainWindow)
+    ui.load_logs()
     MainWindow.show()
     sys.exit(app.exec_())
