@@ -11,6 +11,7 @@ import pymysql
 from datetime import datetime, timedelta
 
 from PyQt5 import QtCore, QtGui, QtWidgets
+from about_dialog import AboutDialog
 
 
 class Ui_Dashboard(object):
@@ -95,7 +96,7 @@ class Ui_Dashboard(object):
         )
         self.studentMgmtBtn.setObjectName("studentMgmtBtn")
         self.exitBtn = QtWidgets.QPushButton(self.frame)
-        self.exitBtn.setGeometry(QtCore.QRect(40, 390, 221, 31))
+        self.exitBtn.setGeometry(QtCore.QRect(40, 350, 221, 31))
         font = QtGui.QFont()
         font.setFamily("Arial")
         font.setPointSize(12)
@@ -111,7 +112,7 @@ class Ui_Dashboard(object):
         )
         self.exitBtn.setObjectName("exitBtn")
         self.exitBtn_2 = QtWidgets.QPushButton(self.frame)
-        self.exitBtn_2.setGeometry(QtCore.QRect(40, 340, 221, 31))
+        self.exitBtn_2.setGeometry(QtCore.QRect(40, 400, 221, 31))
         font = QtGui.QFont()
         font.setFamily("Arial")
         font.setPointSize(12)
@@ -126,6 +127,24 @@ class Ui_Dashboard(object):
             ""
         )
         self.exitBtn_2.setObjectName("exitBtn_2")
+
+        self.aboutBtn = QtWidgets.QPushButton(self.frame)
+        self.aboutBtn.setGeometry(QtCore.QRect(40, 450, 221, 31))
+        font = QtGui.QFont()
+        font.setFamily("Arial")
+        font.setPointSize(12)
+        self.aboutBtn.setFont(font)
+        self.aboutBtn.setStyleSheet(
+            " background-color: transparent;\n" "color: white;\n" ""
+        )
+        self.aboutBtn.setStyleSheet(
+            " background-color: transparent;\n"
+            "color: white;\n"
+            "text-align: left;\n"
+            ""
+        )
+        self.aboutBtn.setObjectName("aboutBtn")
+
         self.frame_3 = QtWidgets.QFrame(self.centralwidget)
         self.frame_3.setGeometry(QtCore.QRect(261, -1, 2000, 61))
         self.frame_3.setStyleSheet("background-color: rgb(255, 255, 255);")
@@ -167,6 +186,7 @@ class Ui_Dashboard(object):
         self.studentMgmtBtn.clicked.connect(self.open_student_management)
         self.exitBtn.clicked.connect(QtWidgets.qApp.quit)
         self.exitBtn_2.clicked.connect(self.open_login_page)
+        self.aboutBtn.clicked.connect(self.open_about)
 
     def retranslateUi(self, MainWindow):
         _translate = QtCore.QCoreApplication.translate
@@ -177,6 +197,7 @@ class Ui_Dashboard(object):
             _translate("MainWindow", "Student Registration")
         )
         self.studentMgmtBtn.setText(_translate("MainWindow", "Student Management"))
+        self.aboutBtn.setText(_translate("MainWindow", "About System"))
         self.exitBtn.setText(_translate("MainWindow", "Exit"))
         self.exitBtn_2.setText(_translate("MainWindow", "Logout"))
         self.label.setText(
@@ -192,6 +213,12 @@ class Ui_Dashboard(object):
         print("Opening Facial Recognition...")
 
         self.face_recognition_func()
+
+    def open_about(self):
+        print("Opening About System Dialog")
+        dialog = AboutDialog()
+        dialog.setupUi()
+        dialog.show()
 
     def face_recognition_func(self):
         cap = cv2.VideoCapture(0, cv2.CAP_DSHOW)
