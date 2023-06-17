@@ -7,6 +7,7 @@ from error_login import ErrorDialog
 class Ui_MainWindow(object):
     def setupUi(self, MainWindow):
         self.MainWindow = MainWindow 
+        MainWindow.setWindowFlags(MainWindow.windowFlags() & ~QtCore.Qt.WindowMinimizeButtonHint & ~QtCore.Qt.WindowMaximizeButtonHint)
         MainWindow.setObjectName("MainWindow")
         MainWindow.resize(917, 600)
         MainWindow.setStyleSheet("background-color: rgb(247, 247, 247);")
@@ -189,10 +190,13 @@ class Ui_MainWindow(object):
         db.close()
 
     def open_dashboard(self):
-        self.window = QtWidgets.QMainWindow()
+        self.MainWindow.hide()
+        self.dashboard_window = QtWidgets.QMainWindow()
         self.ui = dashboard.Ui_Dashboard()
-        self.ui.setupUi(self.window)
-        self.window.show()
+        self.ui.setupUi(self.dashboard_window)
+        self.ui.tableWidget.setParent(self.ui.centralwidget)
+        self.ui.load_logs()
+        self.dashboard_window.show()
 
 
 

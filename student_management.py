@@ -8,7 +8,6 @@ import pickle
 import numpy as np
 import face_recognition
 import openpyxl
-
 import register_student
 import student_management
 import admin_login
@@ -21,6 +20,7 @@ from PyQt5.QtCore import QTimer
 class StudentManagementWindow(object):
     def setupUi(self, MainWindow):
         self.MainWindow = MainWindow 
+        MainWindow.setWindowFlags(MainWindow.windowFlags() & ~QtCore.Qt.WindowMinimizeButtonHint & ~QtCore.Qt.WindowMaximizeButtonHint)
         MainWindow.setObjectName("MainWindow")
         MainWindow.resize(1186, 647)
         self.imageFilePath = None
@@ -258,12 +258,21 @@ class StudentManagementWindow(object):
     
     def open_dashboard(self):
         print("Opening Dashboard...")
+        # self.MainWindow.hide()
+        # self.dashboard_window = QMainWindow()
+        # self.ui = dashboard.Ui_Dashboard()
+        # self.ui.setupUi(self.dashboard_window)
+        # self.dashboard_window.show()
+
+
         self.MainWindow.hide()
-        self.dashboard_window = QMainWindow()
+        self.dashboard_window = QtWidgets.QMainWindow()
         self.ui = dashboard.Ui_Dashboard()
         self.ui.setupUi(self.dashboard_window)
+        self.ui.tableWidget.setParent(self.ui.centralwidget)
+        self.ui.load_logs()
         self.dashboard_window.show()
-
+    
     def open_facial_recognition(self):
         # Add your code to open facial recognition here
         print("Opening Facial Recognition...")

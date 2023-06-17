@@ -17,10 +17,13 @@ import pickle
 import numpy as np
 from success_dialog import SuccessDialog
 from error_dialog2 import ErrorDialog
+from error_image import ErrorImageDialog
+
 
 class RegisterStudentWindow(object):
     def setupUi(self, MainWindow):
         self.MainWindow = MainWindow 
+        MainWindow.setWindowFlags(MainWindow.windowFlags() & ~QtCore.Qt.WindowMinimizeButtonHint & ~QtCore.Qt.WindowMaximizeButtonHint)
         MainWindow.setObjectName("MainWindow")
         MainWindow.resize(1186, 647)
         self.imageFilePath = None
@@ -132,7 +135,7 @@ class RegisterStudentWindow(object):
         self.label_10.setStyleSheet("color:black;")
         self.label_10.setObjectName("label_10")
         self.frame_2 = QtWidgets.QFrame(self.centralwidget)
-        self.frame_2.setGeometry(QtCore.QRect(310, 160, 821, 391))
+        self.frame_2.setGeometry(QtCore.QRect(310, 160, 821, 450))
         self.frame_2.setStyleSheet("background-color: rgb(255, 255, 255);\n")
         self.frame_2.setFrameShape(QtWidgets.QFrame.StyledPanel)
         self.frame_2.setFrameShadow(QtWidgets.QFrame.Raised)
@@ -196,6 +199,7 @@ class RegisterStudentWindow(object):
         self.firstNameText.setStyleSheet("border-radius:5px;\n"
 "background-color: rgb(247, 247, 247);")
         self.firstNameText.setObjectName("firstNameText")
+        self.firstNameText.setVerticalScrollBarPolicy(QtCore.Qt.ScrollBarAlwaysOff)
         self.middleNameText = QtWidgets.QPlainTextEdit(self.frame_2)
         self.middleNameText.setGeometry(QtCore.QRect(380, 130, 311, 31))
         font = QtGui.QFont()
@@ -205,6 +209,7 @@ class RegisterStudentWindow(object):
         self.middleNameText.setStyleSheet("border-radius:5px;\n"
 "background-color: rgb(247, 247, 247);")
         self.middleNameText.setObjectName("middleNameText")
+        self.middleNameText.setVerticalScrollBarPolicy(QtCore.Qt.ScrollBarAlwaysOff)
 
 
         font = QtGui.QFont()
@@ -213,13 +218,13 @@ class RegisterStudentWindow(object):
         font.setBold(True)
 
         self.imageLabel = QtWidgets.QLabel(self.frame_2)
-        self.imageLabel.setGeometry(QtCore.QRect(40, 280, 211, 21))
+        self.imageLabel.setGeometry(QtCore.QRect(380, 280, 211, 21))
         self.imageLabel.setObjectName("imageLabel")
         self.imageLabel.setText("Student Image")
         self.imageLabel.setFont(font)
         
         self.uploadImageBtn = QtWidgets.QPushButton(self.frame_2)
-        self.uploadImageBtn.setGeometry(QtCore.QRect(40, 310, 211, 40))
+        self.uploadImageBtn.setGeometry(QtCore.QRect(380, 310, 211, 40))
         self.uploadImageBtn.setStyleSheet("background-color: rgb(255, 80, 80);"
                                         "color: rgb(255, 255, 255);"
                                         "border-radius: 5px;")
@@ -227,7 +232,7 @@ class RegisterStudentWindow(object):
         self.uploadImageBtn.clicked.connect(self.uploadImage)
 
         self.imageStatusLabel = QtWidgets.QLabel(self.frame_2)
-        self.imageStatusLabel.setGeometry(QtCore.QRect(40, 360, 211, 21))
+        self.imageStatusLabel.setGeometry(QtCore.QRect(380, 360, 211, 21))
         self.imageStatusLabel.setObjectName("imageStatusLabel")
         self.imageStatusLabel.setStyleSheet("color: rgb(26, 26, 26);")
 
@@ -243,6 +248,32 @@ class RegisterStudentWindow(object):
         self.lastNameText.setStyleSheet("border-radius:5px;\n"
 "background-color: rgb(247, 247, 247);")
         self.lastNameText.setObjectName("lastNameText")
+        self.lastNameText.setVerticalScrollBarPolicy(QtCore.Qt.ScrollBarAlwaysOff)
+
+        self.srCodeLabel = QtWidgets.QLabel(self.frame_2)
+        self.srCodeLabel.setGeometry(QtCore.QRect(40, 280, 311, 31))
+        font = QtGui.QFont()
+        font.setFamily("Arial")
+        font.setPointSize(12)
+        font.setBold(True)
+        self.srCodeLabel.setFont(font)
+        self.srCodeLabel.setStyleSheet("color: rgb(26, 26, 26);")
+        self.srCodeLabel.setObjectName("srCodeLabel")
+        self.srCodeLabel.setText("SR Code")
+        self.srcodetext = QtWidgets.QLineEdit(self.frame_2)
+        self.srcodetext.setGeometry(QtCore.QRect(40, 315, 311, 31))
+        font = QtGui.QFont()
+        font.setFamily("Arial")
+        font.setPointSize(12)
+        self.srcodetext.setFont(font)
+        self.srcodetext.setStyleSheet("border-radius:5px;\n"
+                                    "background-color: rgb(247, 247, 247);")
+        self.srcodetext.setObjectName("srcodetext")
+
+        regex = QtCore.QRegExp(r'^[0-9-]*$')
+        validator = QtGui.QRegExpValidator(regex, self.srcodetext)
+        self.srcodetext.setValidator(validator)
+
         self.comboBox = QtWidgets.QComboBox(self.frame_2)
         self.comboBox.setGeometry(QtCore.QRect(380, 230, 311, 31))
         font = QtGui.QFont()
@@ -251,10 +282,27 @@ class RegisterStudentWindow(object):
         self.comboBox.setFont(font)
         self.comboBox.setStyleSheet("border-radius:5px;\n"
 "background-color: rgb(247, 247, 247);")
-        self.comboBox.setObjectName("comboBox")
-        self.comboBox.addItem("")
+        self.comboBox.addItem("BS In Information Technology")
+        self.comboBox.addItem("BS in Elementary Education")
+        self.comboBox.addItem("BS in Secondary Education")
+        self.comboBox.addItem("BS in Accountancy")
+        self.comboBox.addItem("BS in Business Administration")
+        self.comboBox.addItem("BS in Computer Engineering")
+        self.comboBox.addItem("BS in Computer Science")
+        self.comboBox.addItem("Bs in Industrial Technology")
+        self.comboBox.addItem("BS in Food Technology")
+        self.comboBox.addItem("BS in Nursing")
+        self.comboBox.addItem("BS in Nutrition and Dietetics")
+        self.comboBox.addItem("BS in Criminology")
+        self.comboBox.addItem("BS in Psychology")
+        self.comboBox.addItem("BS in Hospitality Management")
+        self.comboBox.addItem("BS in Tourism Management")
+        self.comboBox.addItem("BS in Computer Engineering")
+        self.comboBox.addItem("BS in Fisheries and Aquatic Sciences")
+        self.comboBox.addItem("AB in Communication")
+
         self.addStudentBtn = QtWidgets.QPushButton(self.frame_2)
-        self.addStudentBtn.setGeometry(QtCore.QRect(570, 330, 211, 31))
+        self.addStudentBtn.setGeometry(QtCore.QRect(580, 390, 211, 31))
         font = QtGui.QFont()
         font.setFamily("Arial")
         font.setPointSize(13)
@@ -309,7 +357,8 @@ class RegisterStudentWindow(object):
         self.firstNameText.setPlaceholderText(_translate("MainWindow", "First Name"))
         self.middleNameText.setPlaceholderText(_translate("MainWindow", "Middle Name"))
         self.lastNameText.setPlaceholderText(_translate("MainWindow", "Last Name"))
-        self.comboBox.setItemText(0, _translate("MainWindow", "Bachelor of Science In Information Technology"))
+        self.srcodetext.setPlaceholderText(_translate("MainWindow", "SR Code"))
+
         self.addStudentBtn.setText(_translate("MainWindow", "Submit"))
         self.uploadImageBtn.setText(_translate("MainWindow", "Click to Upload Student Image"))
 
@@ -323,19 +372,26 @@ class RegisterStudentWindow(object):
             selected_files = file_dialog.selectedFiles()
             if selected_files:
                 image_path = selected_files[0]
-                self.imageFilePath = image_path  # Assign the selected image path to imageFilePath
-                # Do something with the selected image path
-                print("Selected image:", image_path)
-                self.imageStatusLabel.setText("Image inserted")
+                if image_path.lower().endswith('.jpg'):
+                    self.imageFilePath = image_path  # Assign the selected image path to imageFilePath
+                    # Do something with the selected image path
+                    print("Selected image:", image_path)
+                    self.imageStatusLabel.setText("Image inserted")
+                else:
+                    dialog = ErrorImageDialog()
+                    dialog.setupUi()
+                    dialog.exec_()
+                    return
 
     def addStudent(self):
         first_name = self.firstNameText.toPlainText()
         middle_name = self.middleNameText.toPlainText()
         last_name = self.lastNameText.toPlainText()
         course = self.comboBox.currentText()
+        srcode = self.srcodetext.text()
         image_path = self.imageFilePath  # Use the imageFilePath attribute
 
-        if not (first_name and middle_name and last_name and image_path):
+        if not (first_name and middle_name and last_name and srcode and image_path):
             print("Please provide all the required student details.")
             dialog = ErrorDialog()
             dialog.setupUi()
@@ -351,8 +407,8 @@ class RegisterStudentWindow(object):
         cursor = db.cursor()
 
         # Insert student details
-        query = "INSERT INTO tbl_student (first_name, middle_name, last_name, course) VALUES (%s, %s, %s, %s)"
-        values = (first_name, middle_name, last_name, course)
+        query = "INSERT INTO tbl_student (first_name, middle_name, last_name, course, sr_code) VALUES (%s, %s, %s, %s, %s)"
+        values = (first_name, middle_name, last_name, course, srcode)
         cursor.execute(query, values)
         db.commit()
 
@@ -386,7 +442,7 @@ class RegisterStudentWindow(object):
         self.firstNameText.clear()
         self.middleNameText.clear()
         self.lastNameText.clear()
-
+        self.srcodetext.clear()
         # Clear the image file path
         self.imageFilePath = None
 
@@ -395,9 +451,11 @@ class RegisterStudentWindow(object):
     def open_dashboard(self):
         print("Opening Dashboard...")
         self.MainWindow.hide()
-        self.dashboard_window = QMainWindow()
+        self.dashboard_window = QtWidgets.QMainWindow()
         self.ui = dashboard.Ui_Dashboard()
         self.ui.setupUi(self.dashboard_window)
+        self.ui.tableWidget.setParent(self.ui.centralwidget)
+        self.ui.load_logs()
         self.dashboard_window.show()
         
     def open_facial_recognition(self):

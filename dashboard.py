@@ -11,9 +11,12 @@ import pymysql
 from datetime import datetime, timedelta
 from PyQt5.QtWidgets import QMainWindow, QTableWidget, QTableWidgetItem, QPushButton, QFileDialog, QDialog, QVBoxLayout, QLabel
 from PyQt5 import QtCore, QtGui, QtWidgets
+from PyQt5.QtGui import QPixmap
 from about_dialog import AboutDialog
 from PyQt5.QtCore import QTimer
 from datetime import datetime, timedelta
+from PyQt5.QtCore import Qt
+from PyQt5.QtWidgets import QApplication, QMainWindow, QTableWidget, QVBoxLayout, QScrollArea, QWidget
 
 
 class Ui_Dashboard(object):
@@ -23,6 +26,8 @@ class Ui_Dashboard(object):
 
     def setupUi(self, MainWindow):
         self.MainWindow = MainWindow
+        MainWindow.setWindowFlags(MainWindow.windowFlags() & ~QtCore.Qt.WindowMinimizeButtonHint & ~QtCore.Qt.WindowMaximizeButtonHint)
+
         MainWindow.setObjectName("MainWindow")
         MainWindow.resize(1186, 640)
         self.centralwidget = QtWidgets.QWidget(MainWindow)
@@ -31,7 +36,8 @@ class Ui_Dashboard(object):
         self.tableWidget = QTableWidget(self.centralwidget)
         self.tableWidget.setGeometry(QtCore.QRect(310, 150, 850, 450))
         self.tableWidget.setObjectName("tableWidget")
-
+        scroll_area = QScrollArea()
+        scroll_area.setWidgetResizable(True)
         self.frame = QtWidgets.QFrame(self.centralwidget)
         self.frame.setGeometry(QtCore.QRect(-1, 1, 261, 2000))
         self.frame.setStyleSheet("background-color: rgb(227, 30, 36);")
@@ -218,50 +224,51 @@ class Ui_Dashboard(object):
 
     def load_logs(self):
         connection = pymysql.connect(host='localhost', user='root', password='', db='pass_db')
-        self.connection = connection  # Store the connection reference to access it later
         cursor = connection.cursor()
 
-        # Delete logs older than a week
-        delete_query = """
-        DELETE FROM tbl_logs
-        WHERE date_log < %s
-        """
+        delete_query = "DELETE FROM tbl_logs WHERE date_log < %s"
         week_ago = datetime.now() - timedelta(days=7)
         cursor.execute(delete_query, (week_ago.date(),))
         connection.commit()
 
-        # Fetch student logs data from the database and order by last ID and current date
-        query = """
-        SELECT tbl_student.first_name, tbl_student.last_name, tbl_logs.date_log, tbl_logs.time_log
-        FROM tbl_logs
-        LEFT JOIN tbl_student ON tbl_logs.student_id = tbl_student.id
-        WHERE tbl_logs.date_log = CURDATE()
-        ORDER BY tbl_logs.id DESC
-        """
+        query = "SELECT  tbl_student.image, tbl_student.first_name, tbl_student.last_name, tbl_logs.date_log, tbl_logs.time_log FROM tbl_logs LEFT JOIN tbl_student ON tbl_logs.student_id = tbl_student.id"
         cursor.execute(query)
         logs = cursor.fetchall()
 
-        # Display logs in the table
         row_count = len(logs)
-        column_count = 4
+        column_count = 5  # Increase the column count for the image column
 
         self.tableWidget.setRowCount(row_count)
         self.tableWidget.setColumnCount(column_count)
 
-        header_labels = ["First Name", "Last Name", "Date Log", "Time Log"]
+        header_labels = ["Image", "First Name", "Last Name", "Date Log", "Time Log"]
         self.tableWidget.setHorizontalHeaderLabels(header_labels)
 
         for row, log in enumerate(logs):
-            first_name, last_name, date_log, time_log = log
-            self.tableWidget.setItem(row, 0, QTableWidgetItem(first_name))
-            self.tableWidget.setItem(row, 1, QTableWidgetItem(last_name))
-            self.tableWidget.setItem(row, 2, QTableWidgetItem(str(date_log)))
-            self.tableWidget.setItem(row, 3, QTableWidgetItem(str(time_log)))
+            image_filename, first_name, last_name, date_log, time_log = log
 
+            # Create a QLabel and set the image pixmap
+            image_label = QLabel()
+            image_path = os.path.join("images", str(image_filename))
+            pixmap = QPixmap(image_path)
+            if not pixmap.isNull():
+                pixmap = pixmap.scaledToWidth(100)  # Adjust the width as needed
+                pixmap = pixmap.scaledToHeight(100)  # Adjust the height as needed
+                image_label.setPixmap(pixmap)
+                image_label.setAlignment(Qt.AlignCenter)  # Center the image in the label
+
+            self.tableWidget.setCellWidget(row, 0, image_label)
+
+            self.tableWidget.setItem(row, 1, QTableWidgetItem(first_name))
+            self.tableWidget.setItem(row, 2, QTableWidgetItem(last_name))
+            self.tableWidget.setItem(row, 3, QTableWidgetItem(str(date_log)))
+            self.tableWidget.setItem(row, 4, QTableWidgetItem(str(time_log)))
+        
         cursor.close()
 
-    # Schedule the next update after 1 second
+        # Schedule the next update after 1 second
         QTimer.singleShot(1000, self.load_logs)
+
 
     def start_loading_students(self):
         # Start loading the students initially

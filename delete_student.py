@@ -2,6 +2,8 @@ import sys
 import os
 from PyQt5.QtWidgets import QApplication, QDialog, QLabel, QPushButton, QDesktopWidget
 import pymysql
+from encodegenerator import encodegenerator
+
 
 class DeleteStudentDialog(QDialog):
     def setupUi(self, student_id):
@@ -47,6 +49,7 @@ class DeleteStudentDialog(QDialog):
                 connection.commit()
 
                 print("Student deleted successfully!")
+                encodegenerator()
 
                 # Delete the image file if it exists
                 if image_path:
