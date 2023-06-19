@@ -1,6 +1,15 @@
 import sys
 from PyQt5 import QtWidgets, QtGui, QtCore
-from PyQt5.QtWidgets import QMainWindow, QTableWidget, QTableWidgetItem, QPushButton, QFileDialog, QDialog, QVBoxLayout, QLabel
+from PyQt5.QtWidgets import (
+    QMainWindow,
+    QTableWidget,
+    QTableWidgetItem,
+    QPushButton,
+    QFileDialog,
+    QDialog,
+    QVBoxLayout,
+    QLabel,
+)
 import pymysql
 import os
 import cv2
@@ -17,10 +26,15 @@ from delete_student import DeleteStudentDialog
 from view_logs import ViewLogsDialog
 from PyQt5.QtCore import QTimer
 
+
 class StudentManagementWindow(object):
     def setupUi(self, MainWindow):
-        self.MainWindow = MainWindow 
-        MainWindow.setWindowFlags(MainWindow.windowFlags() & ~QtCore.Qt.WindowMinimizeButtonHint & ~QtCore.Qt.WindowMaximizeButtonHint)
+        self.MainWindow = MainWindow
+        MainWindow.setWindowFlags(
+            MainWindow.windowFlags()
+            & ~QtCore.Qt.WindowMinimizeButtonHint
+            & ~QtCore.Qt.WindowMaximizeButtonHint
+        )
         MainWindow.setObjectName("MainWindow")
         MainWindow.resize(1186, 647)
         self.imageFilePath = None
@@ -59,9 +73,12 @@ class StudentManagementWindow(object):
         font.setFamily("Arial")
         font.setPointSize(12)
         self.faceRecognitionBtn.setFont(font)
-        self.faceRecognitionBtn.setStyleSheet(" background-color: transparent;\n"
-"color: white;\n" "text-align: left;\n"
-"")
+        self.faceRecognitionBtn.setStyleSheet(
+            " background-color: transparent;\n"
+            "color: white;\n"
+            "text-align: left;\n"
+            ""
+        )
         self.faceRecognitionBtn.setObjectName("faceRecognitionBtn")
         self.registerStudentBtn = QtWidgets.QPushButton(self.frame)
         self.registerStudentBtn.setGeometry(QtCore.QRect(40, 270, 211, 31))
@@ -69,9 +86,12 @@ class StudentManagementWindow(object):
         font.setFamily("Arial")
         font.setPointSize(12)
         self.registerStudentBtn.setFont(font)
-        self.registerStudentBtn.setStyleSheet(" background-color: transparent;\n"
-"color: white;\n" "text-align: left;\n"
-"")
+        self.registerStudentBtn.setStyleSheet(
+            " background-color: transparent;\n"
+            "color: white;\n"
+            "text-align: left;\n"
+            ""
+        )
         self.registerStudentBtn.setObjectName("registerStudentBtn")
         self.studentMgmtBtn = QtWidgets.QPushButton(self.frame)
         self.studentMgmtBtn.setGeometry(QtCore.QRect(40, 320, 221, 31))
@@ -79,9 +99,12 @@ class StudentManagementWindow(object):
         font.setFamily("Arial")
         font.setPointSize(12)
         self.studentMgmtBtn.setFont(font)
-        self.studentMgmtBtn.setStyleSheet(" background-color: transparent;\n"
-"color: white;\n" "text-align: left;\n"
-"")
+        self.studentMgmtBtn.setStyleSheet(
+            " background-color: transparent;\n"
+            "color: white;\n"
+            "text-align: left;\n"
+            ""
+        )
         self.studentMgmtBtn.setObjectName("studentMgmtBtn")
         self.exitBtn = QtWidgets.QPushButton(self.frame)
         self.exitBtn.setGeometry(QtCore.QRect(40, 410, 221, 31))
@@ -89,9 +112,12 @@ class StudentManagementWindow(object):
         font.setFamily("Arial")
         font.setPointSize(12)
         self.exitBtn.setFont(font)
-        self.exitBtn.setStyleSheet(" background-color: transparent;\n"
-"color: white;\n" "text-align: left;\n"
-"")
+        self.exitBtn.setStyleSheet(
+            " background-color: transparent;\n"
+            "color: white;\n"
+            "text-align: left;\n"
+            ""
+        )
         self.exitBtn.setObjectName("exitBtn")
         self.exitBtn_2 = QtWidgets.QPushButton(self.frame)
         self.exitBtn_2.setGeometry(QtCore.QRect(40, 360, 221, 31))
@@ -99,9 +125,12 @@ class StudentManagementWindow(object):
         font.setFamily("Arial")
         font.setPointSize(12)
         self.exitBtn_2.setFont(font)
-        self.exitBtn_2.setStyleSheet(" background-color: transparent;\n"
-"color: white;\n" "text-align: left;\n"
-"")
+        self.exitBtn_2.setStyleSheet(
+            " background-color: transparent;\n"
+            "color: white;\n"
+            "text-align: left;\n"
+            ""
+        )
         self.exitBtn_2.setObjectName("exitBtn_2")
         self.pushButton = QtWidgets.QPushButton(self.frame)
         self.pushButton.setGeometry(QtCore.QRect(40, 176, 221, 31))
@@ -109,11 +138,13 @@ class StudentManagementWindow(object):
         font.setFamily("Arial")
         font.setPointSize(12)
         self.pushButton.setFont(font)
-        self.pushButton.setStyleSheet(" background-color: transparent;\n"
-"color: white;\n" "text-align: left;\n"
-"")
-   
-        
+        self.pushButton.setStyleSheet(
+            " background-color: transparent;\n"
+            "color: white;\n"
+            "text-align: left;\n"
+            ""
+        )
+
         self.exitBtn_2.setObjectName("exitBtn_2")
         self.frame_3 = QtWidgets.QFrame(self.centralwidget)
         self.frame_3.setGeometry(QtCore.QRect(261, -1, 2000, 61))
@@ -163,7 +194,7 @@ class StudentManagementWindow(object):
         self.retranslateUi(MainWindow)
         QtCore.QMetaObject.connectSlotsByName(MainWindow)
 
-                # Connect button clicks to respective functions
+        # Connect button clicks to respective functions
         self.faceRecognitionBtn.clicked.connect(self.open_facial_recognition)
         self.registerStudentBtn.clicked.connect(self.open_register_student)
         self.studentMgmtBtn.clicked.connect(self.open_student_management)
@@ -171,23 +202,33 @@ class StudentManagementWindow(object):
         self.exitBtn_2.clicked.connect(self.open_login_page)
         self.pushButton.clicked.connect(self.open_dashboard)
 
-
     def retranslateUi(self, MainWindow):
         _translate = QtCore.QCoreApplication.translate
         MainWindow.setWindowTitle(_translate("MainWindow", "Student Management"))
         self.label_9.setText(_translate("MainWindow", "Admin Panel"))
         self.pushButton.setText(_translate("MainWindow", "Dashboard"))
         self.faceRecognitionBtn.setText(_translate("MainWindow", "Facial Recognition"))
-        self.registerStudentBtn.setText(_translate("MainWindow", "Student Registration"))
+        self.registerStudentBtn.setText(
+            _translate("MainWindow", "Student Registration")
+        )
         self.studentMgmtBtn.setText(_translate("MainWindow", "Student Management"))
         self.exitBtn.setText(_translate("MainWindow", "Exit"))
         self.exitBtn_2.setText(_translate("MainWindow", "Logout"))
-        self.label.setText(_translate("MainWindow", "PASS: Personalized Authentication and Student Surveillance"))
+        self.label.setText(
+            _translate(
+                "MainWindow",
+                "PASS: Personalized Authentication and Student Surveillance",
+            )
+        )
         self.label_10.setText(_translate("MainWindow", "Student Management"))
-    
+
     def load_students(self):
-        connection = pymysql.connect(host='localhost', user='root', password='', db='pass_db')
-        self.connection = connection  # Store the connection reference to access it later
+        connection = pymysql.connect(
+            host="localhost", user="root", password="", db="pass_db"
+        )
+        self.connection = (
+            connection  # Store the connection reference to access it later
+        )
         cursor = connection.cursor()
 
         # Fetch student data from the database
@@ -202,29 +243,44 @@ class StudentManagementWindow(object):
         self.tableWidget.setRowCount(row_count)
         self.tableWidget.setColumnCount(column_count)
 
-        header_labels = ["First Name", "Middle Name", "Last Name", "Course", "View Logs", "Edit", "Delete"]
+        header_labels = [
+            "First Name",
+            "Middle Name",
+            "Last Name",
+            "Course",
+            "View Logs",
+            "Edit",
+            "Delete",
+        ]
         self.tableWidget.setHorizontalHeaderLabels(header_labels)
 
         for i, student in enumerate(students):
             student_id = student[0]  # Get the student ID
             for j in range(column_count - 3):  # Adjust the range
-                item = QTableWidgetItem(str(student[j + 1]))  # Update the index of the student details
+                item = QTableWidgetItem(
+                    str(student[j + 1])
+                )  # Update the index of the student details
                 self.tableWidget.setItem(i, j, item)  # Update the column index
 
             # Create and set the edit button
             edit_button = QPushButton("Edit")
-            edit_button.clicked.connect(lambda checked, student_id=student_id: self.edit_student(student_id))
+            edit_button.clicked.connect(
+                lambda checked, student_id=student_id: self.edit_student(student_id)
+            )
             self.tableWidget.setCellWidget(i, column_count - 2, edit_button)
 
             # Create and set the delete button
             delete_button = QPushButton("Delete")
-            delete_button.clicked.connect(lambda checked, student_id=student_id: self.delete_student(student_id))
+            delete_button.clicked.connect(
+                lambda checked, student_id=student_id: self.delete_student(student_id)
+            )
             self.tableWidget.setCellWidget(i, column_count - 1, delete_button)
-
 
             # Create and set the delete button
             view_logs_button = QPushButton("View Logs")
-            view_logs_button.clicked.connect(lambda checked, student_id=student_id: self.view_logs(student_id))
+            view_logs_button.clicked.connect(
+                lambda checked, student_id=student_id: self.view_logs(student_id)
+            )
             self.tableWidget.setCellWidget(i, column_count - 3, view_logs_button)
 
         cursor.close()
@@ -236,13 +292,11 @@ class StudentManagementWindow(object):
         # Start loading the students initially
         self.load_students()
 
-
     def view_logs(self, student_id):
         print("Edit Student ID:", student_id)
         dialog = ViewLogsDialog()
         dialog.setupUi(student_id)
         dialog.exec_()
-
 
     def edit_student(self, student_id):
         print("Edit Student ID:", student_id)
@@ -255,7 +309,7 @@ class StudentManagementWindow(object):
         dialog = DeleteStudentDialog()
         dialog.setupUi(student_id)
         dialog.exec_()
-    
+
     def open_dashboard(self):
         print("Opening Dashboard...")
         # self.MainWindow.hide()
@@ -264,7 +318,6 @@ class StudentManagementWindow(object):
         # self.ui.setupUi(self.dashboard_window)
         # self.dashboard_window.show()
 
-
         self.MainWindow.hide()
         self.dashboard_window = QtWidgets.QMainWindow()
         self.ui = dashboard.Ui_Dashboard()
@@ -272,95 +325,15 @@ class StudentManagementWindow(object):
         self.ui.tableWidget.setParent(self.ui.centralwidget)
         self.ui.load_logs()
         self.dashboard_window.show()
-    
+
     def open_facial_recognition(self):
+        from facial_recognition import FacialRecognitionWindow
+
+        face_recognition = FacialRecognitionWindow()
         # Add your code to open facial recognition here
         print("Opening Facial Recognition...")
-        # self.MainWindow.close()
-        #self.facial_recognition_window = QtWidgets.QMainWindow()
-        #self.ui = facial_recognition.FacialRecognitionWindow()
-        #self.ui.setupUi(self.facial_recognition_window)
-        #self.facial_recognition_window.show()
-        # video = cv2.VideoCapture(0)
 
-        # while True:
-        #     suc, img = video.read()
-
-        #     cv2.imshow("frame", img)
-
-        #     if cv2.waitKey(1) & 0xFF == ord('q'):
-        #         break
-
-        # video.release()
-        # cv2.destroyAllWindows()
-        self.face_recognition_func()
-
-    def face_recognition_func(self):
-        cap = cv2.VideoCapture(0, cv2.CAP_DSHOW)
-
-        cap.set(cv2.CAP_PROP_FRAME_WIDTH, 640)
-        cap.set(cv2.CAP_PROP_FRAME_HEIGHT, 480)
-
-        # Importing student images
-        folderModePath = 'images'
-        pathList = os.listdir(folderModePath)
-        imgList = []
-        studentIds = []
-        for path in pathList:
-            imgList.append(cv2.imread(os.path.join(folderModePath, path)))
-
-        # Load the encoding file
-        print("Loading Encoding File ....")
-        file = open('FaceEncodeFile.p', 'rb')
-        encodeListKnownWithIds = pickle.load(file)
-        file.close()
-        encodeListKnown, studentIds = encodeListKnownWithIds
-        print("Encoding File Loaded")
-
-        retries = 3
-        count = 0
-
-        while True:
-            try:
-                ret, frame = cap.read()
-
-                imgS = cv2.resize(frame, (0, 0), None, 0.25, 0.25)
-                imgS = cv2.cvtColor(imgS, cv2.COLOR_BGR2RGB)
-
-                faceCurFrame = face_recognition.face_locations(imgS)
-                encodeCurFrame = face_recognition.face_encodings(imgS, faceCurFrame)
-
-
-                for encodeFace, faceLoc in zip(encodeCurFrame, faceCurFrame):
-                    matches = face_recognition.compare_faces(encodeListKnown, encodeFace)
-                    faceDis = face_recognition.face_distance(encodeListKnown, encodeFace)
-
-                    matchIndex = np.argmin(faceDis)
-
-
-                    if matches[matchIndex]:
-                        name = studentIds[matchIndex].upper()
-                        y1, x2, y2, x1 = faceLoc
-                        y1, x2, y2, x1 = y1*4, x2*4, y2*4, x1*4
-                        cv2.rectangle(frame, (x1, y1), (x2, y2), (0, 255, 0), 2)
-                        cv2.rectangle(frame, (x1, y2-35), (x2, y2), (0, 255, 0), cv2.FILLED)
-                        cv2.putText(frame, name, (x1+6, y2-6), cv2.FONT_HERSHEY_SIMPLEX, 1, (255, 255, 255), 2)
-
-                cv2.imshow('frame', frame)
-
-                key = cv2.waitKey(1)
-                if key == ord('q'):
-                    break
-            except Exception as e:
-                if retries == count:
-                    break
-                count+=1
-                print("Retry:", count)
-                print(e)
-                pass
-
-        cv2.destroyAllWindows()
-
+        face_recognition.face_recognition_func()
 
     def open_register_student(self):
         # Add your code to open register student here
@@ -394,16 +367,10 @@ class StudentManagementWindow(object):
         self.ui.setupUi(self.admin_login_window)
         self.admin_login_window.show()
 
-
-
-
     def export_data_to_excel(self):
         # Connect to the MySQL database
         connection = pymysql.connect(
-            host='localhost',
-            user='root',
-            password='',
-            database='pass_db'
+            host="localhost", user="root", password="", database="pass_db"
         )
 
         try:
@@ -411,7 +378,9 @@ class StudentManagementWindow(object):
             cursor = connection.cursor()
 
             # Retrieve data from the tbl_student table
-            select_query = "SELECT first_name, middle_name, last_name, course FROM tbl_student"
+            select_query = (
+                "SELECT first_name, middle_name, last_name, course FROM tbl_student"
+            )
             cursor.execute(select_query)
             student_data = cursor.fetchall()
 
@@ -420,10 +389,10 @@ class StudentManagementWindow(object):
             sheet = workbook.active
 
             # Write the column headers
-            sheet['A1'] = 'First Name'
-            sheet['B1'] = 'Middle Name'
-            sheet['C1'] = 'Last Name'
-            sheet['D1'] = 'Course'
+            sheet["A1"] = "First Name"
+            sheet["B1"] = "Middle Name"
+            sheet["C1"] = "Last Name"
+            sheet["D1"] = "Course"
 
             for row_index, student in enumerate(student_data, start=2):
                 sheet.cell(row=row_index, column=1).value = student[0]  # First Name
@@ -432,7 +401,7 @@ class StudentManagementWindow(object):
                 sheet.cell(row=row_index, column=4).value = student[3]  # Course
 
             # Save the Excel file
-            workbook.save('student_data.xlsx')
+            workbook.save("student_data.xlsx")
             print("Data exported to Excel successfully!")
 
         except Exception as e:
@@ -443,8 +412,9 @@ class StudentManagementWindow(object):
             cursor.close()
             connection.close()
 
-
     # ...
+
+
 if __name__ == "__main__":
     app = QtWidgets.QApplication(sys.argv)
     MainWindow = QtWidgets.QMainWindow()
