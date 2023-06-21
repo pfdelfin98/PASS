@@ -1,26 +1,17 @@
 import sys
 from PyQt5 import QtWidgets, QtGui, QtCore
 from PyQt5.QtWidgets import (
-    QMainWindow,
     QTableWidget,
     QTableWidgetItem,
     QPushButton,
-    QFileDialog,
-    QDialog,
-    QVBoxLayout,
-    QLabel,
 )
 import pymysql
-import os
-import cv2
-import pickle
-import numpy as np
-import face_recognition
 import openpyxl
 import register_student
 import student_management
 import admin_login
 import dashboard
+
 from edit_student import EditStudentDialog
 from delete_student import DeleteStudentDialog
 from view_logs import ViewLogsDialog
@@ -28,6 +19,11 @@ from PyQt5.QtCore import QTimer
 
 
 class StudentManagementWindow(object):
+    def __init__(self) -> None:
+        # For Excel File
+        self.file_name = "StudentData.xlsx"
+        self.file_path = rf"C:\Users\SampleUser\Desktop\{self.file_name}"  # Change this to your own file path
+
     def setupUi(self, MainWindow):
         self.MainWindow = MainWindow
         MainWindow.setWindowFlags(
@@ -378,10 +374,8 @@ class StudentManagementWindow(object):
             cursor = connection.cursor()
 
             # Retrieve data from the tbl_student table
-            select_query = (
-                "SELECT first_name, middle_name, last_name, course FROM tbl_student"
-            )
-            cursor.execute(select_query)
+            query = "SELECT first_name, middle_name, last_name, course FROM tbl_student"
+            cursor.execute(query)
             student_data = cursor.fetchall()
 
             # Create a new Excel workbook and select the active sheet
@@ -401,7 +395,7 @@ class StudentManagementWindow(object):
                 sheet.cell(row=row_index, column=4).value = student[3]  # Course
 
             # Save the Excel file
-            workbook.save("student_data.xlsx")
+            workbook.save(self.file_path)
             print("Data exported to Excel successfully!")
 
         except Exception as e:
