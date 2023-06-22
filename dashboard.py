@@ -33,6 +33,12 @@ class Ui_Dashboard(object):
         self.logs_sent = False
         self.existing = False
 
+        # For Excel File
+        self.file_name = ""
+        self.file_path = ""
+        self.folder_name = "logs"
+        self.folder_path = rf"C:\Users\SampleUser\Desktop\{self.folder_name}"  # Change this to your own file path
+
     def setupUi(self, MainWindow):
         self.MainWindow = MainWindow
         MainWindow.setWindowFlags(
@@ -412,17 +418,16 @@ class Ui_Dashboard(object):
             # Save the Excel file
             current_datetime = datetime.now()
             formatted_datetime = current_datetime.strftime("%Y-%m-%d_%H-%M-%S")
-            file_name = f"log_data_{formatted_datetime}.xlsx"
+            self.file_name = f"logs_data_{formatted_datetime}.xlsx"
 
-            # Save the Excel file inside the "logs" folder
-            folder_path = "logs"
-            file_path = os.path.join(folder_path, file_name)
+            # Save the Excel file inside the "folder_path" folder
+            self.file_path = rf"{self.folder_path}\{self.file_name}"
 
             # Create the "logs" folder if it doesn't exist
-            if not os.path.exists(folder_path):
-                os.makedirs(folder_path)
+            if not os.path.exists(self.folder_path):
+                os.makedirs(self.folder_path)
             # Save the Excel file
-            workbook.save(file_path)
+            workbook.save(self.file_path)
             print("Logs Data exported to Excel successfully!")
 
         except Exception as e:

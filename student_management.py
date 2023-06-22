@@ -25,7 +25,7 @@ class StudentManagementWindow(object):
         self.file_name = ""
         self.file_path = ""
         self.folder_name = "student_logs"
-        self.folder_path = rf"C:\Users\Cj\Desktop\{self.folder_name}"  # Change this to your own file path
+        self.folder_path = rf"C:\Users\SampleUser\Desktop\{self.folder_name}"  # Change this to your own file path
 
     def setupUi(self, MainWindow):
         self.MainWindow = MainWindow
