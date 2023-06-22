@@ -430,7 +430,7 @@ class RegisterStudentWindow(object):
             cursor.execute(update_query, update_values)
             db.commit()
 
-        encodegenerator()
+
         cursor.close()
         db.close()
 
@@ -445,7 +445,7 @@ class RegisterStudentWindow(object):
         self.srcodetext.clear()
         # Clear the image file path
         self.imageFilePath = None
-
+        encodegenerator()
 
 
     def open_dashboard(self):

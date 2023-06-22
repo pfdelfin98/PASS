@@ -13,8 +13,8 @@ class ViewLogsDialog(QDialog):
         # Create a QTableWidget to display the logs
         self.logsTable = QTableWidget(self)
         self.logsTable.setGeometry(20, 20, 460, 260)
-        self.logsTable.setColumnCount(3)
-        self.logsTable.setHorizontalHeaderLabels(["Student Name", "Date Log", "Time Log"])
+        self.logsTable.setColumnCount(4)
+        self.logsTable.setHorizontalHeaderLabels(["Student Name", "SR Code", "Date Log", "Time Log"])
 
         # Connect to the MySQL database
         connection = pymysql.connect(
@@ -29,7 +29,7 @@ class ViewLogsDialog(QDialog):
             cursor = connection.cursor()
 
             # Fetch logs data from the database joined with tbl_student to get student name
-            query = "SELECT CONCAT(tbl_student.first_name, ' ', tbl_student.last_name) AS student_name, tbl_logs.date_log, tbl_logs.time_log " \
+            query = "SELECT CONCAT(tbl_student.first_name, ' ', tbl_student.last_name) AS student_name, tbl_student.sr_code, tbl_logs.date_log, tbl_logs.time_log " \
                     "FROM tbl_logs " \
                     "LEFT JOIN tbl_student ON tbl_student.id = tbl_logs.student_id " \
                     "WHERE tbl_logs.student_id = %s"
@@ -42,12 +42,14 @@ class ViewLogsDialog(QDialog):
             # Fill in the table with the retrieved logs
             for row, log in enumerate(logs):
                 student_name_item = QTableWidgetItem(log[0])
-                date_log_item = QTableWidgetItem(str(log[1]))
-                time_log_item = QTableWidgetItem(str(log[2]))
+                sr_code_item = QTableWidgetItem(log[1])
+                date_log_item = QTableWidgetItem(str(log[2]))
+                time_log_item = QTableWidgetItem(str(log[3]))
 
                 self.logsTable.setItem(row, 0, student_name_item)
-                self.logsTable.setItem(row, 1, date_log_item)
-                self.logsTable.setItem(row, 2, time_log_item)
+                self.logsTable.setItem(row, 1, sr_code_item)
+                self.logsTable.setItem(row, 2, date_log_item)
+                self.logsTable.setItem(row, 3, time_log_item)
 
             # Resize the columns to fit the content
             self.logsTable.resizeColumnsToContents()

@@ -17,6 +17,8 @@ from PyQt5.QtCore import QTimer
 from datetime import datetime, timedelta
 from PyQt5.QtCore import Qt
 from PyQt5.QtWidgets import QApplication, QMainWindow, QTableWidget, QVBoxLayout, QScrollArea, QWidget
+import openpyxl
+from datetime import datetime
 
 
 class Ui_Dashboard(object):
@@ -181,6 +183,17 @@ class Ui_Dashboard(object):
         self.label_10.setFont(font)
         self.label_10.setStyleSheet("color:black;")
         self.label_10.setObjectName("label_10")
+
+        self.exportDataBtn = QtWidgets.QPushButton(self.centralwidget)
+        self.exportDataBtn.setGeometry(QtCore.QRect(1035, 90, 121, 40))
+        font = QtGui.QFont()
+        font.setFamily("Arial")
+        font.setPointSize(8)
+        self.exportDataBtn.setFont(font)
+        self.exportDataBtn.setObjectName("exportDataBtn")
+        self.exportDataBtn.setText("Export Data")
+        self.exportDataBtn.clicked.connect(self.export_data_to_excel)
+
         MainWindow.setCentralWidget(self.centralwidget)
         self.menubar = QtWidgets.QMenuBar(MainWindow)
         self.menubar.setGeometry(QtCore.QRect(0, 0, 1186, 21))
@@ -231,38 +244,47 @@ class Ui_Dashboard(object):
         cursor.execute(delete_query, (week_ago.date(),))
         connection.commit()
 
-        query = "SELECT  tbl_student.image, tbl_student.first_name, tbl_student.last_name, tbl_logs.date_log, tbl_logs.time_log FROM tbl_logs LEFT JOIN tbl_student ON tbl_logs.student_id = tbl_student.id"
+        query = "SELECT  tbl_student.image, tbl_student.first_name, tbl_student.last_name, tbl_student.course, tbl_student.sr_code, tbl_logs.date_log, tbl_logs.time_log FROM tbl_logs LEFT JOIN tbl_student ON tbl_logs.student_id = tbl_student.id"
         cursor.execute(query)
         logs = cursor.fetchall()
 
         row_count = len(logs)
-        column_count = 5  # Increase the column count for the image column
+        column_count = 7  # Increase the column count for the image column
 
         self.tableWidget.setRowCount(row_count)
         self.tableWidget.setColumnCount(column_count)
 
-        header_labels = ["Image", "First Name", "Last Name", "Date Log", "Time Log"]
+        header_labels = ["Image", "First Name", "Last Name", "Course", "SR Code", "Date Log", "Time Log"]
         self.tableWidget.setHorizontalHeaderLabels(header_labels)
 
         for row, log in enumerate(logs):
-            image_filename, first_name, last_name, date_log, time_log = log
+            image_filename, first_name, last_name, course, sr_code, date_log, time_log = log
 
             # Create a QLabel and set the image pixmap
             image_label = QLabel()
             image_path = os.path.join("images", str(image_filename))
             pixmap = QPixmap(image_path)
             if not pixmap.isNull():
-                pixmap = pixmap.scaledToWidth(100)  # Adjust the width as needed
-                pixmap = pixmap.scaledToHeight(100)  # Adjust the height as needed
-                image_label.setPixmap(pixmap)
+                # Calculate the size of the cell
+                cell_width = self.tableWidget.columnWidth(0)
+                cell_height = self.tableWidget.rowHeight(row)
+
+                # Resize the pixmap to fit the cell dimensions
+                scaled_pixmap = pixmap.scaled(cell_width, cell_height, Qt.AspectRatioMode.KeepAspectRatio)
+
+                # Set the scaled pixmap on the image label
+                image_label.setPixmap(scaled_pixmap)
                 image_label.setAlignment(Qt.AlignCenter)  # Center the image in the label
 
             self.tableWidget.setCellWidget(row, 0, image_label)
 
             self.tableWidget.setItem(row, 1, QTableWidgetItem(first_name))
             self.tableWidget.setItem(row, 2, QTableWidgetItem(last_name))
-            self.tableWidget.setItem(row, 3, QTableWidgetItem(str(date_log)))
-            self.tableWidget.setItem(row, 4, QTableWidgetItem(str(time_log)))
+            self.tableWidget.setItem(row, 3, QTableWidgetItem(course))
+            self.tableWidget.setItem(row, 4, QTableWidgetItem(sr_code))
+
+            self.tableWidget.setItem(row, 5, QTableWidgetItem(str(date_log)))
+            self.tableWidget.setItem(row, 6, QTableWidgetItem(str(time_log)))
         
         cursor.close()
 
@@ -517,6 +539,72 @@ class Ui_Dashboard(object):
         self.ui = admin_login.Ui_MainWindow()
         self.ui.setupUi(self.admin_login_window)
         self.admin_login_window.show()
+
+
+    def export_data_to_excel(self):
+        # Connect to the MySQL database
+        connection = pymysql.connect(
+            host='localhost',
+            user='root',
+            password='',
+            database='pass_db'
+        )
+
+        try:
+            # Create a cursor object to execute SQL queries
+            cursor = connection.cursor()
+
+            # Retrieve data from the tbl_student table
+            select_query = "SELECT CONCAT(tbl_student.first_name, ' ', tbl_student.last_name) AS student_name, tbl_student.course, tbl_student.sr_code, tbl_logs.date_log, tbl_logs.time_log FROM tbl_logs LEFT JOIN tbl_student ON tbl_logs.student_id = tbl_student.id"
+            cursor.execute(select_query)
+            student_data = cursor.fetchall()
+
+            # Create a new Excel workbook and select the active sheet
+            workbook = openpyxl.Workbook()
+            sheet = workbook.active
+
+            # Write the column headers
+            sheet['A1'] = 'Student Name'
+            sheet['B1'] = 'Course'
+            sheet['C1'] = 'SR Code'
+            sheet['D1'] = 'Date Log'
+            sheet['E1'] = 'Time Log'
+
+            # Set column width for date columns
+            date_columns = ['D', 'E']  # Columns D and E represent the date columns
+            for column in date_columns:
+                sheet.column_dimensions[column].width = 15  # Adjust the width as per your preference
+
+            for row_index, student in enumerate(student_data, start=2):
+                sheet.cell(row=row_index, column=1).value = student[0]  
+                sheet.cell(row=row_index, column=2).value = student[1]  
+                sheet.cell(row=row_index, column=3).value = student[2]  
+                sheet.cell(row=row_index, column=4).value = student[3]  
+                sheet.cell(row=row_index, column=5).value = student[4]  
+
+            # Save the Excel file
+            current_datetime = datetime.now()
+            formatted_datetime = current_datetime.strftime("%Y-%m-%d_%H-%M-%S")
+            file_name = f"log_data_{formatted_datetime}.xlsx"
+
+            # Save the Excel file inside the "logs" folder
+            folder_path = "logs"
+            file_path = os.path.join(folder_path, file_name)
+
+            # Create the "logs" folder if it doesn't exist
+            if not os.path.exists(folder_path):
+                os.makedirs(folder_path)
+            # Save the Excel file
+            workbook.save(file_path)
+            print("Logs Data exported to Excel successfully!")
+
+        except Exception as e:
+            print("Error exporting data to Excel:", str(e))
+
+        finally:
+            # Close the cursor and connection
+            cursor.close()
+            connection.close()
 
 
 if __name__ == "__main__":

@@ -49,7 +49,7 @@ class DeleteStudentDialog(QDialog):
                 connection.commit()
 
                 print("Student deleted successfully!")
-                encodegenerator()
+                
 
                 # Delete the image file if it exists
                 if image_path:
@@ -71,6 +71,8 @@ class DeleteStudentDialog(QDialog):
             # Close the cursor and connection
             cursor.close()
             connection.close()
+            encodegenerator()
+
 
         # Close the dialog
         self.close()

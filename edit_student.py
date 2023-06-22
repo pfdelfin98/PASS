@@ -160,9 +160,10 @@ class EditStudentDialog(QDialog):
         connection.commit()
         print("Student details updated in the database.")
 
-        encodegenerator()
+        
         cursor.close()
         connection.close()
+        encodegenerator()
         self.close()
 
 

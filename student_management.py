@@ -16,6 +16,7 @@ from edit_student import EditStudentDialog
 from delete_student import DeleteStudentDialog
 from view_logs import ViewLogsDialog
 from PyQt5.QtCore import QTimer
+from datetime import datetime
 
 class StudentManagementWindow(object):
     def setupUi(self, MainWindow):
@@ -191,41 +192,41 @@ class StudentManagementWindow(object):
         cursor = connection.cursor()
 
         # Fetch student data from the database
-        query = "SELECT id, first_name, middle_name, last_name, course FROM tbl_student"
+        query = "SELECT id, first_name, middle_name, last_name, course, sr_code FROM tbl_student"
         cursor.execute(query)
         students = cursor.fetchall()
 
         # Display students in the table
         row_count = len(students)
-        column_count = 7  # Increase column count for edit and delete buttons
+        column_count = 9  # Increase column count for edit and delete buttons
 
         self.tableWidget.setRowCount(row_count)
         self.tableWidget.setColumnCount(column_count)
 
-        header_labels = ["First Name", "Middle Name", "Last Name", "Course", "View Logs", "Edit", "Delete"]
+        header_labels = ["First Name", "Middle Name", "Last Name", "Course", "SR Code", "View Logs", "Edit", "Delete"]
         self.tableWidget.setHorizontalHeaderLabels(header_labels)
 
         for i, student in enumerate(students):
             student_id = student[0]  # Get the student ID
-            for j in range(column_count - 3):  # Adjust the range
+            for j in range(column_count - 4):  # Adjust the range
                 item = QTableWidgetItem(str(student[j + 1]))  # Update the index of the student details
                 self.tableWidget.setItem(i, j, item)  # Update the column index
 
             # Create and set the edit button
             edit_button = QPushButton("Edit")
             edit_button.clicked.connect(lambda checked, student_id=student_id: self.edit_student(student_id))
-            self.tableWidget.setCellWidget(i, column_count - 2, edit_button)
+            self.tableWidget.setCellWidget(i, column_count - 3, edit_button)
 
             # Create and set the delete button
             delete_button = QPushButton("Delete")
             delete_button.clicked.connect(lambda checked, student_id=student_id: self.delete_student(student_id))
-            self.tableWidget.setCellWidget(i, column_count - 1, delete_button)
+            self.tableWidget.setCellWidget(i, column_count - 2, delete_button)
 
 
             # Create and set the delete button
             view_logs_button = QPushButton("View Logs")
             view_logs_button.clicked.connect(lambda checked, student_id=student_id: self.view_logs(student_id))
-            self.tableWidget.setCellWidget(i, column_count - 3, view_logs_button)
+            self.tableWidget.setCellWidget(i, column_count - 4, view_logs_button)
 
         cursor.close()
 
@@ -411,7 +412,7 @@ class StudentManagementWindow(object):
             cursor = connection.cursor()
 
             # Retrieve data from the tbl_student table
-            select_query = "SELECT first_name, middle_name, last_name, course FROM tbl_student"
+            select_query = "SELECT first_name, middle_name, last_name, course, sr_code FROM tbl_student"
             cursor.execute(select_query)
             student_data = cursor.fetchall()
 
@@ -424,16 +425,30 @@ class StudentManagementWindow(object):
             sheet['B1'] = 'Middle Name'
             sheet['C1'] = 'Last Name'
             sheet['D1'] = 'Course'
+            sheet['E1'] = 'SR Code'
 
             for row_index, student in enumerate(student_data, start=2):
                 sheet.cell(row=row_index, column=1).value = student[0]  # First Name
                 sheet.cell(row=row_index, column=2).value = student[1]  # Middle Name
                 sheet.cell(row=row_index, column=3).value = student[2]  # Last Name
                 sheet.cell(row=row_index, column=4).value = student[3]  # Course
+                sheet.cell(row=row_index, column=5).value = student[4]  # Course
 
             # Save the Excel file
-            workbook.save('student_data.xlsx')
-            print("Data exported to Excel successfully!")
+            current_datetime = datetime.now()
+            formatted_datetime = current_datetime.strftime("%Y-%m-%d_%H-%M-%S")
+            file_name = f"student_data_{formatted_datetime}.xlsx"
+
+            # Save the Excel file inside the "logs" folder
+            folder_path = "students"
+            file_path = os.path.join(folder_path, file_name)
+
+            # Create the "logs" folder if it doesn't exist
+            if not os.path.exists(folder_path):
+                os.makedirs(folder_path)
+            # Save the Excel file
+            workbook.save(file_path)
+            print("Student Data exported to Excel successfully!")
 
         except Exception as e:
             print("Error exporting data to Excel:", str(e))
