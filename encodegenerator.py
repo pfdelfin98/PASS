@@ -3,10 +3,10 @@ import cv2
 import face_recognition
 import pickle
 
-def encodegenerator():
 
+def encodegenerator():
     # Importing student images
-    folderModePath = 'images'
+    folderModePath = "images"
     pathList = os.listdir(folderModePath)
     imgList = []
     studentIds = []
@@ -27,14 +27,14 @@ def encodegenerator():
     print("Encoding Started ....")
     encodeListKnown = findEncodings(imgList)
     encodeListKnownWithIds = [encodeListKnown, studentIds]
-    print(encodeListKnownWithIds)
+    # print(encodeListKnownWithIds)
     print("Encoding Complete")
 
-
     # Load the encoding file
-    file = open('FaceEncodeFile.p', 'wb')
+    file = open("FaceEncodeFile.p", "wb")
     pickle.dump(encodeListKnownWithIds, file)
     file.close()
     print("Encoding File Saved")
+
 
 encodegenerator()

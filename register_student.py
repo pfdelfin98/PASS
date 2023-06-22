@@ -3,7 +3,7 @@ import os
 from PyQt5 import QtWidgets, QtGui, QtCore
 from PyQt5.QtWidgets import QMainWindow
 from encodegenerator import encodegenerator
-import student_management 
+import student_management
 import admin_login
 import dashboard
 import pymysql
@@ -22,8 +22,12 @@ from error_image import ErrorImageDialog
 
 class RegisterStudentWindow(object):
     def setupUi(self, MainWindow):
-        self.MainWindow = MainWindow 
-        MainWindow.setWindowFlags(MainWindow.windowFlags() & ~QtCore.Qt.WindowMinimizeButtonHint & ~QtCore.Qt.WindowMaximizeButtonHint)
+        self.MainWindow = MainWindow
+        MainWindow.setWindowFlags(
+            MainWindow.windowFlags()
+            & ~QtCore.Qt.WindowMinimizeButtonHint
+            & ~QtCore.Qt.WindowMaximizeButtonHint
+        )
         MainWindow.setObjectName("MainWindow")
         MainWindow.resize(1186, 647)
         self.imageFilePath = None
@@ -57,9 +61,12 @@ class RegisterStudentWindow(object):
         font.setFamily("Arial")
         font.setPointSize(12)
         self.faceRecognitionBtn.setFont(font)
-        self.faceRecognitionBtn.setStyleSheet(" background-color: transparent;\n"
-"color: white;\n" "text-align: left;\n"
-"")
+        self.faceRecognitionBtn.setStyleSheet(
+            " background-color: transparent;\n"
+            "color: white;\n"
+            "text-align: left;\n"
+            ""
+        )
         self.faceRecognitionBtn.setObjectName("faceRecognitionBtn")
         self.registerStudentBtn = QtWidgets.QPushButton(self.frame)
         self.registerStudentBtn.setGeometry(QtCore.QRect(40, 270, 211, 31))
@@ -67,9 +74,12 @@ class RegisterStudentWindow(object):
         font.setFamily("Arial")
         font.setPointSize(12)
         self.registerStudentBtn.setFont(font)
-        self.registerStudentBtn.setStyleSheet(" background-color: transparent;\n"
-"color: white;\n" "text-align: left;\n"
-"")
+        self.registerStudentBtn.setStyleSheet(
+            " background-color: transparent;\n"
+            "color: white;\n"
+            "text-align: left;\n"
+            ""
+        )
         self.registerStudentBtn.setObjectName("registerStudentBtn")
         self.studentMgmtBtn = QtWidgets.QPushButton(self.frame)
         self.studentMgmtBtn.setGeometry(QtCore.QRect(40, 320, 221, 31))
@@ -77,9 +87,12 @@ class RegisterStudentWindow(object):
         font.setFamily("Arial")
         font.setPointSize(12)
         self.studentMgmtBtn.setFont(font)
-        self.studentMgmtBtn.setStyleSheet(" background-color: transparent;\n"
-"color: white;\n" "text-align: left;\n"
-"")
+        self.studentMgmtBtn.setStyleSheet(
+            " background-color: transparent;\n"
+            "color: white;\n"
+            "text-align: left;\n"
+            ""
+        )
         self.studentMgmtBtn.setObjectName("studentMgmtBtn")
         self.exitBtn = QtWidgets.QPushButton(self.frame)
         self.exitBtn.setGeometry(QtCore.QRect(40, 410, 221, 31))
@@ -87,9 +100,12 @@ class RegisterStudentWindow(object):
         font.setFamily("Arial")
         font.setPointSize(12)
         self.exitBtn.setFont(font)
-        self.exitBtn.setStyleSheet(" background-color: transparent;\n"
-"color: white;\n" "text-align: left;\n"
-"")
+        self.exitBtn.setStyleSheet(
+            " background-color: transparent;\n"
+            "color: white;\n"
+            "text-align: left;\n"
+            ""
+        )
         self.exitBtn.setObjectName("exitBtn")
         self.exitBtn_2 = QtWidgets.QPushButton(self.frame)
         self.exitBtn_2.setGeometry(QtCore.QRect(40, 360, 221, 31))
@@ -97,9 +113,12 @@ class RegisterStudentWindow(object):
         font.setFamily("Arial")
         font.setPointSize(12)
         self.exitBtn_2.setFont(font)
-        self.exitBtn_2.setStyleSheet(" background-color: transparent;\n"
-"color: white;\n" "text-align: left;\n"
-"")
+        self.exitBtn_2.setStyleSheet(
+            " background-color: transparent;\n"
+            "color: white;\n"
+            "text-align: left;\n"
+            ""
+        )
         self.exitBtn_2.setObjectName("exitBtn_2")
         self.pushButton = QtWidgets.QPushButton(self.frame)
         self.pushButton.setGeometry(QtCore.QRect(40, 176, 221, 31))
@@ -107,9 +126,12 @@ class RegisterStudentWindow(object):
         font.setFamily("Arial")
         font.setPointSize(12)
         self.pushButton.setFont(font)
-        self.pushButton.setStyleSheet(" background-color: transparent;\n"
-"color: white;\n" "text-align: left;\n"
-"")
+        self.pushButton.setStyleSheet(
+            " background-color: transparent;\n"
+            "color: white;\n"
+            "text-align: left;\n"
+            ""
+        )
         self.pushButton.setObjectName("pushButton")
         self.frame_3 = QtWidgets.QFrame(self.centralwidget)
         self.frame_3.setGeometry(QtCore.QRect(261, -1, 2000, 61))
@@ -196,8 +218,9 @@ class RegisterStudentWindow(object):
         font.setFamily("Arial")
         font.setPointSize(12)
         self.firstNameText.setFont(font)
-        self.firstNameText.setStyleSheet("border-radius:5px;\n"
-"background-color: rgb(247, 247, 247);")
+        self.firstNameText.setStyleSheet(
+            "border-radius:5px;\n" "background-color: rgb(247, 247, 247);"
+        )
         self.firstNameText.setObjectName("firstNameText")
         self.firstNameText.setVerticalScrollBarPolicy(QtCore.Qt.ScrollBarAlwaysOff)
         self.middleNameText = QtWidgets.QPlainTextEdit(self.frame_2)
@@ -206,11 +229,11 @@ class RegisterStudentWindow(object):
         font.setFamily("Arial")
         font.setPointSize(12)
         self.middleNameText.setFont(font)
-        self.middleNameText.setStyleSheet("border-radius:5px;\n"
-"background-color: rgb(247, 247, 247);")
+        self.middleNameText.setStyleSheet(
+            "border-radius:5px;\n" "background-color: rgb(247, 247, 247);"
+        )
         self.middleNameText.setObjectName("middleNameText")
         self.middleNameText.setVerticalScrollBarPolicy(QtCore.Qt.ScrollBarAlwaysOff)
-
 
         font = QtGui.QFont()
         font.setFamily("Arial")
@@ -222,12 +245,14 @@ class RegisterStudentWindow(object):
         self.imageLabel.setObjectName("imageLabel")
         self.imageLabel.setText("Student Image")
         self.imageLabel.setFont(font)
-        
+
         self.uploadImageBtn = QtWidgets.QPushButton(self.frame_2)
         self.uploadImageBtn.setGeometry(QtCore.QRect(380, 310, 211, 40))
-        self.uploadImageBtn.setStyleSheet("background-color: rgb(255, 80, 80);"
-                                        "color: rgb(255, 255, 255);"
-                                        "border-radius: 5px;")
+        self.uploadImageBtn.setStyleSheet(
+            "background-color: rgb(255, 80, 80);"
+            "color: rgb(255, 255, 255);"
+            "border-radius: 5px;"
+        )
         self.uploadImageBtn.setObjectName("uploadImageBtn")
         self.uploadImageBtn.clicked.connect(self.uploadImage)
 
@@ -236,17 +261,15 @@ class RegisterStudentWindow(object):
         self.imageStatusLabel.setObjectName("imageStatusLabel")
         self.imageStatusLabel.setStyleSheet("color: rgb(26, 26, 26);")
 
-
-
-
         self.lastNameText = QtWidgets.QPlainTextEdit(self.frame_2)
         self.lastNameText.setGeometry(QtCore.QRect(40, 230, 311, 31))
         font = QtGui.QFont()
         font.setFamily("Arial")
         font.setPointSize(12)
         self.lastNameText.setFont(font)
-        self.lastNameText.setStyleSheet("border-radius:5px;\n"
-"background-color: rgb(247, 247, 247);")
+        self.lastNameText.setStyleSheet(
+            "border-radius:5px;\n" "background-color: rgb(247, 247, 247);"
+        )
         self.lastNameText.setObjectName("lastNameText")
         self.lastNameText.setVerticalScrollBarPolicy(QtCore.Qt.ScrollBarAlwaysOff)
 
@@ -266,11 +289,12 @@ class RegisterStudentWindow(object):
         font.setFamily("Arial")
         font.setPointSize(12)
         self.srcodetext.setFont(font)
-        self.srcodetext.setStyleSheet("border-radius:5px;\n"
-                                    "background-color: rgb(247, 247, 247);")
+        self.srcodetext.setStyleSheet(
+            "border-radius:5px;\n" "background-color: rgb(247, 247, 247);"
+        )
         self.srcodetext.setObjectName("srcodetext")
 
-        regex = QtCore.QRegExp(r'^[0-9-]*$')
+        regex = QtCore.QRegExp(r"^[0-9-]*$")
         validator = QtGui.QRegExpValidator(regex, self.srcodetext)
         self.srcodetext.setValidator(validator)
 
@@ -280,8 +304,9 @@ class RegisterStudentWindow(object):
         font.setFamily("Arial")
         font.setPointSize(12)
         self.comboBox.setFont(font)
-        self.comboBox.setStyleSheet("border-radius:5px;\n"
-"background-color: rgb(247, 247, 247);")
+        self.comboBox.setStyleSheet(
+            "border-radius:5px;\n" "background-color: rgb(247, 247, 247);"
+        )
         self.comboBox.addItem("BS In Information Technology")
         self.comboBox.addItem("BS in Elementary Education")
         self.comboBox.addItem("BS in Secondary Education")
@@ -309,9 +334,11 @@ class RegisterStudentWindow(object):
         font.setKerning(True)
         self.addStudentBtn.setFont(font)
         self.addStudentBtn.setAutoFillBackground(False)
-        self.addStudentBtn.setStyleSheet("background-color: rgb(227, 30, 36);\n"
-"color: rgb(255, 255, 255);\n"
-"border-radius: 5px;")
+        self.addStudentBtn.setStyleSheet(
+            "background-color: rgb(227, 30, 36);\n"
+            "color: rgb(255, 255, 255);\n"
+            "border-radius: 5px;"
+        )
         self.addStudentBtn.setAutoDefault(False)
         self.addStudentBtn.setDefault(False)
         self.addStudentBtn.setFlat(False)
@@ -336,18 +363,24 @@ class RegisterStudentWindow(object):
         self.pushButton.clicked.connect(self.open_dashboard)
         self.addStudentBtn.clicked.connect(self.addStudent)
 
-
     def retranslateUi(self, MainWindow):
         _translate = QtCore.QCoreApplication.translate
         MainWindow.setWindowTitle(_translate("MainWindow", "MainWindow"))
         self.label_9.setText(_translate("MainWindow", "Admin Panel"))
         self.faceRecognitionBtn.setText(_translate("MainWindow", "Facial Recognition"))
-        self.registerStudentBtn.setText(_translate("MainWindow", "Student Registration"))
+        self.registerStudentBtn.setText(
+            _translate("MainWindow", "Student Registration")
+        )
         self.studentMgmtBtn.setText(_translate("MainWindow", "Student Management"))
         self.exitBtn.setText(_translate("MainWindow", "Exit"))
         self.exitBtn_2.setText(_translate("MainWindow", "Logout"))
         self.pushButton.setText(_translate("MainWindow", "Dashboard"))
-        self.label.setText(_translate("MainWindow", "PASS: Personalized Authentication and Student Surveillance"))
+        self.label.setText(
+            _translate(
+                "MainWindow",
+                "PASS: Personalized Authentication and Student Surveillance",
+            )
+        )
         self.label_10.setText(_translate("MainWindow", "Student Registration"))
         self.label_11.setText(_translate("MainWindow", "New Student Form"))
         self.label_12.setText(_translate("MainWindow", "First Name"))
@@ -360,8 +393,9 @@ class RegisterStudentWindow(object):
         self.srcodetext.setPlaceholderText(_translate("MainWindow", "SR Code"))
 
         self.addStudentBtn.setText(_translate("MainWindow", "Submit"))
-        self.uploadImageBtn.setText(_translate("MainWindow", "Click to Upload Student Image"))
-
+        self.uploadImageBtn.setText(
+            _translate("MainWindow", "Click to Upload Student Image")
+        )
 
     def uploadImage(self):
         # Open a file dialog to select an image file
@@ -372,8 +406,10 @@ class RegisterStudentWindow(object):
             selected_files = file_dialog.selectedFiles()
             if selected_files:
                 image_path = selected_files[0]
-                if image_path.lower().endswith('.jpg'):
-                    self.imageFilePath = image_path  # Assign the selected image path to imageFilePath
+                if image_path.lower().endswith(".jpg"):
+                    self.imageFilePath = (
+                        image_path  # Assign the selected image path to imageFilePath
+                    )
                     # Do something with the selected image path
                     print("Selected image:", image_path)
                     self.imageStatusLabel.setText("Image inserted")
@@ -398,12 +434,7 @@ class RegisterStudentWindow(object):
             dialog.exec_()
             return
 
-        db = pymysql.connect(
-            host='localhost',
-            user='root',
-            password='',
-            db='pass_db'
-        )
+        db = pymysql.connect(host="localhost", user="root", password="", db="pass_db")
         cursor = db.cursor()
 
         # Insert student details
@@ -418,9 +449,11 @@ class RegisterStudentWindow(object):
         # Insert the image filename
         if image_path:
             image_filename = f"{first_name}-{last_name}-{student_id}{os.path.splitext(image_path)[1]}"
-            
-            image_save_path = f"images/{image_filename}"  # Change 'img' to your desired folder path
-            
+
+            image_save_path = (
+                f"images/{image_filename}"  # Change 'img' to your desired folder path
+            )
+
             # Save the image to the local drive
             os.rename(image_path, image_save_path)
 
@@ -430,7 +463,6 @@ class RegisterStudentWindow(object):
             cursor.execute(update_query, update_values)
             db.commit()
 
-
         cursor.close()
         db.close()
 
@@ -438,7 +470,7 @@ class RegisterStudentWindow(object):
         dialog = SuccessDialog()
         dialog.setupUi()
         dialog.exec_()
-        
+
         self.firstNameText.clear()
         self.middleNameText.clear()
         self.lastNameText.clear()
@@ -446,7 +478,6 @@ class RegisterStudentWindow(object):
         # Clear the image file path
         self.imageFilePath = None
         encodegenerator()
-
 
     def open_dashboard(self):
         print("Opening Dashboard...")
@@ -457,95 +488,14 @@ class RegisterStudentWindow(object):
         self.ui.tableWidget.setParent(self.ui.centralwidget)
         self.ui.load_logs()
         self.dashboard_window.show()
-        
+
     def open_facial_recognition(self):
+        from facial_recognition import FacialRecognitionWindow
+
+        face_recognition = FacialRecognitionWindow()
         # Add your code to open facial recognition here
         print("Opening Facial Recognition...")
-        # self.MainWindow.close()
-        #self.facial_recognition_window = QtWidgets.QMainWindow()
-        #self.ui = facial_recognition.FacialRecognitionWindow()
-        #self.ui.setupUi(self.facial_recognition_window)
-        #self.facial_recognition_window.show()
-        # video = cv2.VideoCapture(0)
-
-        # while True:
-        #     suc, img = video.read()
-
-        #     cv2.imshow("frame", img)
-
-        #     if cv2.waitKey(1) & 0xFF == ord('q'):
-        #         break
-
-        # video.release()
-        # cv2.destroyAllWindows()
-        self.face_recognition_func()
-
-    def face_recognition_func(self):
-        cap = cv2.VideoCapture(0, cv2.CAP_DSHOW)
-
-        cap.set(cv2.CAP_PROP_FRAME_WIDTH, 640)
-        cap.set(cv2.CAP_PROP_FRAME_HEIGHT, 480)
-
-        # Importing student images
-        folderModePath = 'images'
-        pathList = os.listdir(folderModePath)
-        imgList = []
-        studentIds = []
-        for path in pathList:
-            imgList.append(cv2.imread(os.path.join(folderModePath, path)))
-
-        # Load the encoding file
-        print("Loading Encoding File ....")
-        file = open('FaceEncodeFile.p', 'rb')
-        encodeListKnownWithIds = pickle.load(file)
-        file.close()
-        encodeListKnown, studentIds = encodeListKnownWithIds
-        print("Encoding File Loaded")
-
-        retries = 3
-        count = 0
-
-        while True:
-            try:
-                ret, frame = cap.read()
-
-                imgS = cv2.resize(frame, (0, 0), None, 0.25, 0.25)
-                imgS = cv2.cvtColor(imgS, cv2.COLOR_BGR2RGB)
-
-                faceCurFrame = face_recognition.face_locations(imgS)
-                encodeCurFrame = face_recognition.face_encodings(imgS, faceCurFrame)
-
-
-                for encodeFace, faceLoc in zip(encodeCurFrame, faceCurFrame):
-                    matches = face_recognition.compare_faces(encodeListKnown, encodeFace)
-                    faceDis = face_recognition.face_distance(encodeListKnown, encodeFace)
-
-                    matchIndex = np.argmin(faceDis)
-
-
-                    if matches[matchIndex]:
-                        name = studentIds[matchIndex].upper()
-                        y1, x2, y2, x1 = faceLoc
-                        y1, x2, y2, x1 = y1*4, x2*4, y2*4, x1*4
-                        cv2.rectangle(frame, (x1, y1), (x2, y2), (0, 255, 0), 2)
-                        cv2.rectangle(frame, (x1, y2-35), (x2, y2), (0, 255, 0), cv2.FILLED)
-                        cv2.putText(frame, name, (x1+6, y2-6), cv2.FONT_HERSHEY_SIMPLEX, 1, (255, 255, 255), 2)
-
-                cv2.imshow('frame', frame)
-
-                key = cv2.waitKey(1)
-                if key == ord('q'):
-                    break
-            except Exception as e:
-                if retries == count:
-                    break
-                count+=1
-                print("Retry:", count)
-                print(e)
-                pass
-
-        cv2.destroyAllWindows()
-        
+        face_recognition.face_recognition_func()
 
     def open_register_student(self):
         # Add your code to open register student here
@@ -577,8 +527,10 @@ class RegisterStudentWindow(object):
         self.ui.setupUi(self.admin_login_window)
         self.admin_login_window.show()
 
+
 if __name__ == "__main__":
     import sys
+
     app = QtWidgets.QApplication(sys.argv)
     MainWindow = QtWidgets.QMainWindow()
     ui = RegisterStudentWindow()

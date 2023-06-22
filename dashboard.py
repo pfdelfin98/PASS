@@ -9,14 +9,21 @@ import pickle
 import numpy as np
 import pymysql
 from datetime import datetime, timedelta
-from PyQt5.QtWidgets import QMainWindow, QTableWidget, QTableWidgetItem, QPushButton, QFileDialog, QDialog, QVBoxLayout, QLabel
+from PyQt5.QtWidgets import (
+    QTableWidget,
+    QTableWidgetItem,
+    QLabel,
+)
 from PyQt5 import QtCore, QtGui, QtWidgets
 from PyQt5.QtGui import QPixmap
 from about_dialog import AboutDialog
 from PyQt5.QtCore import QTimer
 from datetime import datetime, timedelta
 from PyQt5.QtCore import Qt
-from PyQt5.QtWidgets import QApplication, QMainWindow, QTableWidget, QVBoxLayout, QScrollArea, QWidget
+from PyQt5.QtWidgets import (
+    QTableWidget,
+    QScrollArea,
+)
 import openpyxl
 from datetime import datetime
 
@@ -28,13 +35,17 @@ class Ui_Dashboard(object):
 
     def setupUi(self, MainWindow):
         self.MainWindow = MainWindow
-        MainWindow.setWindowFlags(MainWindow.windowFlags() & ~QtCore.Qt.WindowMinimizeButtonHint & ~QtCore.Qt.WindowMaximizeButtonHint)
+        MainWindow.setWindowFlags(
+            MainWindow.windowFlags()
+            & ~QtCore.Qt.WindowMinimizeButtonHint
+            & ~QtCore.Qt.WindowMaximizeButtonHint
+        )
 
         MainWindow.setObjectName("MainWindow")
         MainWindow.resize(1186, 640)
         self.centralwidget = QtWidgets.QWidget(MainWindow)
         self.centralwidget.setObjectName("centralwidget")
-                # Add table widget
+        # Add table widget
         self.tableWidget = QTableWidget(self.centralwidget)
         self.tableWidget.setGeometry(QtCore.QRect(310, 150, 850, 450))
         self.tableWidget.setObjectName("tableWidget")
@@ -234,9 +245,10 @@ class Ui_Dashboard(object):
         )
         self.label_10.setText(_translate("MainWindow", "Dashboard"))
 
-
     def load_logs(self):
-        connection = pymysql.connect(host='localhost', user='root', password='', db='pass_db')
+        connection = pymysql.connect(
+            host="localhost", user="root", password="", db="pass_db"
+        )
         cursor = connection.cursor()
 
         delete_query = "DELETE FROM tbl_logs WHERE date_log < %s"
@@ -254,11 +266,27 @@ class Ui_Dashboard(object):
         self.tableWidget.setRowCount(row_count)
         self.tableWidget.setColumnCount(column_count)
 
-        header_labels = ["Image", "First Name", "Last Name", "Course", "SR Code", "Date Log", "Time Log"]
+        header_labels = [
+            "Image",
+            "First Name",
+            "Last Name",
+            "Course",
+            "SR Code",
+            "Date Log",
+            "Time Log",
+        ]
         self.tableWidget.setHorizontalHeaderLabels(header_labels)
 
         for row, log in enumerate(logs):
-            image_filename, first_name, last_name, course, sr_code, date_log, time_log = log
+            (
+                image_filename,
+                first_name,
+                last_name,
+                course,
+                sr_code,
+                date_log,
+                time_log,
+            ) = log
 
             # Create a QLabel and set the image pixmap
             image_label = QLabel()
@@ -270,11 +298,15 @@ class Ui_Dashboard(object):
                 cell_height = self.tableWidget.rowHeight(row)
 
                 # Resize the pixmap to fit the cell dimensions
-                scaled_pixmap = pixmap.scaled(cell_width, cell_height, Qt.AspectRatioMode.KeepAspectRatio)
+                scaled_pixmap = pixmap.scaled(
+                    cell_width, cell_height, Qt.AspectRatioMode.KeepAspectRatio
+                )
 
                 # Set the scaled pixmap on the image label
                 image_label.setPixmap(scaled_pixmap)
-                image_label.setAlignment(Qt.AlignCenter)  # Center the image in the label
+                image_label.setAlignment(
+                    Qt.AlignCenter
+                )  # Center the image in the label
 
             self.tableWidget.setCellWidget(row, 0, image_label)
 
@@ -285,232 +317,29 @@ class Ui_Dashboard(object):
 
             self.tableWidget.setItem(row, 5, QTableWidgetItem(str(date_log)))
             self.tableWidget.setItem(row, 6, QTableWidgetItem(str(time_log)))
-        
+
         cursor.close()
 
         # Schedule the next update after 1 second
         QTimer.singleShot(1000, self.load_logs)
-
 
     def start_loading_students(self):
         # Start loading the students initially
         self.load_logs()
 
     def open_facial_recognition(self):
+        from facial_recognition import FacialRecognitionWindow
+
+        face_recognition = FacialRecognitionWindow()
         # Add your code to open facial recognition here
         print("Opening Facial Recognition...")
-
-        self.face_recognition_func()
+        face_recognition.face_recognition_func()
 
     def open_about(self):
         print("Opening About System Dialog")
         dialog = AboutDialog()
         dialog.setupUi()
         dialog.show()
-
-    def face_recognition_func(self):
-        cap = cv2.VideoCapture(0, cv2.CAP_DSHOW)
-
-        cap.set(cv2.CAP_PROP_FRAME_WIDTH, 640)
-        cap.set(cv2.CAP_PROP_FRAME_HEIGHT, 480)
-
-        # Importing student images
-        folderModePath = "images"
-        pathList = os.listdir(folderModePath)
-        imgList = []
-        studentIds = []
-        for path in pathList:
-            imgList.append(cv2.imread(os.path.join(folderModePath, path)))
-
-        # Load the encoding file
-        print("Loading Encoding File ....")
-        file = open("FaceEncodeFile.p", "rb")
-        encodeListKnownWithIds = pickle.load(file)
-        file.close()
-        encodeListKnown, studentIds = encodeListKnownWithIds
-        print("Encoding File Loaded")
-
-        retries = 3
-        count = 0
-        cur_face = ""
-        detect_face_time = 0
-        while True:
-            try:
-                ret, frame = cap.read()
-
-                imgS = cv2.resize(frame, (0, 0), None, 0.25, 0.25)
-                imgS = cv2.cvtColor(imgS, cv2.COLOR_BGR2RGB)
-
-                faceCurFrame = face_recognition.face_locations(imgS)
-                encodeCurFrame = face_recognition.face_encodings(imgS, faceCurFrame)
-
-                for encodeFace, faceLoc in zip(encodeCurFrame, faceCurFrame):
-                    matches = face_recognition.compare_faces(
-                        encodeListKnown, encodeFace
-                    )
-                    faceDis = face_recognition.face_distance(
-                        encodeListKnown, encodeFace
-                    )
-                    valid_face_accuracy_value = 0.5
-
-                    if any(faceDis <= valid_face_accuracy_value):
-                        matchIndex = np.argmin(faceDis)
-
-                        if matches[matchIndex]:
-                            name = self.get_name_from_filename(
-                                studentIds[matchIndex].upper()
-                            )
-                            y1, x2, y2, x1 = faceLoc
-                            y1, x2, y2, x1 = y1 * 4, x2 * 4, y2 * 4, x1 * 4
-                            cv2.rectangle(frame, (x1, y1), (x2, y2), (0, 255, 0), 2)
-                            cv2.putText(
-                                frame,
-                                name,
-                                (x1 + 6, y2 + 25),
-                                cv2.FONT_HERSHEY_SIMPLEX,
-                                0.60,
-                                (255, 255, 255),
-                                2,
-                            )
-                        detect_face_time += 1
-                        print(self.logs_sent)
-                        print(detect_face_time)
-                        if detect_face_time == 4:
-                            connection = pymysql.connect(
-                                host="localhost", user="root", password="", db="pass_db"
-                            )
-
-                            try:
-                                with connection.cursor() as cursor:
-                                    self.existing = self.check_existing_logs(
-                                        cursor,
-                                        self.get_student_id_from_filename(
-                                            studentIds[matchIndex]
-                                        ),
-                                    )
-
-                            finally:
-                                connection.close()
-                        elif detect_face_time in [5, 6] and self.existing == False:
-                            cv2.putText(
-                                frame,
-                                "Sending",
-                                (x1 + 6, y2 + 50),
-                                cv2.FONT_HERSHEY_SIMPLEX,
-                                0.60,
-                                (255, 255, 255),
-                                2,
-                            )
-                            now = datetime.now()
-                            self.send_logs_to_db(
-                                student_id=self.get_student_id_from_filename(
-                                    studentIds[matchIndex]
-                                ),
-                                now=now,
-                            )
-                        elif self.logs_sent and detect_face_time in [7, 8]:
-                            if self.existing:
-                                msg = "Logs already sent"
-                            else:
-                                msg = "Logs sent"
-                            cv2.putText(
-                                frame,
-                                msg,
-                                (x1 + 6, y2 + 50),
-                                cv2.FONT_HERSHEY_SIMPLEX,
-                                0.60,
-                                (255, 255, 255),
-                                2,
-                            )
-                            print("Logs sent")
-                        elif (
-                            not self.logs_sent
-                            and self.existing
-                            and detect_face_time >= 10
-                        ):
-                            cv2.putText(
-                                frame,
-                                "Logs already sent",
-                                (x1 + 6, y2 + 50),
-                                cv2.FONT_HERSHEY_SIMPLEX,
-                                0.60,
-                                (255, 255, 255),
-                                2,
-                            )
-
-                        if cur_face != studentIds[matchIndex]:
-                            detect_face_time = 0
-                            self.logs_sent = False
-
-                        cur_face = studentIds[matchIndex]
-
-                        if detect_face_time >= 15:
-                            detect_face_time = 0
-
-                    else:
-                        detect_face_time = 0
-
-                cv2.imshow("frame", frame)
-
-                key = cv2.waitKey(1)
-                if key == ord("q"):
-                    break
-            except Exception as e:
-                if retries == count:
-                    break
-                count += 1
-                print("Retry:", count)
-                print(e)
-                pass
-
-        cv2.destroyAllWindows()
-
-    def send_logs_to_db(self, student_id, now):
-        # Connect to the MySQL database
-        connection = pymysql.connect(
-            host="localhost", user="root", password="", db="pass_db"
-        )
-
-        try:
-            with connection.cursor() as cursor:
-                # Check if logs exist for the last 5 minutes
-                if self.check_existing_logs(cursor, student_id):
-                    print("Logs already exist for the last 5 minutes.")
-                else:
-                    # Insert new log
-                    query = "INSERT INTO tbl_logs (student_id, date_log, time_log) VALUES (%s, %s, %s)"
-                    cursor.execute(query, (student_id, now.date(), now.time()))
-                    connection.commit()
-                    self.logs_sent = True
-                    print("Log successfully inserted.")
-        finally:
-            connection.close()
-
-    def check_existing_logs(self, cursor, student_id, minutes=5, now=datetime.now()):
-        # Function to check if logs exist for the last 5 minutes
-        five_minutes_ago = now - timedelta(minutes=minutes)
-        print("-----")
-        print(five_minutes_ago)
-        print(student_id)
-        print("-----")
-        query = "SELECT COUNT(*) FROM tbl_logs WHERE date_log = %s and time_log > %s and student_id = %s"
-        cursor.execute(
-            query, (five_minutes_ago.date(), five_minutes_ago.time(), student_id)
-        )
-        count = cursor.fetchone()[0]
-        print("-----")
-        print(count)
-        print("-----")
-        return count > 0
-
-    def get_name_from_filename(self, filname):
-        name = [s for s in filname if not s.isdigit()]
-
-        return ("".join(name)).replace("-", " ")
-
-    def get_student_id_from_filename(self, filename):
-        student_id = [s for s in filename if s.isdigit()]
-        return "".join(student_id)
 
     def open_register_student(self):
         print("Opening Register Student...")
@@ -540,14 +369,10 @@ class Ui_Dashboard(object):
         self.ui.setupUi(self.admin_login_window)
         self.admin_login_window.show()
 
-
     def export_data_to_excel(self):
         # Connect to the MySQL database
         connection = pymysql.connect(
-            host='localhost',
-            user='root',
-            password='',
-            database='pass_db'
+            host="localhost", user="root", password="", database="pass_db"
         )
 
         try:
@@ -564,23 +389,25 @@ class Ui_Dashboard(object):
             sheet = workbook.active
 
             # Write the column headers
-            sheet['A1'] = 'Student Name'
-            sheet['B1'] = 'Course'
-            sheet['C1'] = 'SR Code'
-            sheet['D1'] = 'Date Log'
-            sheet['E1'] = 'Time Log'
+            sheet["A1"] = "Student Name"
+            sheet["B1"] = "Course"
+            sheet["C1"] = "SR Code"
+            sheet["D1"] = "Date Log"
+            sheet["E1"] = "Time Log"
 
             # Set column width for date columns
-            date_columns = ['D', 'E']  # Columns D and E represent the date columns
+            date_columns = ["D", "E"]  # Columns D and E represent the date columns
             for column in date_columns:
-                sheet.column_dimensions[column].width = 15  # Adjust the width as per your preference
+                sheet.column_dimensions[
+                    column
+                ].width = 15  # Adjust the width as per your preference
 
             for row_index, student in enumerate(student_data, start=2):
-                sheet.cell(row=row_index, column=1).value = student[0]  
-                sheet.cell(row=row_index, column=2).value = student[1]  
-                sheet.cell(row=row_index, column=3).value = student[2]  
-                sheet.cell(row=row_index, column=4).value = student[3]  
-                sheet.cell(row=row_index, column=5).value = student[4]  
+                sheet.cell(row=row_index, column=1).value = student[0]
+                sheet.cell(row=row_index, column=2).value = student[1]
+                sheet.cell(row=row_index, column=3).value = student[2]
+                sheet.cell(row=row_index, column=4).value = student[3]
+                sheet.cell(row=row_index, column=5).value = student[4]
 
             # Save the Excel file
             current_datetime = datetime.now()
