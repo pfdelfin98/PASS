@@ -6,11 +6,24 @@ import pickle
 import pymysql
 from datetime import datetime, timedelta
 
+"""
+    [TODO] - Add feature to send logs first logged in of the day and
+    after 10 minutes the next send logs will be sent as logged out then
+    don't send logs for the next 10 minutes
+"""
+
 
 class FacialRecognitionWindow(object):
     def __init__(self) -> None:
         self.logs_sent = False
-        self.existing = False
+        self.existing_logs = False
+        self.detect_face_time = 0
+        self.count = 0
+
+        # Configurable values
+        self.logout_minutes = 2
+        self.valid_face_accuracy_value = 0.5
+        self.retries = 3
 
     def face_recognition_func(self):
         cap = cv2.VideoCapture(0, cv2.CAP_DSHOW)
@@ -34,10 +47,7 @@ class FacialRecognitionWindow(object):
         encodeListKnown, studentIds = encodeListKnownWithIds
         print("Encoding File Loaded")
 
-        retries = 3
-        count = 0
         cur_face = ""
-        detect_face_time = 0
         while True:
             try:
                 ret, frame = cap.read()
@@ -55,9 +65,8 @@ class FacialRecognitionWindow(object):
                     faceDis = face_recognition.face_distance(
                         encodeListKnown, encodeFace
                     )
-                    valid_face_accuracy_value = 0.5
 
-                    if any(faceDis <= valid_face_accuracy_value):
+                    if any(faceDis <= self.valid_face_accuracy_value):
                         matchIndex = np.argmin(faceDis)
 
                         if matches[matchIndex]:
@@ -76,26 +85,31 @@ class FacialRecognitionWindow(object):
                                 (255, 255, 255),
                                 2,
                             )
-                        detect_face_time += 1
+                        self.detect_face_time += 1
                         print(self.logs_sent)
-                        print(detect_face_time)
-                        if detect_face_time == 4:
+                        print(self.detect_face_time)
+
+                        if self.detect_face_time == 4:
+                            # Initialize connection to the database
                             connection = pymysql.connect(
                                 host="localhost", user="root", password="", db="pass_db"
                             )
-
                             try:
                                 with connection.cursor() as cursor:
-                                    self.existing = self.check_existing_logs(
+                                    self.existing_logs = self.check_existing_logs(
                                         cursor,
                                         self.get_student_id_from_filename(
                                             studentIds[matchIndex]
                                         ),
+                                        now=datetime.now(),
                                     )
 
                             finally:
                                 connection.close()
-                        elif detect_face_time in [5, 6] and self.existing == False:
+                        elif (
+                            self.detect_face_time in [5, 6]
+                            and self.existing_logs == False
+                        ):
                             cv2.putText(
                                 frame,
                                 "Sending",
@@ -112,8 +126,8 @@ class FacialRecognitionWindow(object):
                                 ),
                                 now=now,
                             )
-                        elif self.logs_sent and detect_face_time in [7, 8]:
-                            if self.existing:
+                        elif self.logs_sent and self.detect_face_time in [7, 8]:
+                            if self.existing_logs:
                                 msg = "Logs already sent"
                             else:
                                 msg = "Logs sent"
@@ -129,8 +143,8 @@ class FacialRecognitionWindow(object):
                             print("Logs sent")
                         elif (
                             not self.logs_sent
-                            and self.existing
-                            and detect_face_time >= 10
+                            and self.existing_logs
+                            and self.detect_face_time >= 10
                         ):
                             cv2.putText(
                                 frame,
@@ -143,16 +157,16 @@ class FacialRecognitionWindow(object):
                             )
 
                         if cur_face != studentIds[matchIndex]:
-                            detect_face_time = 0
+                            self.detect_face_time = 0
                             self.logs_sent = False
 
                         cur_face = studentIds[matchIndex]
 
-                        if detect_face_time >= 15:
-                            detect_face_time = 0
+                        if self.detect_face_time >= 15:
+                            self.detect_face_time = 0
 
                     else:
-                        detect_face_time = 0
+                        self.detect_face_time = 0
 
                 cv2.imshow("frame", frame)
 
@@ -160,11 +174,10 @@ class FacialRecognitionWindow(object):
                 if key == ord("q"):
                     break
             except Exception as e:
-                if retries == count:
+                if self.retries == self.count:
                     break
-                count += 1
-                print("Retry:", count)
-                print(e)
+                self.count += 1
+                print(f"Retry:{self.count}, {e}")
                 pass
 
         cv2.destroyAllWindows()
@@ -177,35 +190,44 @@ class FacialRecognitionWindow(object):
 
         try:
             with connection.cursor() as cursor:
-                # Check if logs exist for the last 5 minutes
-                if self.check_existing_logs(cursor, student_id):
-                    print("Logs already exist for the last 5 minutes.")
+                # Check if logs exist for the last (self.logout_minutes) minutes
+                if self.check_existing_logs(cursor, student_id, datetime.now()):
+                    print(
+                        f"Logs already exist for the last {self.logout_minutes} minutes."
+                    )
                 else:
+                    log_type = self.get_log_type_via_last_log_of_day(
+                        cursor, student_id, datetime.now()
+                    )
                     # Insert new log
-                    query = "INSERT INTO tbl_logs (student_id, date_log, time_log) VALUES (%s, %s, %s)"
-                    cursor.execute(query, (student_id, now.date(), now.time()))
+                    query = "INSERT INTO tbl_logs (student_id, date_log, time_log, log_type) VALUES (%s, %s, %s, %s)"
+                    cursor.execute(
+                        query, (student_id, now.date(), now.time(), log_type)
+                    )
                     connection.commit()
                     self.logs_sent = True
                     print("Log successfully inserted.")
         finally:
             connection.close()
 
-    def check_existing_logs(self, cursor, student_id, minutes=5, now=datetime.now()):
-        # Function to check if logs exist for the last 5 minutes
-        five_minutes_ago = now - timedelta(minutes=minutes)
-        print("-----")
-        print(five_minutes_ago)
-        print(student_id)
-        print("-----")
+    def check_existing_logs(self, cursor, student_id, now):
+        # Function to check if logs exist for the last (self.logout_minutes) value minutes
+        minutes_ago = now - timedelta(minutes=self.logout_minutes)
+
         query = "SELECT COUNT(*) FROM tbl_logs WHERE date_log = %s and time_log > %s and student_id = %s"
-        cursor.execute(
-            query, (five_minutes_ago.date(), five_minutes_ago.time(), student_id)
-        )
+        cursor.execute(query, (minutes_ago.date(), minutes_ago.time(), student_id))
         count = cursor.fetchone()[0]
-        print("-----")
-        print(count)
-        print("-----")
+
         return count > 0
+
+    def get_log_type_via_last_log_of_day(self, cursor, student_id, now):
+        query = "SELECT ID, LOG_TYPE FROM tbl_logs WHERE date_log = %s and student_id = %s order by ID desc"
+        cursor.execute(query, (now.date(), student_id))
+        last_log = cursor.fetchone()
+        if last_log:
+            return "LOGGED_OUT" if last_log[1] == "LOGGED_IN" else "LOGGED_IN"
+        else:
+            return "LOGGED_IN"
 
     def get_name_from_filename(self, filname):
         name = [s for s in filname if not s.isdigit()]
