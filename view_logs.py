@@ -1,7 +1,16 @@
 import sys
 import os
-from PyQt5.QtWidgets import QTableWidget,QTableWidgetItem, QApplication, QDialog, QLabel, QPushButton, QDesktopWidget
+from PyQt5.QtWidgets import (
+    QTableWidget,
+    QTableWidgetItem,
+    QApplication,
+    QDialog,
+    QLabel,
+    QPushButton,
+    QDesktopWidget,
+)
 import pymysql
+
 
 class ViewLogsDialog(QDialog):
     def setupUi(self, student_id):
@@ -13,15 +22,14 @@ class ViewLogsDialog(QDialog):
         # Create a QTableWidget to display the logs
         self.logsTable = QTableWidget(self)
         self.logsTable.setGeometry(20, 20, 460, 260)
-        self.logsTable.setColumnCount(4)
-        self.logsTable.setHorizontalHeaderLabels(["Student Name", "SR Code", "Date Log", "Time Log"])
+        self.logsTable.setColumnCount(5)
+        self.logsTable.setHorizontalHeaderLabels(
+            ["Student Name", "SR Code", "Date Log", "Time Log", "Log Type"]
+        )
 
         # Connect to the MySQL database
         connection = pymysql.connect(
-            host='localhost',
-            user='root',
-            password='',
-            database='pass_db'
+            host="localhost", user="root", password="", database="pass_db"
         )
 
         try:
@@ -29,10 +37,12 @@ class ViewLogsDialog(QDialog):
             cursor = connection.cursor()
 
             # Fetch logs data from the database joined with tbl_student to get student name
-            query = "SELECT CONCAT(tbl_student.first_name, ' ', tbl_student.last_name) AS student_name, tbl_student.sr_code, tbl_logs.date_log, tbl_logs.time_log " \
-                    "FROM tbl_logs " \
-                    "LEFT JOIN tbl_student ON tbl_student.id = tbl_logs.student_id " \
-                    "WHERE tbl_logs.student_id = %s"
+            query = (
+                "SELECT CONCAT(tbl_student.first_name, ' ', tbl_student.last_name) AS student_name, tbl_student.sr_code, tbl_logs.date_log, tbl_logs.time_log, tbl_logs.log_type "
+                "FROM tbl_logs "
+                "LEFT JOIN tbl_student ON tbl_student.id = tbl_logs.student_id "
+                "WHERE tbl_logs.student_id = %s"
+            )
             cursor.execute(query, (self.student_id,))
             logs = cursor.fetchall()
 
@@ -45,11 +55,13 @@ class ViewLogsDialog(QDialog):
                 sr_code_item = QTableWidgetItem(log[1])
                 date_log_item = QTableWidgetItem(str(log[2]))
                 time_log_item = QTableWidgetItem(str(log[3]))
+                log_type_item = QTableWidgetItem(str(log[4]))
 
                 self.logsTable.setItem(row, 0, student_name_item)
                 self.logsTable.setItem(row, 1, sr_code_item)
                 self.logsTable.setItem(row, 2, date_log_item)
                 self.logsTable.setItem(row, 3, time_log_item)
+                self.logsTable.setItem(row, 4, log_type_item)
 
             # Resize the columns to fit the content
             self.logsTable.resizeColumnsToContents()

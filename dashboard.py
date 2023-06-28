@@ -1,11 +1,8 @@
 import sys
 import os
-import face_recognition
 import register_student
 import student_management
 import admin_login
-import cv2
-import pickle
 import numpy as np
 import pymysql
 from datetime import datetime, timedelta
@@ -61,7 +58,7 @@ class Ui_Dashboard(object):
         self.searchLineEdit.setGeometry(QtCore.QRect(780, 95, 200, 30))
         self.searchLineEdit.setObjectName("searchLineEdit")
         self.searchLineEdit.textChanged.connect(self.search_logs)
-        
+
         self.search_has_input = False
 
         self.searchLabel = QtWidgets.QLabel(self.centralwidget)
@@ -267,9 +264,8 @@ class Ui_Dashboard(object):
 
     def load_logs(self):
         if self.search_has_input:
+            return
 
-            return 
-    
         connection = pymysql.connect(
             host="localhost", user="root", password="", db="pass_db"
         )
@@ -280,12 +276,12 @@ class Ui_Dashboard(object):
         cursor.execute(delete_query, (week_ago.date(),))
         connection.commit()
 
-        query = "SELECT  tbl_student.image, tbl_student.first_name, tbl_student.last_name, tbl_student.course, tbl_student.sr_code, tbl_logs.date_log, tbl_logs.time_log FROM tbl_logs LEFT JOIN tbl_student ON tbl_logs.student_id = tbl_student.id"
+        query = "SELECT  tbl_student.image, tbl_student.first_name, tbl_student.last_name, tbl_student.course, tbl_student.sr_code, tbl_logs.date_log, tbl_logs.time_log, tbl_logs.log_type FROM tbl_logs LEFT JOIN tbl_student ON tbl_logs.student_id = tbl_student.id"
         cursor.execute(query)
         logs = cursor.fetchall()
 
         row_count = len(logs)
-        column_count = 7  # Increase the column count for the image column
+        column_count = 8  # Increase the column count for the image column
 
         self.tableWidget.setRowCount(row_count)
         self.tableWidget.setColumnCount(column_count)
@@ -298,6 +294,7 @@ class Ui_Dashboard(object):
             "SR Code",
             "Date Log",
             "Time Log",
+            "Log Type",
         ]
         self.tableWidget.setHorizontalHeaderLabels(header_labels)
 
@@ -310,6 +307,7 @@ class Ui_Dashboard(object):
                 sr_code,
                 date_log,
                 time_log,
+                log_type,
             ) = log
 
             # Create a QLabel and set the image pixmap
@@ -341,6 +339,7 @@ class Ui_Dashboard(object):
 
             self.tableWidget.setItem(row, 5, QTableWidgetItem(str(date_log)))
             self.tableWidget.setItem(row, 6, QTableWidgetItem(str(time_log)))
+            self.tableWidget.setItem(row, 7, QTableWidgetItem(log_type))
 
         cursor.close()
 
@@ -361,7 +360,7 @@ class Ui_Dashboard(object):
 
         query = """
         SELECT tbl_student.image, tbl_student.first_name, tbl_student.last_name,
-               tbl_student.course, tbl_student.sr_code, tbl_logs.date_log, tbl_logs.time_log
+               tbl_student.course, tbl_student.sr_code, tbl_logs.date_log, tbl_logs.time_log, tbl_logs.log_type
         FROM tbl_logs
         LEFT JOIN tbl_student ON tbl_logs.student_id = tbl_student.id
         WHERE tbl_student.first_name LIKE %s
@@ -370,7 +369,9 @@ class Ui_Dashboard(object):
             OR tbl_student.course LIKE %s
         """
         search_pattern = f"%{search_text}%"  # Add wildcards for partial matching
-        cursor.execute(query, (search_pattern, search_pattern, search_pattern, search_pattern))
+        cursor.execute(
+            query, (search_pattern, search_pattern, search_pattern, search_pattern)
+        )
         logs = cursor.fetchall()
 
         row_count = len(logs)
@@ -387,6 +388,7 @@ class Ui_Dashboard(object):
             "SR Code",
             "Date Log",
             "Time Log",
+            "Log Type",
         ]
         self.tableWidget.setHorizontalHeaderLabels(header_labels)
 
@@ -399,6 +401,7 @@ class Ui_Dashboard(object):
                 sr_code,
                 date_log,
                 time_log,
+                log_type,
             ) = log
 
             # Create a QLabel and set the image pixmap
@@ -430,11 +433,10 @@ class Ui_Dashboard(object):
 
             self.tableWidget.setItem(row, 5, QTableWidgetItem(str(date_log)))
             self.tableWidget.setItem(row, 6, QTableWidgetItem(str(time_log)))
+            self.tableWidget.setItem(row, 7, QTableWidgetItem(log_type))
 
-    
         cursor.close()
         connection.close()
-
 
     def start_loading_students(self):
         # Start loading the students initially
