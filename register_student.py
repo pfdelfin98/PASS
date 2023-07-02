@@ -264,7 +264,7 @@ class RegisterStudentWindow(object):
         self.imageLabel = QtWidgets.QLabel(self.frame_2)
         self.imageLabel.setGeometry(QtCore.QRect(380, 280, 211, 21))
         self.imageLabel.setObjectName("imageLabel")
-        self.imageLabel.setText("Age")
+        self.imageLabel.setText("Gender")
         self.imageLabel.setFont(font)
 
 

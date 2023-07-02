@@ -24,6 +24,8 @@ from PyQt5.QtWidgets import (
 )
 import openpyxl
 from datetime import datetime
+from matplotlib import pyplot as plt
+from matplotlib.backends.backend_qt5agg import FigureCanvasQTAgg as FigureCanvas
 
 
 class Ui_Dashboard(object):
@@ -246,6 +248,32 @@ class Ui_Dashboard(object):
         self.exportDataBtn.setText("Export Data")
         self.exportDataBtn.clicked.connect(self.export_data_to_excel)
 
+        self.searchComboBox = QtWidgets.QComboBox(self.centralwidget)
+        self.searchComboBox.setGeometry(QtCore.QRect(780, 95, 200, 30))
+        self.searchComboBox.setObjectName("searchComboBox")
+        self.searchComboBox.addItem("CABEIHM")
+        self.searchComboBox.addItem("CAS")
+        self.searchComboBox.addItem("CICS")
+        self.searchComboBox.addItem("CET")
+        self.searchComboBox.addItem("CONAHS")
+        self.searchComboBox.addItem("CTE")
+        self.searchComboBox.addItem("LABORATORY SCHOOL")
+        self.searchComboBox.currentTextChanged.connect(self.search_logs)
+
+
+        self.searchLabel = QtWidgets.QLabel(self.centralwidget)
+        self.searchLabel.setGeometry(QtCore.QRect(710, 95, 70, 30))
+        self.searchLabel.setObjectName("searchLabel")
+        self.searchLabel.setText("Department:")
+
+
+        #BARCHART
+        self.barChart = QtWidgets.QWidget(self.centralwidget)
+        self.barChart.setGeometry(QtCore.QRect(385, 180, 700, 400))
+        self.barChart.setObjectName("barChart")
+        self.barChartLayout = QtWidgets.QVBoxLayout(self.barChart)
+
+
         MainWindow.setCentralWidget(self.centralwidget)
         self.menubar = QtWidgets.QMenuBar(MainWindow)
         self.menubar.setGeometry(QtCore.QRect(0, 0, 1186, 21))
@@ -432,6 +460,56 @@ class Ui_Dashboard(object):
         self.logs_window.show()
 
 
+    def search_logs(self):
+        selected_department = self.searchComboBox.currentText()
+
+        # Connect to the MySQL database
+        connection = pymysql.connect(
+            host='localhost',
+            user='root',
+            password='',
+            database='pass_db'
+        )
+
+        try:
+            # Execute the query and fetch the age and gender data
+            cursor = connection.cursor()
+            query = f"SELECT age, COUNT(tbl_logs.id) AS count FROM tbl_student LEFT JOIN tbl_logs ON tbl_logs.student_id = tbl_student.id WHERE department = '{selected_department}' GROUP BY age"
+            cursor.execute(query)
+            ages = []
+            male_counts = []
+            female_counts = []
+            for row in cursor.fetchall():
+                age, count = row
+                ages.append(age)
+                if age == 'Male':
+                    female_counts.append(int(count))
+                    female_counts.append(0)
+                else:
+                    male_counts.append(0)
+                    male_counts.append(int(count))
+
+            for i in reversed(range(self.barChartLayout.count())):
+                self.barChartLayout.itemAt(i).widget().setParent(None)
+
+            if ages and (male_counts or female_counts):
+                fig, ax = plt.subplots()
+                width = 0.35
+                male_bar = ax.bar(ages, male_counts, width, label='Male')
+                female_bar = ax.bar(ages, female_counts, width, bottom=male_counts, label='Female')
+                ax.set_xlabel(selected_department)
+                ax.set_ylabel('Log Count')
+                ax.set_title('')
+                ax.tick_params(axis='x')
+                ax.set_xticks(ages)
+                ax.legend()
+
+                canvas = FigureCanvas(fig)
+                self.barChartLayout.addWidget(canvas)
+                canvas.draw()
+
+        finally:
+            connection.close()
 
     def export_data_to_excel(self):
         # Connect to the MySQL database
