@@ -6,6 +6,7 @@ from encodegenerator import encodegenerator
 import student_management
 import admin_login
 import dashboard
+import logs
 import pymysql
 from PyQt5.QtWidgets import QFileDialog
 from PyQt5 import QtCore, QtGui, QtWidgets
@@ -29,7 +30,7 @@ class RegisterStudentWindow(object):
             & ~QtCore.Qt.WindowMaximizeButtonHint
         )
         MainWindow.setObjectName("MainWindow")
-        MainWindow.resize(1186, 647)
+        MainWindow.resize(1200, 700)
         self.imageFilePath = None
         self.centralwidget = QtWidgets.QWidget(MainWindow)
         self.centralwidget.setObjectName("centralwidget")
@@ -55,8 +56,9 @@ class RegisterStudentWindow(object):
         self.label_9.setFont(font)
         self.label_9.setStyleSheet("color: rgb(255, 255, 255);")
         self.label_9.setObjectName("label_9")
+
         self.faceRecognitionBtn = QtWidgets.QPushButton(self.frame)
-        self.faceRecognitionBtn.setGeometry(QtCore.QRect(40, 220, 221, 31))
+        self.faceRecognitionBtn.setGeometry(QtCore.QRect(40, 300, 221, 31))
         font = QtGui.QFont()
         font.setFamily("Arial")
         font.setPointSize(12)
@@ -69,7 +71,7 @@ class RegisterStudentWindow(object):
         )
         self.faceRecognitionBtn.setObjectName("faceRecognitionBtn")
         self.registerStudentBtn = QtWidgets.QPushButton(self.frame)
-        self.registerStudentBtn.setGeometry(QtCore.QRect(40, 270, 211, 31))
+        self.registerStudentBtn.setGeometry(QtCore.QRect(40, 350, 211, 31))
         font = QtGui.QFont()
         font.setFamily("Arial")
         font.setPointSize(12)
@@ -82,7 +84,7 @@ class RegisterStudentWindow(object):
         )
         self.registerStudentBtn.setObjectName("registerStudentBtn")
         self.studentMgmtBtn = QtWidgets.QPushButton(self.frame)
-        self.studentMgmtBtn.setGeometry(QtCore.QRect(40, 320, 221, 31))
+        self.studentMgmtBtn.setGeometry(QtCore.QRect(40, 400, 221, 31))
         font = QtGui.QFont()
         font.setFamily("Arial")
         font.setPointSize(12)
@@ -95,7 +97,7 @@ class RegisterStudentWindow(object):
         )
         self.studentMgmtBtn.setObjectName("studentMgmtBtn")
         self.exitBtn = QtWidgets.QPushButton(self.frame)
-        self.exitBtn.setGeometry(QtCore.QRect(40, 410, 221, 31))
+        self.exitBtn.setGeometry(QtCore.QRect(40, 450, 221, 31))
         font = QtGui.QFont()
         font.setFamily("Arial")
         font.setPointSize(12)
@@ -108,7 +110,7 @@ class RegisterStudentWindow(object):
         )
         self.exitBtn.setObjectName("exitBtn")
         self.exitBtn_2 = QtWidgets.QPushButton(self.frame)
-        self.exitBtn_2.setGeometry(QtCore.QRect(40, 360, 221, 31))
+        self.exitBtn_2.setGeometry(QtCore.QRect(40, 500, 221, 31))
         font = QtGui.QFont()
         font.setFamily("Arial")
         font.setPointSize(12)
@@ -120,8 +122,9 @@ class RegisterStudentWindow(object):
             ""
         )
         self.exitBtn_2.setObjectName("exitBtn_2")
+
         self.pushButton = QtWidgets.QPushButton(self.frame)
-        self.pushButton.setGeometry(QtCore.QRect(40, 176, 221, 31))
+        self.pushButton.setGeometry(QtCore.QRect(40, 200, 221, 31))
         font = QtGui.QFont()
         font.setFamily("Arial")
         font.setPointSize(12)
@@ -132,9 +135,27 @@ class RegisterStudentWindow(object):
             "text-align: left;\n"
             ""
         )
+
         self.pushButton.setObjectName("pushButton")
+
+
+        self.pushButton2 = QtWidgets.QPushButton(self.frame)
+        self.pushButton2.setGeometry(QtCore.QRect(40, 250, 221, 31))
+        font = QtGui.QFont()
+        font.setFamily("Arial")
+        font.setPointSize(12)
+        self.pushButton2.setFont(font)
+        self.pushButton2.setStyleSheet(
+            " background-color: transparent;\n"
+            "color: white;\n"
+            "text-align: left;\n"
+            ""
+        )
+
+        self.pushButton2.setObjectName("pushButton2")
+
         self.frame_3 = QtWidgets.QFrame(self.centralwidget)
-        self.frame_3.setGeometry(QtCore.QRect(261, -1, 2000, 61))
+        self.frame_3.setGeometry(QtCore.QRect(261, -1, 2000, 70))
         self.frame_3.setStyleSheet("background-color: rgb(255, 255, 255);")
         self.frame_3.setFrameShape(QtWidgets.QFrame.StyledPanel)
         self.frame_3.setFrameShadow(QtWidgets.QFrame.Raised)
@@ -157,7 +178,7 @@ class RegisterStudentWindow(object):
         self.label_10.setStyleSheet("color:black;")
         self.label_10.setObjectName("label_10")
         self.frame_2 = QtWidgets.QFrame(self.centralwidget)
-        self.frame_2.setGeometry(QtCore.QRect(310, 160, 821, 450))
+        self.frame_2.setGeometry(QtCore.QRect(310, 160, 821, 500))
         self.frame_2.setStyleSheet("background-color: rgb(255, 255, 255);\n")
         self.frame_2.setFrameShape(QtWidgets.QFrame.StyledPanel)
         self.frame_2.setFrameShadow(QtWidgets.QFrame.Raised)
@@ -243,11 +264,50 @@ class RegisterStudentWindow(object):
         self.imageLabel = QtWidgets.QLabel(self.frame_2)
         self.imageLabel.setGeometry(QtCore.QRect(380, 280, 211, 21))
         self.imageLabel.setObjectName("imageLabel")
-        self.imageLabel.setText("Student Image")
+        self.imageLabel.setText("Age")
         self.imageLabel.setFont(font)
 
+
+        self.comboBox1 = QtWidgets.QComboBox(self.frame_2)
+        self.comboBox1.setGeometry(QtCore.QRect(380, 310, 211, 40))
+        font = QtGui.QFont()
+        font.setFamily("Arial")
+        font.setPointSize(12)
+        self.comboBox1.setFont(font)
+        self.comboBox1.setStyleSheet(
+            "border-radius:5px;\n" "background-color: rgb(247, 247, 247);"
+        )
+        self.comboBox1.addItem("Male")
+        self.comboBox1.addItem("Female")
+
+
+        self.ageLabel = QtWidgets.QLabel(self.frame_2)
+        self.ageLabel.setGeometry(QtCore.QRect(40, 410, 311, 31))
+        font = QtGui.QFont()
+        font.setFamily("Arial")
+        font.setPointSize(12)
+        font.setBold(True)
+        self.ageLabel.setFont(font)
+        self.ageLabel.setStyleSheet("color: rgb(26, 26, 26);")
+        self.ageLabel.setObjectName("ageLabel")
+        self.ageLabel.setText("Age")
+
+
+        self.imageLabel = QtWidgets.QLabel(self.frame_2)
+        self.imageLabel.setGeometry(QtCore.QRect(40, 370, 311, 31))
+        font = QtGui.QFont()
+        font.setFamily("Arial")
+        font.setPointSize(12)
+        font.setBold(True)
+        self.imageLabel.setFont(font)
+        self.imageLabel.setStyleSheet("color: rgb(26, 26, 26);")
+        self.imageLabel.setObjectName("imageLabel")
+        self.imageLabel.setText("Student Image")
+
+
+
         self.uploadImageBtn = QtWidgets.QPushButton(self.frame_2)
-        self.uploadImageBtn.setGeometry(QtCore.QRect(380, 310, 211, 40))
+        self.uploadImageBtn.setGeometry(QtCore.QRect(40, 400, 211, 40))
         self.uploadImageBtn.setStyleSheet(
             "background-color: rgb(255, 80, 80);"
             "color: rgb(255, 255, 255);"
@@ -262,7 +322,7 @@ class RegisterStudentWindow(object):
         self.imageStatusLabel.setStyleSheet("color: rgb(26, 26, 26);")
 
         self.lastNameText = QtWidgets.QPlainTextEdit(self.frame_2)
-        self.lastNameText.setGeometry(QtCore.QRect(40, 230, 311, 31))
+        self.lastNameText.setGeometry(QtCore.QRect(40, 230, 311, 31))   
         font = QtGui.QFont()
         font.setFamily("Arial")
         font.setPointSize(12)
@@ -327,7 +387,7 @@ class RegisterStudentWindow(object):
         self.comboBox.addItem("AB in Communication")
 
         self.addStudentBtn = QtWidgets.QPushButton(self.frame_2)
-        self.addStudentBtn.setGeometry(QtCore.QRect(580, 390, 211, 31))
+        self.addStudentBtn.setGeometry(QtCore.QRect(580, 440, 211, 31))
         font = QtGui.QFont()
         font.setFamily("Arial")
         font.setPointSize(13)
@@ -361,6 +421,7 @@ class RegisterStudentWindow(object):
         self.exitBtn.clicked.connect(QtWidgets.qApp.quit)
         self.exitBtn_2.clicked.connect(self.open_login_page)
         self.pushButton.clicked.connect(self.open_dashboard)
+        self.pushButton2.clicked.connect(self.open_logs)
         self.addStudentBtn.clicked.connect(self.addStudent)
 
     def retranslateUi(self, MainWindow):
@@ -375,6 +436,8 @@ class RegisterStudentWindow(object):
         self.exitBtn.setText(_translate("MainWindow", "Exit"))
         self.exitBtn_2.setText(_translate("MainWindow", "Logout"))
         self.pushButton.setText(_translate("MainWindow", "Dashboard"))
+        self.pushButton2.setText(_translate("MainWindow", "Logs"))
+
         self.label.setText(
             _translate(
                 "MainWindow",
@@ -425,6 +488,7 @@ class RegisterStudentWindow(object):
         last_name = self.lastNameText.toPlainText()
         course = self.comboBox.currentText()
         srcode = self.srcodetext.text()
+        age = self.comboBox1.currentText()
         image_path = self.imageFilePath  # Use the imageFilePath attribute
 
         if not (first_name and middle_name and last_name and srcode and image_path):
@@ -438,8 +502,8 @@ class RegisterStudentWindow(object):
         cursor = db.cursor()
 
         # Insert student details
-        query = "INSERT INTO tbl_student (first_name, middle_name, last_name, course, sr_code) VALUES (%s, %s, %s, %s, %s)"
-        values = (first_name, middle_name, last_name, course, srcode)
+        query = "INSERT INTO tbl_student (first_name, middle_name, last_name, course, sr_code, age) VALUES (%s, %s, %s, %s, %s, %s)"
+        values = (first_name, middle_name, last_name, course, srcode, age)
         cursor.execute(query, values)
         db.commit()
 
@@ -485,8 +549,8 @@ class RegisterStudentWindow(object):
         self.dashboard_window = QtWidgets.QMainWindow()
         self.ui = dashboard.Ui_Dashboard()
         self.ui.setupUi(self.dashboard_window)
-        self.ui.tableWidget.setParent(self.ui.centralwidget)
-        self.ui.load_logs()
+        # self.ui.tableWidget.setParent(self.ui.centralwidget)
+        # self.ui.load_logs()
         self.dashboard_window.show()
 
     def open_facial_recognition(self):
@@ -517,6 +581,17 @@ class RegisterStudentWindow(object):
         # Load the students in the table
         self.ui.load_students()
         self.student_management_window.show()
+
+
+    def open_logs(self):
+        print("Opening Logs...")
+        self.MainWindow.hide()
+        self.logs_window = QtWidgets.QMainWindow()
+        self.ui = logs.Logs()
+        self.ui.setupUi(self.logs_window)
+        self.ui.tableWidget.setParent(self.ui.centralwidget)
+        self.ui.load_logs()
+        self.logs_window.show()
 
     def open_login_page(self):
         # Add your code to open the login page here

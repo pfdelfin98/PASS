@@ -2,6 +2,7 @@ import sys
 import os
 import register_student
 import student_management
+import logs
 import admin_login
 import numpy as np
 import pymysql
@@ -45,26 +46,14 @@ class Ui_Dashboard(object):
         )
 
         MainWindow.setObjectName("MainWindow")
-        MainWindow.resize(1186, 640)
+        MainWindow.resize(1200, 700)
         self.centralwidget = QtWidgets.QWidget(MainWindow)
         self.centralwidget.setObjectName("centralwidget")
         # Add table widget
-        self.tableWidget = QTableWidget(self.centralwidget)
-        self.tableWidget.setGeometry(QtCore.QRect(310, 150, 850, 450))
-        self.tableWidget.setObjectName("tableWidget")
+        # self.tableWidget = QTableWidget(self.centralwidget)
+        # self.tableWidget.setGeometry(QtCore.QRect(310, 150, 850, 450))
+        # self.tableWidget.setObjectName("tableWidget")
 
-        # search bar
-        self.searchLineEdit = QtWidgets.QLineEdit(self.centralwidget)
-        self.searchLineEdit.setGeometry(QtCore.QRect(780, 95, 200, 30))
-        self.searchLineEdit.setObjectName("searchLineEdit")
-        self.searchLineEdit.textChanged.connect(self.search_logs)
-
-        self.search_has_input = False
-
-        self.searchLabel = QtWidgets.QLabel(self.centralwidget)
-        self.searchLabel.setGeometry(QtCore.QRect(730, 95, 70, 30))
-        self.searchLabel.setObjectName("searchLabel")
-        self.searchLabel.setText("Search:")
 
         scroll_area = QScrollArea()
         scroll_area.setWidgetResizable(True)
@@ -90,8 +79,43 @@ class Ui_Dashboard(object):
         self.label_9.setFont(font)
         self.label_9.setStyleSheet("color: rgb(255, 255, 255);")
         self.label_9.setObjectName("label_9")
+
+        self.dashboardBtn = QtWidgets.QPushButton(self.frame)
+        self.dashboardBtn.setGeometry(QtCore.QRect(40, 200, 221, 31))
+        font = QtGui.QFont()
+        font.setFamily("Arial")
+        font.setPointSize(12)
+        self.dashboardBtn.setFont(font)
+        self.dashboardBtn.setStyleSheet(
+            " background-color: transparent;\n" "color: white;\n" ""
+        )
+        self.dashboardBtn.setStyleSheet(
+            " background-color: transparent;\n"
+            "color: white;\n"
+            "text-align: left;\n"
+            ""
+        )
+        self.dashboardBtn.setObjectName("dashboardBtn")
+
+        self.logsBtn = QtWidgets.QPushButton(self.frame)
+        self.logsBtn.setGeometry(QtCore.QRect(40, 250, 221, 31))
+        font = QtGui.QFont()
+        font.setFamily("Arial")
+        font.setPointSize(12)
+        self.logsBtn.setFont(font)
+        self.logsBtn.setStyleSheet(
+            " background-color: transparent;\n" "color: white;\n" ""
+        )
+        self.logsBtn.setStyleSheet(
+            " background-color: transparent;\n"
+            "color: white;\n"
+            "text-align: left;\n"
+            ""
+        )
+        self.logsBtn.setObjectName("logsBtn")
+
         self.faceRecognitionBtn = QtWidgets.QPushButton(self.frame)
-        self.faceRecognitionBtn.setGeometry(QtCore.QRect(40, 200, 221, 31))
+        self.faceRecognitionBtn.setGeometry(QtCore.QRect(40, 300, 221, 31))
         font = QtGui.QFont()
         font.setFamily("Arial")
         font.setPointSize(12)
@@ -107,7 +131,7 @@ class Ui_Dashboard(object):
         )
         self.faceRecognitionBtn.setObjectName("faceRecognitionBtn")
         self.registerStudentBtn = QtWidgets.QPushButton(self.frame)
-        self.registerStudentBtn.setGeometry(QtCore.QRect(40, 250, 221, 31))
+        self.registerStudentBtn.setGeometry(QtCore.QRect(40, 350, 221, 31))
         font = QtGui.QFont()
         font.setFamily("Arial")
         font.setPointSize(12)
@@ -123,7 +147,7 @@ class Ui_Dashboard(object):
         )
         self.registerStudentBtn.setObjectName("registerStudentBtn")
         self.studentMgmtBtn = QtWidgets.QPushButton(self.frame)
-        self.studentMgmtBtn.setGeometry(QtCore.QRect(40, 300, 221, 31))
+        self.studentMgmtBtn.setGeometry(QtCore.QRect(40, 400, 221, 31))
         font = QtGui.QFont()
         font.setFamily("Arial")
         font.setPointSize(12)
@@ -139,7 +163,7 @@ class Ui_Dashboard(object):
         )
         self.studentMgmtBtn.setObjectName("studentMgmtBtn")
         self.exitBtn = QtWidgets.QPushButton(self.frame)
-        self.exitBtn.setGeometry(QtCore.QRect(40, 350, 221, 31))
+        self.exitBtn.setGeometry(QtCore.QRect(40, 450, 221, 31))
         font = QtGui.QFont()
         font.setFamily("Arial")
         font.setPointSize(12)
@@ -155,7 +179,7 @@ class Ui_Dashboard(object):
         )
         self.exitBtn.setObjectName("exitBtn")
         self.exitBtn_2 = QtWidgets.QPushButton(self.frame)
-        self.exitBtn_2.setGeometry(QtCore.QRect(40, 400, 221, 31))
+        self.exitBtn_2.setGeometry(QtCore.QRect(40, 500, 221, 31))
         font = QtGui.QFont()
         font.setFamily("Arial")
         font.setPointSize(12)
@@ -172,7 +196,7 @@ class Ui_Dashboard(object):
         self.exitBtn_2.setObjectName("exitBtn_2")
 
         self.aboutBtn = QtWidgets.QPushButton(self.frame)
-        self.aboutBtn.setGeometry(QtCore.QRect(40, 450, 221, 31))
+        self.aboutBtn.setGeometry(QtCore.QRect(40, 550, 221, 31))
         font = QtGui.QFont()
         font.setFamily("Arial")
         font.setPointSize(12)
@@ -241,11 +265,14 @@ class Ui_Dashboard(object):
         self.exitBtn.clicked.connect(QtWidgets.qApp.quit)
         self.exitBtn_2.clicked.connect(self.open_login_page)
         self.aboutBtn.clicked.connect(self.open_about)
+        self.logsBtn.clicked.connect(self.open_logs)
 
     def retranslateUi(self, MainWindow):
         _translate = QtCore.QCoreApplication.translate
         MainWindow.setWindowTitle(_translate("MainWindow", "MainWindow"))
         self.label_9.setText(_translate("MainWindow", "Admin Panel"))
+        self.dashboardBtn.setText(_translate("MainWindow", "Dashboard"))
+        self.logsBtn.setText(_translate("MainWindow", "Logs"))
         self.faceRecognitionBtn.setText(_translate("MainWindow", "Facial Recognition"))
         self.registerStudentBtn.setText(
             _translate("MainWindow", "Student Registration")
@@ -262,185 +289,94 @@ class Ui_Dashboard(object):
         )
         self.label_10.setText(_translate("MainWindow", "Dashboard"))
 
-    def load_logs(self):
-        if self.search_has_input:
-            return
+    # def load_logs(self):
 
-        connection = pymysql.connect(
-            host="localhost", user="root", password="", db="pass_db"
-        )
-        cursor = connection.cursor()
+    #     connection = pymysql.connect(
+    #         host="localhost", user="root", password="", db="pass_db"
+    #     )
+    #     cursor = connection.cursor()
 
-        delete_query = "DELETE FROM tbl_logs WHERE date_log < %s"
-        week_ago = datetime.now() - timedelta(days=7)
-        cursor.execute(delete_query, (week_ago.date(),))
-        connection.commit()
+    #     delete_query = "DELETE FROM tbl_logs WHERE date_log < %s"
+    #     week_ago = datetime.now() - timedelta(days=7)
+    #     cursor.execute(delete_query, (week_ago.date(),))
+    #     connection.commit()
 
-        query = "SELECT  tbl_student.image, tbl_student.first_name, tbl_student.last_name, tbl_student.course, tbl_student.sr_code, tbl_logs.date_log, tbl_logs.time_log, tbl_logs.log_type FROM tbl_logs LEFT JOIN tbl_student ON tbl_logs.student_id = tbl_student.id"
-        cursor.execute(query)
-        logs = cursor.fetchall()
+    #     query = "SELECT  tbl_student.image, tbl_student.first_name, tbl_student.last_name, tbl_student.course, tbl_student.sr_code, tbl_logs.date_log, tbl_logs.time_log, tbl_logs.log_type FROM tbl_logs LEFT JOIN tbl_student ON tbl_logs.student_id = tbl_student.id"
+    #     cursor.execute(query)
+    #     logs = cursor.fetchall()
 
-        row_count = len(logs)
-        column_count = 8  # Increase the column count for the image column
+    #     row_count = len(logs)
+    #     column_count = 8  # Increase the column count for the image column
 
-        self.tableWidget.setRowCount(row_count)
-        self.tableWidget.setColumnCount(column_count)
+    #     self.tableWidget.setRowCount(row_count)
+    #     self.tableWidget.setColumnCount(column_count)
 
-        header_labels = [
-            "Image",
-            "First Name",
-            "Last Name",
-            "Course",
-            "SR Code",
-            "Date Log",
-            "Time Log",
-            "Log Type",
-        ]
-        self.tableWidget.setHorizontalHeaderLabels(header_labels)
+    #     header_labels = [
+    #         "Image",
+    #         "First Name",
+    #         "Last Name",
+    #         "Course",
+    #         "SR Code",
+    #         "Date Log",
+    #         "Time Log",
+    #         "Log Type",
+    #     ]
+    #     self.tableWidget.setHorizontalHeaderLabels(header_labels)
 
-        for row, log in enumerate(logs):
-            (
-                image_filename,
-                first_name,
-                last_name,
-                course,
-                sr_code,
-                date_log,
-                time_log,
-                log_type,
-            ) = log
+    #     for row, log in enumerate(logs):
+    #         (
+    #             image_filename,
+    #             first_name,
+    #             last_name,
+    #             course,
+    #             sr_code,
+    #             date_log,
+    #             time_log,
+    #             log_type,
+    #         ) = log
 
-            # Create a QLabel and set the image pixmap
-            image_label = QLabel()
-            image_path = os.path.join("images", str(image_filename))
-            pixmap = QPixmap(image_path)
-            if not pixmap.isNull():
-                # Calculate the size of the cell
-                cell_width = self.tableWidget.columnWidth(0)
-                cell_height = self.tableWidget.rowHeight(row)
+    #         # Create a QLabel and set the image pixmap
+    #         image_label = QLabel()
+    #         image_path = os.path.join("images", str(image_filename))
+    #         pixmap = QPixmap(image_path)
+    #         if not pixmap.isNull():
+    #             # Calculate the size of the cell
+    #             cell_width = self.tableWidget.columnWidth(0)
+    #             cell_height = self.tableWidget.rowHeight(row)
 
-                # Resize the pixmap to fit the cell dimensions
-                scaled_pixmap = pixmap.scaled(
-                    cell_width, cell_height, Qt.AspectRatioMode.KeepAspectRatio
-                )
+    #             # Resize the pixmap to fit the cell dimensions
+    #             scaled_pixmap = pixmap.scaled(
+    #                 cell_width, cell_height, Qt.AspectRatioMode.KeepAspectRatio
+    #             )
 
-                # Set the scaled pixmap on the image label
-                image_label.setPixmap(scaled_pixmap)
-                image_label.setAlignment(
-                    Qt.AlignCenter
-                )  # Center the image in the label
+    #             # Set the scaled pixmap on the image label
+    #             image_label.setPixmap(scaled_pixmap)
+    #             image_label.setAlignment(
+    #                 Qt.AlignCenter
+    #             )  # Center the image in the label
 
-            self.tableWidget.setCellWidget(row, 0, image_label)
+    #         self.tableWidget.setCellWidget(row, 0, image_label)
 
-            self.tableWidget.setItem(row, 1, QTableWidgetItem(first_name))
-            self.tableWidget.setItem(row, 2, QTableWidgetItem(last_name))
-            self.tableWidget.setItem(row, 3, QTableWidgetItem(course))
-            self.tableWidget.setItem(row, 4, QTableWidgetItem(sr_code))
+    #         self.tableWidget.setItem(row, 1, QTableWidgetItem(first_name))
+    #         self.tableWidget.setItem(row, 2, QTableWidgetItem(last_name))
+    #         self.tableWidget.setItem(row, 3, QTableWidgetItem(course))
+    #         self.tableWidget.setItem(row, 4, QTableWidgetItem(sr_code))
 
-            self.tableWidget.setItem(row, 5, QTableWidgetItem(str(date_log)))
-            self.tableWidget.setItem(row, 6, QTableWidgetItem(str(time_log)))
-            self.tableWidget.setItem(row, 7, QTableWidgetItem(log_type))
+    #         self.tableWidget.setItem(row, 5, QTableWidgetItem(str(date_log)))
+    #         self.tableWidget.setItem(row, 6, QTableWidgetItem(str(time_log)))
+    #         self.tableWidget.setItem(row, 7, QTableWidgetItem(log_type))
 
-        cursor.close()
+    #     cursor.close()
 
         # Schedule the next update after 1 second
         # QTimer.singleShot(1000, self.load_logs)
 
-    def search_logs(self, search_text):
-        connection = pymysql.connect(
-            host="localhost", user="root", password="", db="pass_db"
-        )
-        cursor = connection.cursor()
-
-        if search_text:
-            self.search_has_input = True
-        else:
-            self.search_has_input = False
-            QTimer.singleShot(1000, self.load_logs)
-
-        query = """
-        SELECT tbl_student.image, tbl_student.first_name, tbl_student.last_name,
-               tbl_student.course, tbl_student.sr_code, tbl_logs.date_log, tbl_logs.time_log, tbl_logs.log_type
-        FROM tbl_logs
-        LEFT JOIN tbl_student ON tbl_logs.student_id = tbl_student.id
-        WHERE tbl_student.first_name LIKE %s
-            OR tbl_student.last_name LIKE %s
-            OR tbl_student.sr_code LIKE %s
-            OR tbl_student.course LIKE %s
-        """
-        search_pattern = f"%{search_text}%"  # Add wildcards for partial matching
-        cursor.execute(
-            query, (search_pattern, search_pattern, search_pattern, search_pattern)
-        )
-        logs = cursor.fetchall()
-
-        row_count = len(logs)
-        column_count = 7  # Increase the column count for the image column
-
-        self.tableWidget.setRowCount(row_count)
-        self.tableWidget.setColumnCount(column_count)
-
-        header_labels = [
-            "Image",
-            "First Name",
-            "Last Name",
-            "Course",
-            "SR Code",
-            "Date Log",
-            "Time Log",
-            "Log Type",
-        ]
-        self.tableWidget.setHorizontalHeaderLabels(header_labels)
-
-        for row, log in enumerate(logs):
-            (
-                image_filename,
-                first_name,
-                last_name,
-                course,
-                sr_code,
-                date_log,
-                time_log,
-                log_type,
-            ) = log
-
-            # Create a QLabel and set the image pixmap
-            image_label = QLabel()
-            image_path = os.path.join("images", str(image_filename))
-            pixmap = QPixmap(image_path)
-            if not pixmap.isNull():
-                # Calculate the size of the cell
-                cell_width = self.tableWidget.columnWidth(0)
-                cell_height = self.tableWidget.rowHeight(row)
-
-                # Resize the pixmap to fit the cell dimensions
-                scaled_pixmap = pixmap.scaled(
-                    cell_width, cell_height, Qt.AspectRatioMode.KeepAspectRatio
-                )
-
-                # Set the scaled pixmap on the image label
-                image_label.setPixmap(scaled_pixmap)
-                image_label.setAlignment(
-                    Qt.AlignCenter
-                )  # Center the image in the label
-
-            self.tableWidget.setCellWidget(row, 0, image_label)
-
-            self.tableWidget.setItem(row, 1, QTableWidgetItem(first_name))
-            self.tableWidget.setItem(row, 2, QTableWidgetItem(last_name))
-            self.tableWidget.setItem(row, 3, QTableWidgetItem(course))
-            self.tableWidget.setItem(row, 4, QTableWidgetItem(sr_code))
-
-            self.tableWidget.setItem(row, 5, QTableWidgetItem(str(date_log)))
-            self.tableWidget.setItem(row, 6, QTableWidgetItem(str(time_log)))
-            self.tableWidget.setItem(row, 7, QTableWidgetItem(log_type))
-
-        cursor.close()
-        connection.close()
 
     def start_loading_students(self):
         # Start loading the students initially
-        self.load_logs()
+        # self.load_logs()
+        print("Load Students")
+
 
     def open_facial_recognition(self):
         from facial_recognition import FacialRecognitionWindow
@@ -483,6 +419,19 @@ class Ui_Dashboard(object):
         self.ui = admin_login.Ui_MainWindow()
         self.ui.setupUi(self.admin_login_window)
         self.admin_login_window.show()
+
+
+    def open_logs(self):
+        print("Opening Logs...")
+        self.MainWindow.hide()
+        self.logs_window = QtWidgets.QMainWindow()
+        self.ui = logs.Logs()
+        self.ui.setupUi(self.logs_window)
+        self.ui.tableWidget.setParent(self.ui.centralwidget)
+        self.ui.load_logs()
+        self.logs_window.show()
+
+
 
     def export_data_to_excel(self):
         # Connect to the MySQL database
@@ -553,6 +502,6 @@ if __name__ == "__main__":
     MainWindow = QtWidgets.QMainWindow()
     ui = Ui_Dashboard()
     ui.setupUi(MainWindow)
-    ui.load_logs()
+    # ui.load_logs()
     MainWindow.show()
     sys.exit(app.exec_())

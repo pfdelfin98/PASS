@@ -1,31 +1,40 @@
 import sys
-from PyQt5 import QtWidgets, QtGui, QtCore
+import os
+import register_student
+import student_management
+import dashboard
+import admin_login
+import numpy as np
+import pymysql
+from datetime import datetime, timedelta
 from PyQt5.QtWidgets import (
     QTableWidget,
     QTableWidgetItem,
-    QPushButton,
+    QLabel,
 )
-import pymysql
-import os
-import logs
-import openpyxl
-import register_student
-import student_management
-import admin_login
-import dashboard
-from edit_student import EditStudentDialog
-from delete_student import DeleteStudentDialog
-from view_logs import ViewLogsDialog
+from PyQt5 import QtCore, QtGui, QtWidgets
+from PyQt5.QtGui import QPixmap
+from about_dialog import AboutDialog
 from PyQt5.QtCore import QTimer
+from datetime import datetime, timedelta
+from PyQt5.QtCore import Qt
+from PyQt5.QtWidgets import (
+    QTableWidget,
+    QScrollArea,
+)
+import openpyxl
 from datetime import datetime
 
 
-class StudentManagementWindow(object):
+class Logs(object):
     def __init__(self) -> None:
+        self.logs_sent = False
+        self.existing = False
+
         # For Excel File
         self.file_name = ""
         self.file_path = ""
-        self.folder_name = "student_logs"
+        self.folder_name = "logs"
         self.folder_path = rf"C:\Users\SampleUser\Desktop\{self.folder_name}"  # Change this to your own file path
 
     def setupUi(self, MainWindow):
@@ -35,9 +44,9 @@ class StudentManagementWindow(object):
             & ~QtCore.Qt.WindowMinimizeButtonHint
             & ~QtCore.Qt.WindowMaximizeButtonHint
         )
+
         MainWindow.setObjectName("MainWindow")
         MainWindow.resize(1200, 700)
-        self.imageFilePath = None
         self.centralwidget = QtWidgets.QWidget(MainWindow)
         self.centralwidget.setObjectName("centralwidget")
         # Add table widget
@@ -45,10 +54,12 @@ class StudentManagementWindow(object):
         self.tableWidget.setGeometry(QtCore.QRect(310, 150, 850, 450))
         self.tableWidget.setObjectName("tableWidget")
 
+        # search bar
         self.searchLineEdit = QtWidgets.QLineEdit(self.centralwidget)
         self.searchLineEdit.setGeometry(QtCore.QRect(780, 95, 200, 30))
         self.searchLineEdit.setObjectName("searchLineEdit")
         self.searchLineEdit.textChanged.connect(self.search_logs)
+
         self.search_has_input = False
 
         self.searchLabel = QtWidgets.QLabel(self.centralwidget)
@@ -56,6 +67,8 @@ class StudentManagementWindow(object):
         self.searchLabel.setObjectName("searchLabel")
         self.searchLabel.setText("Search:")
 
+        scroll_area = QScrollArea()
+        scroll_area.setWidgetResizable(True)
         self.frame = QtWidgets.QFrame(self.centralwidget)
         self.frame.setGeometry(QtCore.QRect(-1, 1, 261, 2000))
         self.frame.setStyleSheet("background-color: rgb(227, 30, 36);")
@@ -78,12 +91,50 @@ class StudentManagementWindow(object):
         self.label_9.setFont(font)
         self.label_9.setStyleSheet("color: rgb(255, 255, 255);")
         self.label_9.setObjectName("label_9")
+
+        self.dashboardBtn = QtWidgets.QPushButton(self.frame)
+        self.dashboardBtn.setGeometry(QtCore.QRect(40, 200, 221, 31))
+        font = QtGui.QFont()
+        font.setFamily("Arial")
+        font.setPointSize(12)
+        self.dashboardBtn.setFont(font)
+        self.dashboardBtn.setStyleSheet(
+            " background-color: transparent;\n" "color: white;\n" ""
+        )
+        self.dashboardBtn.setStyleSheet(
+            " background-color: transparent;\n"
+            "color: white;\n"
+            "text-align: left;\n"
+            ""
+        )
+        self.dashboardBtn.setObjectName("dashboardBtn")
+
+        self.logsBtn = QtWidgets.QPushButton(self.frame)
+        self.logsBtn.setGeometry(QtCore.QRect(40, 250, 221, 31))
+        font = QtGui.QFont()
+        font.setFamily("Arial")
+        font.setPointSize(12)
+        self.logsBtn.setFont(font)
+        self.logsBtn.setStyleSheet(
+            " background-color: transparent;\n" "color: white;\n" ""
+        )
+        self.logsBtn.setStyleSheet(
+            " background-color: transparent;\n"
+            "color: white;\n"
+            "text-align: left;\n"
+            ""
+        )
+        self.logsBtn.setObjectName("logsBtn")
+
         self.faceRecognitionBtn = QtWidgets.QPushButton(self.frame)
         self.faceRecognitionBtn.setGeometry(QtCore.QRect(40, 300, 221, 31))
         font = QtGui.QFont()
         font.setFamily("Arial")
         font.setPointSize(12)
         self.faceRecognitionBtn.setFont(font)
+        self.faceRecognitionBtn.setStyleSheet(
+            " background-color: transparent;\n" "color: white;\n" ""
+        )
         self.faceRecognitionBtn.setStyleSheet(
             " background-color: transparent;\n"
             "color: white;\n"
@@ -92,11 +143,14 @@ class StudentManagementWindow(object):
         )
         self.faceRecognitionBtn.setObjectName("faceRecognitionBtn")
         self.registerStudentBtn = QtWidgets.QPushButton(self.frame)
-        self.registerStudentBtn.setGeometry(QtCore.QRect(40, 350, 211, 31))
+        self.registerStudentBtn.setGeometry(QtCore.QRect(40, 350, 221, 31))
         font = QtGui.QFont()
         font.setFamily("Arial")
         font.setPointSize(12)
         self.registerStudentBtn.setFont(font)
+        self.registerStudentBtn.setStyleSheet(
+            " background-color: transparent;\n" "color: white;\n" ""
+        )
         self.registerStudentBtn.setStyleSheet(
             " background-color: transparent;\n"
             "color: white;\n"
@@ -111,6 +165,9 @@ class StudentManagementWindow(object):
         font.setPointSize(12)
         self.studentMgmtBtn.setFont(font)
         self.studentMgmtBtn.setStyleSheet(
+            " background-color: transparent;\n" "color: white;\n" ""
+        )
+        self.studentMgmtBtn.setStyleSheet(
             " background-color: transparent;\n"
             "color: white;\n"
             "text-align: left;\n"
@@ -123,6 +180,9 @@ class StudentManagementWindow(object):
         font.setFamily("Arial")
         font.setPointSize(12)
         self.exitBtn.setFont(font)
+        self.exitBtn.setStyleSheet(
+            " background-color: transparent;\n" "color: white;\n" ""
+        )
         self.exitBtn.setStyleSheet(
             " background-color: transparent;\n"
             "color: white;\n"
@@ -137,6 +197,9 @@ class StudentManagementWindow(object):
         font.setPointSize(12)
         self.exitBtn_2.setFont(font)
         self.exitBtn_2.setStyleSheet(
+            " background-color: transparent;\n" "color: white;\n" ""
+        )
+        self.exitBtn_2.setStyleSheet(
             " background-color: transparent;\n"
             "color: white;\n"
             "text-align: left;\n"
@@ -144,36 +207,22 @@ class StudentManagementWindow(object):
         )
         self.exitBtn_2.setObjectName("exitBtn_2")
 
-        self.pushButton = QtWidgets.QPushButton(self.frame)
-        self.pushButton.setGeometry(QtCore.QRect(40, 200, 221, 31))
+        self.aboutBtn = QtWidgets.QPushButton(self.frame)
+        self.aboutBtn.setGeometry(QtCore.QRect(40, 550, 221, 31))
         font = QtGui.QFont()
         font.setFamily("Arial")
         font.setPointSize(12)
-        self.pushButton.setFont(font)
-        self.pushButton.setStyleSheet(
+        self.aboutBtn.setFont(font)
+        self.aboutBtn.setStyleSheet(
+            " background-color: transparent;\n" "color: white;\n" ""
+        )
+        self.aboutBtn.setStyleSheet(
             " background-color: transparent;\n"
             "color: white;\n"
             "text-align: left;\n"
             ""
         )
-
-        self.pushButton.setObjectName("pushButton")
-
-
-        self.pushButton2 = QtWidgets.QPushButton(self.frame)
-        self.pushButton2.setGeometry(QtCore.QRect(40, 250, 221, 31))
-        font = QtGui.QFont()
-        font.setFamily("Arial")
-        font.setPointSize(12)
-        self.pushButton2.setFont(font)
-        self.pushButton2.setStyleSheet(
-            " background-color: transparent;\n"
-            "color: white;\n"
-            "text-align: left;\n"
-            ""
-        )
-
-        self.pushButton2.setObjectName("pushButton2")
+        self.aboutBtn.setObjectName("aboutBtn")
 
         self.frame_3 = QtWidgets.QFrame(self.centralwidget)
         self.frame_3.setGeometry(QtCore.QRect(261, -1, 2000, 61))
@@ -189,7 +238,7 @@ class StudentManagementWindow(object):
         self.label.setFont(font)
         self.label.setObjectName("label")
         self.label_10 = QtWidgets.QLabel(self.centralwidget)
-        self.label_10.setGeometry(QtCore.QRect(310, 90, 301, 51))
+        self.label_10.setGeometry(QtCore.QRect(310, 90, 201, 51))
         font = QtGui.QFont()
         font.setFamily("Arial")
         font.setPointSize(15)
@@ -218,8 +267,6 @@ class StudentManagementWindow(object):
         self.statusbar.setObjectName("statusbar")
         MainWindow.setStatusBar(self.statusbar)
 
-        MainWindow.setCentralWidget(self.centralwidget)
-
         self.retranslateUi(MainWindow)
         QtCore.QMetaObject.connectSlotsByName(MainWindow)
 
@@ -229,20 +276,21 @@ class StudentManagementWindow(object):
         self.studentMgmtBtn.clicked.connect(self.open_student_management)
         self.exitBtn.clicked.connect(QtWidgets.qApp.quit)
         self.exitBtn_2.clicked.connect(self.open_login_page)
-        self.pushButton.clicked.connect(self.open_dashboard)
-        self.pushButton2.clicked.connect(self.open_logs)
+        self.aboutBtn.clicked.connect(self.open_about)
+        self.dashboardBtn.clicked.connect(self.open_dashboard)
 
     def retranslateUi(self, MainWindow):
         _translate = QtCore.QCoreApplication.translate
-        MainWindow.setWindowTitle(_translate("MainWindow", "Student Management"))
+        MainWindow.setWindowTitle(_translate("MainWindow", "MainWindow"))
         self.label_9.setText(_translate("MainWindow", "Admin Panel"))
-        self.pushButton.setText(_translate("MainWindow", "Dashboard"))
-        self.pushButton2.setText(_translate("MainWindow", "Logs"))
+        self.dashboardBtn.setText(_translate("MainWindow", "Dashboard"))
+        self.logsBtn.setText(_translate("MainWindow", "Logs"))
         self.faceRecognitionBtn.setText(_translate("MainWindow", "Facial Recognition"))
         self.registerStudentBtn.setText(
             _translate("MainWindow", "Student Registration")
         )
         self.studentMgmtBtn.setText(_translate("MainWindow", "Student Management"))
+        self.aboutBtn.setText(_translate("MainWindow", "About System"))
         self.exitBtn.setText(_translate("MainWindow", "Exit"))
         self.exitBtn_2.setText(_translate("MainWindow", "Logout"))
         self.label.setText(
@@ -251,208 +299,187 @@ class StudentManagementWindow(object):
                 "PASS: Personalized Authentication and Student Surveillance",
             )
         )
-        self.label_10.setText(_translate("MainWindow", "Student Management"))
+        self.label_10.setText(_translate("MainWindow", "Logs"))
 
-    def load_students(self):
+    def load_logs(self):
         if self.search_has_input:
+            return
 
-            return 
-        
         connection = pymysql.connect(
             host="localhost", user="root", password="", db="pass_db"
         )
-        self.connection = (
-            connection  # Store the connection reference to access it later
-        )
         cursor = connection.cursor()
 
-        # Fetch student data from the database
-        query = "SELECT id, first_name, middle_name, last_name, course, sr_code, age FROM tbl_student"
-        cursor.execute(query)
-        students = cursor.fetchall()
+        delete_query = "DELETE FROM tbl_logs WHERE date_log < %s"
+        week_ago = datetime.now() - timedelta(days=7)
+        cursor.execute(delete_query, (week_ago.date(),))
+        connection.commit()
 
-        # Display students in the table
-        row_count = len(students)
-        column_count = 9  # Increase column count for edit and delete buttons
+        query = "SELECT  tbl_student.image, tbl_student.first_name, tbl_student.last_name, tbl_student.course, tbl_student.sr_code, tbl_logs.date_log, tbl_logs.time_log, tbl_logs.log_type FROM tbl_logs LEFT JOIN tbl_student ON tbl_logs.student_id = tbl_student.id"
+        cursor.execute(query)
+        logs = cursor.fetchall()
+
+        row_count = len(logs)
+        column_count = 8  # Increase the column count for the image column
 
         self.tableWidget.setRowCount(row_count)
         self.tableWidget.setColumnCount(column_count)
 
         header_labels = [
+            "Image",
             "First Name",
-            "Middle Name",
             "Last Name",
             "Course",
             "SR Code",
-            "Age",
-            "View Logs",
-            "Edit",
-            "Delete",
+            "Date Log",
+            "Time Log",
+            "Log Type",
         ]
         self.tableWidget.setHorizontalHeaderLabels(header_labels)
 
-        for i, student in enumerate(students):
-            student_id = student[0]  # Get the student ID
-            for j in range(column_count - 3):  # Adjust the range
-                item = QTableWidgetItem(
-                    str(student[j + 1])
-                )  # Update the index of the student details
-                self.tableWidget.setItem(i, j, item)  # Update the column index
+        for row, log in enumerate(logs):
+            (
+                image_filename,
+                first_name,
+                last_name,
+                course,
+                sr_code,
+                date_log,
+                time_log,
+                log_type,
+            ) = log
 
-            # Create and set the edit button
-            edit_button = QPushButton("Edit")
-            edit_button.clicked.connect(
-                lambda checked, student_id=student_id: self.edit_student(student_id)
-            )
-            self.tableWidget.setCellWidget(i, column_count - 2, edit_button)
+            # Create a QLabel and set the image pixmap
+            image_label = QLabel()
+            image_path = os.path.join("images", str(image_filename))
+            pixmap = QPixmap(image_path)
+            if not pixmap.isNull():
+                # Calculate the size of the cell
+                cell_width = self.tableWidget.columnWidth(0)
+                cell_height = self.tableWidget.rowHeight(row)
 
-            # Create and set the delete button
-            delete_button = QPushButton("Delete")
-            delete_button.clicked.connect(
-                lambda checked, student_id=student_id: self.delete_student(student_id)
-            )
-            self.tableWidget.setCellWidget(i, column_count - 1, delete_button)
+                # Resize the pixmap to fit the cell dimensions
+                scaled_pixmap = pixmap.scaled(
+                    cell_width, cell_height, Qt.AspectRatioMode.KeepAspectRatio
+                )
 
-            # Create and set the delete button
-            view_logs_button = QPushButton("View Logs")
-            view_logs_button.clicked.connect(
-                lambda checked, student_id=student_id: self.view_logs(student_id)
-            )
-            self.tableWidget.setCellWidget(i, column_count - 3, view_logs_button)
+                # Set the scaled pixmap on the image label
+                image_label.setPixmap(scaled_pixmap)
+                image_label.setAlignment(
+                    Qt.AlignCenter
+                )  # Center the image in the label
+
+            self.tableWidget.setCellWidget(row, 0, image_label)
+
+            self.tableWidget.setItem(row, 1, QTableWidgetItem(first_name))
+            self.tableWidget.setItem(row, 2, QTableWidgetItem(last_name))
+            self.tableWidget.setItem(row, 3, QTableWidgetItem(course))
+            self.tableWidget.setItem(row, 4, QTableWidgetItem(sr_code))
+
+            self.tableWidget.setItem(row, 5, QTableWidgetItem(str(date_log)))
+            self.tableWidget.setItem(row, 6, QTableWidgetItem(str(time_log)))
+            self.tableWidget.setItem(row, 7, QTableWidgetItem(log_type))
 
         cursor.close()
 
-        # # Schedule the next update after 1 second
-        # QTimer.singleShot(1000, self.load_students)
+        # Schedule the next update after 1 second
+        # QTimer.singleShot(1000, self.load_logs)
 
-
-    def search_logs(self, search_text, load_students=True):
+    def search_logs(self, search_text):
         connection = pymysql.connect(
             host="localhost", user="root", password="", db="pass_db"
         )
         cursor = connection.cursor()
 
         if search_text:
-            # Disable loading students when the search textbox has input
             self.search_has_input = True
         else:
             self.search_has_input = False
-            QTimer.singleShot(1000, self.load_students)
-            
+            QTimer.singleShot(1000, self.load_logs)
+
         query = """
-        SELECT id, first_name, middle_name, last_name, course, sr_code
-        FROM tbl_student
-        WHERE first_name LIKE %s
-            OR last_name LIKE %s
-            OR sr_code LIKE %s
-            OR course LIKE %s
+        SELECT tbl_student.image, tbl_student.first_name, tbl_student.last_name,
+               tbl_student.course, tbl_student.sr_code, tbl_logs.date_log, tbl_logs.time_log, tbl_logs.log_type
+        FROM tbl_logs
+        LEFT JOIN tbl_student ON tbl_logs.student_id = tbl_student.id
+        WHERE tbl_student.first_name LIKE %s
+            OR tbl_student.last_name LIKE %s
+            OR tbl_student.sr_code LIKE %s
+            OR tbl_student.course LIKE %s
         """
         search_pattern = f"%{search_text}%"  # Add wildcards for partial matching
-        cursor.execute(query, (search_pattern, search_pattern, search_pattern, search_pattern))
-        students = cursor.fetchall()
+        cursor.execute(
+            query, (search_pattern, search_pattern, search_pattern, search_pattern)
+        )
+        logs = cursor.fetchall()
 
-        row_count = len(students)
-        column_count = 9  # Increase column count for edit and delete buttons
+        row_count = len(logs)
+        column_count = 7  # Increase the column count for the image column
 
         self.tableWidget.setRowCount(row_count)
         self.tableWidget.setColumnCount(column_count)
 
         header_labels = [
+            "Image",
             "First Name",
-            "Middle Name",
             "Last Name",
             "Course",
             "SR Code",
-            "View Logs",
-            "Edit",
-            "Delete",
+            "Date Log",
+            "Time Log",
+            "Log Type",
         ]
         self.tableWidget.setHorizontalHeaderLabels(header_labels)
 
-        for i, student in enumerate(students):
-            student_id = student[0]  # Get the student ID
-            for j in range(column_count - 4):  # Adjust the range
-                item = QTableWidgetItem(
-                    str(student[j + 1])
-                )  # Update the index of the student details
-                self.tableWidget.setItem(i, j, item)  # Update the column index
+        for row, log in enumerate(logs):
+            (
+                image_filename,
+                first_name,
+                last_name,
+                course,
+                sr_code,
+                date_log,
+                time_log,
+                log_type,
+            ) = log
 
-            # Create and set the edit button
-            edit_button = QPushButton("Edit")
-            edit_button.clicked.connect(
-                lambda checked, student_id=student_id: self.edit_student(student_id)
-            )
-            self.tableWidget.setCellWidget(i, column_count - 3, edit_button)
+            # Create a QLabel and set the image pixmap
+            image_label = QLabel()
+            image_path = os.path.join("images", str(image_filename))
+            pixmap = QPixmap(image_path)
+            if not pixmap.isNull():
+                # Calculate the size of the cell
+                cell_width = self.tableWidget.columnWidth(0)
+                cell_height = self.tableWidget.rowHeight(row)
 
-            # Create and set the delete button
-            delete_button = QPushButton("Delete")
-            delete_button.clicked.connect(
-                lambda checked, student_id=student_id: self.delete_student(student_id)
-            )
-            self.tableWidget.setCellWidget(i, column_count - 2, delete_button)
+                # Resize the pixmap to fit the cell dimensions
+                scaled_pixmap = pixmap.scaled(
+                    cell_width, cell_height, Qt.AspectRatioMode.KeepAspectRatio
+                )
 
-            # Create and set the delete button
-            view_logs_button = QPushButton("View Logs")
-            view_logs_button.clicked.connect(
-                lambda checked, student_id=student_id: self.view_logs(student_id)
-            )
-            self.tableWidget.setCellWidget(i, column_count - 4, view_logs_button)
+                # Set the scaled pixmap on the image label
+                image_label.setPixmap(scaled_pixmap)
+                image_label.setAlignment(
+                    Qt.AlignCenter
+                )  # Center the image in the label
+
+            self.tableWidget.setCellWidget(row, 0, image_label)
+
+            self.tableWidget.setItem(row, 1, QTableWidgetItem(first_name))
+            self.tableWidget.setItem(row, 2, QTableWidgetItem(last_name))
+            self.tableWidget.setItem(row, 3, QTableWidgetItem(course))
+            self.tableWidget.setItem(row, 4, QTableWidgetItem(sr_code))
+
+            self.tableWidget.setItem(row, 5, QTableWidgetItem(str(date_log)))
+            self.tableWidget.setItem(row, 6, QTableWidgetItem(str(time_log)))
+            self.tableWidget.setItem(row, 7, QTableWidgetItem(log_type))
 
         cursor.close()
         connection.close()
 
-        if load_students:
-            QTimer.singleShot(1000, self.load_students)
-
     def start_loading_students(self):
         # Start loading the students initially
-        self.load_students()
-
-    def view_logs(self, student_id):
-        print("Edit Student ID:", student_id)
-        dialog = ViewLogsDialog()
-        dialog.setupUi(student_id)
-        dialog.exec_()
-
-    def edit_student(self, student_id):
-        print("Edit Student ID:", student_id)
-        dialog = EditStudentDialog()
-        dialog.setupUi(student_id)
-        dialog.exec_()
-
-    def delete_student(self, student_id):
-        print("Delete Student ID:", student_id)
-        dialog = DeleteStudentDialog()
-        dialog.setupUi(student_id)
-        dialog.exec_()
-
-    def open_dashboard(self):
-        print("Opening Dashboard...")
-        # self.MainWindow.hide()
-        # self.dashboard_window = QMainWindow()
-        # self.ui = dashboard.Ui_Dashboard()
-        # self.ui.setupUi(self.dashboard_window)
-        # self.dashboard_window.show()
-
-        self.MainWindow.hide()
-        self.dashboard_window = QtWidgets.QMainWindow()
-        self.ui = dashboard.Ui_Dashboard()
-        self.ui.setupUi(self.dashboard_window)
-        # self.ui.tableWidget.setParent(self.ui.centralwidget)
-        # self.ui.load_logs()
-        self.dashboard_window.show()
-
-
-
-    def open_logs(self):
-        print("Opening Logs...")
-        self.MainWindow.hide()
-        self.logs_window = QtWidgets.QMainWindow()
-        self.ui = logs.Logs()
-        self.ui.setupUi(self.logs_window)
-        self.ui.tableWidget.setParent(self.ui.centralwidget)
-        self.ui.load_logs()
-        self.logs_window.show()
+        self.load_logs()
 
     def open_facial_recognition(self):
         from facial_recognition import FacialRecognitionWindow
@@ -462,8 +489,13 @@ class StudentManagementWindow(object):
         print("Opening Facial Recognition...")
         face_recognition.face_recognition_func()
 
+    def open_about(self):
+        print("Opening About System Dialog")
+        dialog = AboutDialog()
+        dialog.setupUi()
+        dialog.show()
+
     def open_register_student(self):
-        # Add your code to open register student here
         print("Opening Register Student...")
         self.MainWindow.hide()
         self.register_student_window = QtWidgets.QMainWindow()
@@ -471,11 +503,17 @@ class StudentManagementWindow(object):
         self.ui.setupUi(self.register_student_window)
         self.register_student_window.show()
 
+    def open_dashboard(self):
+        print("Opening Dashboard...")
+        self.MainWindow.hide()
+        self.dashboard_window = QtWidgets.QMainWindow()
+        self.ui = dashboard.Ui_Dashboard()
+        self.ui.setupUi(self.dashboard_window)
+        self.dashboard_window.show()
+
     def open_student_management(self):
-        # Add your code to open student management here
         print("Opening Student Management Page...")
-        self.MainWindow.hide()  # Hide the main window instead of closing it
-        # Create the student management window
+        self.MainWindow.hide()
         self.student_management_window = QtWidgets.QMainWindow()
         self.ui = student_management.StudentManagementWindow()
         self.ui.setupUi(self.student_management_window)
@@ -486,7 +524,6 @@ class StudentManagementWindow(object):
         self.student_management_window.show()
 
     def open_login_page(self):
-        # Add your code to open the login page here
         print("Opening Login Page...")
         self.MainWindow.hide()
         self.admin_login_window = QtWidgets.QMainWindow()
@@ -505,7 +542,7 @@ class StudentManagementWindow(object):
             cursor = connection.cursor()
 
             # Retrieve data from the tbl_student table
-            select_query = "SELECT first_name, middle_name, last_name, course, sr_code FROM tbl_student"
+            select_query = "SELECT CONCAT(tbl_student.first_name, ' ', tbl_student.last_name) AS student_name, tbl_student.course, tbl_student.sr_code, tbl_logs.date_log, tbl_logs.time_log FROM tbl_logs LEFT JOIN tbl_student ON tbl_logs.student_id = tbl_student.id"
             cursor.execute(select_query)
             student_data = cursor.fetchall()
 
@@ -514,23 +551,30 @@ class StudentManagementWindow(object):
             sheet = workbook.active
 
             # Write the column headers
-            sheet["A1"] = "First Name"
-            sheet["B1"] = "Middle Name"
-            sheet["C1"] = "Last Name"
-            sheet["D1"] = "Course"
-            sheet["E1"] = "SR Code"
+            sheet["A1"] = "Student Name"
+            sheet["B1"] = "Course"
+            sheet["C1"] = "SR Code"
+            sheet["D1"] = "Date Log"
+            sheet["E1"] = "Time Log"
+
+            # Set column width for date columns
+            date_columns = ["D", "E"]  # Columns D and E represent the date columns
+            for column in date_columns:
+                sheet.column_dimensions[
+                    column
+                ].width = 15  # Adjust the width as per your preference
 
             for row_index, student in enumerate(student_data, start=2):
-                sheet.cell(row=row_index, column=1).value = student[0]  # First Name
-                sheet.cell(row=row_index, column=2).value = student[1]  # Middle Name
-                sheet.cell(row=row_index, column=3).value = student[2]  # Last Name
-                sheet.cell(row=row_index, column=4).value = student[3]  # Course
-                sheet.cell(row=row_index, column=5).value = student[4]  # Course
+                sheet.cell(row=row_index, column=1).value = student[0]
+                sheet.cell(row=row_index, column=2).value = student[1]
+                sheet.cell(row=row_index, column=3).value = student[2]
+                sheet.cell(row=row_index, column=4).value = student[3]
+                sheet.cell(row=row_index, column=5).value = student[4]
 
             # Save the Excel file
             current_datetime = datetime.now()
             formatted_datetime = current_datetime.strftime("%Y-%m-%d_%H-%M-%S")
-            self.file_name = f"student_data_{formatted_datetime}.xlsx"
+            self.file_name = f"logs_data_{formatted_datetime}.xlsx"
 
             # Save the Excel file inside the "folder_path" folder
             self.file_path = rf"{self.folder_path}\{self.file_name}"
@@ -540,7 +584,7 @@ class StudentManagementWindow(object):
                 os.makedirs(self.folder_path)
             # Save the Excel file
             workbook.save(self.file_path)
-            print("Student Data exported to Excel successfully!")
+            print("Logs Data exported to Excel successfully!")
 
         except Exception as e:
             print("Error exporting data to Excel:", str(e))
@@ -550,14 +594,12 @@ class StudentManagementWindow(object):
             cursor.close()
             connection.close()
 
-    # ...
-
 
 if __name__ == "__main__":
     app = QtWidgets.QApplication(sys.argv)
     MainWindow = QtWidgets.QMainWindow()
-    ui = StudentManagementWindow()
+    ui = Logs()
     ui.setupUi(MainWindow)
-    ui.load_students()
+    ui.load_logs()
     MainWindow.show()
     sys.exit(app.exec_())
