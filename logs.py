@@ -24,6 +24,7 @@ from PyQt5.QtWidgets import (
 )
 import openpyxl
 from datetime import datetime
+import matplotlib.pyplot as plt
 
 
 class Logs(object):
@@ -315,12 +316,12 @@ class Logs(object):
         cursor.execute(delete_query, (week_ago.date(),))
         connection.commit()
 
-        query = "SELECT  tbl_student.image, tbl_student.first_name, tbl_student.last_name, tbl_student.course, tbl_student.sr_code, tbl_logs.date_log, tbl_logs.time_log, tbl_logs.log_type FROM tbl_logs LEFT JOIN tbl_student ON tbl_logs.student_id = tbl_student.id"
+        query = "SELECT  tbl_student.image, tbl_student.first_name, tbl_student.last_name, tbl_student.course, tbl_student.sr_code, tbl_student.gender, tbl_logs.date_log, tbl_logs.time_log, tbl_logs.log_type FROM tbl_logs LEFT JOIN tbl_student ON tbl_logs.student_id = tbl_student.id"
         cursor.execute(query)
         logs = cursor.fetchall()
 
         row_count = len(logs)
-        column_count = 8  # Increase the column count for the image column
+        column_count = 9  # Increase the column count for the image column
 
         self.tableWidget.setRowCount(row_count)
         self.tableWidget.setColumnCount(column_count)
@@ -331,6 +332,7 @@ class Logs(object):
             "Last Name",
             "Course",
             "SR Code",
+            "Gender",
             "Date Log",
             "Time Log",
             "Log Type",
@@ -344,6 +346,7 @@ class Logs(object):
                 last_name,
                 course,
                 sr_code,
+                gender,
                 date_log,
                 time_log,
                 log_type,
@@ -375,10 +378,10 @@ class Logs(object):
             self.tableWidget.setItem(row, 2, QTableWidgetItem(last_name))
             self.tableWidget.setItem(row, 3, QTableWidgetItem(course))
             self.tableWidget.setItem(row, 4, QTableWidgetItem(sr_code))
-
-            self.tableWidget.setItem(row, 5, QTableWidgetItem(str(date_log)))
-            self.tableWidget.setItem(row, 6, QTableWidgetItem(str(time_log)))
-            self.tableWidget.setItem(row, 7, QTableWidgetItem(log_type))
+            self.tableWidget.setItem(row, 5, QTableWidgetItem(gender))
+            self.tableWidget.setItem(row, 6, QTableWidgetItem(str(date_log)))
+            self.tableWidget.setItem(row, 7, QTableWidgetItem(str(time_log)))
+            self.tableWidget.setItem(row, 8, QTableWidgetItem(log_type))
 
         cursor.close()
 
@@ -399,7 +402,7 @@ class Logs(object):
 
         query = """
         SELECT tbl_student.image, tbl_student.first_name, tbl_student.last_name,
-               tbl_student.course, tbl_student.sr_code, tbl_logs.date_log, tbl_logs.time_log, tbl_logs.log_type
+               tbl_student.course, tbl_student.sr_code, tbl_student.gender, tbl_logs.date_log, tbl_logs.time_log, tbl_logs.log_type
         FROM tbl_logs
         LEFT JOIN tbl_student ON tbl_logs.student_id = tbl_student.id
         WHERE tbl_student.first_name LIKE %s
@@ -414,7 +417,7 @@ class Logs(object):
         logs = cursor.fetchall()
 
         row_count = len(logs)
-        column_count = 7  # Increase the column count for the image column
+        column_count = 9  # Increase the column count for the image column
 
         self.tableWidget.setRowCount(row_count)
         self.tableWidget.setColumnCount(column_count)
@@ -425,6 +428,7 @@ class Logs(object):
             "Last Name",
             "Course",
             "SR Code",
+            "Gender",
             "Date Log",
             "Time Log",
             "Log Type",
@@ -438,6 +442,7 @@ class Logs(object):
                 last_name,
                 course,
                 sr_code,
+                gender,
                 date_log,
                 time_log,
                 log_type,
@@ -469,10 +474,10 @@ class Logs(object):
             self.tableWidget.setItem(row, 2, QTableWidgetItem(last_name))
             self.tableWidget.setItem(row, 3, QTableWidgetItem(course))
             self.tableWidget.setItem(row, 4, QTableWidgetItem(sr_code))
-
-            self.tableWidget.setItem(row, 5, QTableWidgetItem(str(date_log)))
-            self.tableWidget.setItem(row, 6, QTableWidgetItem(str(time_log)))
-            self.tableWidget.setItem(row, 7, QTableWidgetItem(log_type))
+            self.tableWidget.setItem(row, 5, QTableWidgetItem(gender))
+            self.tableWidget.setItem(row, 6, QTableWidgetItem(str(date_log)))
+            self.tableWidget.setItem(row, 7, QTableWidgetItem(str(time_log)))
+            self.tableWidget.setItem(row, 8, QTableWidgetItem(log_type))
 
         cursor.close()
         connection.close()

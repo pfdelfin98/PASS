@@ -474,15 +474,15 @@ class Ui_Dashboard(object):
         try:
             # Execute the query and fetch the age and gender data
             cursor = connection.cursor()
-            query = f"SELECT age, COUNT(tbl_logs.id) AS count FROM tbl_student LEFT JOIN tbl_logs ON tbl_logs.student_id = tbl_student.id WHERE department = '{selected_department}' GROUP BY age"
+            query = f"SELECT gender, COUNT(tbl_logs.id) AS count FROM tbl_student LEFT JOIN tbl_logs ON tbl_logs.student_id = tbl_student.id WHERE department = '{selected_department}' GROUP BY gender"
             cursor.execute(query)
-            ages = []
+            genders = []
             male_counts = []
             female_counts = []
             for row in cursor.fetchall():
-                age, count = row
-                ages.append(age)
-                if age == 'Male':
+                gender, count = row
+                genders.append(gender)
+                if gender == 'Male':
                     female_counts.append(int(count))
                     female_counts.append(0)
                 else:
@@ -492,16 +492,16 @@ class Ui_Dashboard(object):
             for i in reversed(range(self.barChartLayout.count())):
                 self.barChartLayout.itemAt(i).widget().setParent(None)
 
-            if ages and (male_counts or female_counts):
+            if gender and (male_counts or female_counts):
                 fig, ax = plt.subplots()
                 width = 0.35
-                male_bar = ax.bar(ages, male_counts, width, label='Male')
-                female_bar = ax.bar(ages, female_counts, width, bottom=male_counts, label='Female')
+                male_bar = ax.bar(genders, male_counts, width, label='Male')
+                female_bar = ax.bar(genders, female_counts, width, bottom=male_counts, label='Female')
                 ax.set_xlabel(selected_department)
                 ax.set_ylabel('Log Count')
                 ax.set_title('')
                 ax.tick_params(axis='x')
-                ax.set_xticks(ages)
+                ax.set_xticks(genders)
                 ax.legend()
 
                 canvas = FigureCanvas(fig)

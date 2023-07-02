@@ -371,6 +371,7 @@ class RegisterStudentWindow(object):
         self.comboBox.addItem("BS in Elementary Education")
         self.comboBox.addItem("BS in Secondary Education")
         self.comboBox.addItem("BS in Accountancy")
+        self.comboBox.addItem("BS in Management Accounting")
         self.comboBox.addItem("BS in Business Administration")
         self.comboBox.addItem("BS in Computer Engineering")
         self.comboBox.addItem("BS in Computer Science")
@@ -384,7 +385,12 @@ class RegisterStudentWindow(object):
         self.comboBox.addItem("BS in Tourism Management")
         self.comboBox.addItem("BS in Computer Engineering")
         self.comboBox.addItem("BS in Fisheries and Aquatic Sciences")
-        self.comboBox.addItem("AB in Communication")
+        self.comboBox.addItem("BA in Communication")
+        self.comboBox.addItem("BS in Fisheries and Aquatic Sciences")
+        self.comboBox.addItem("BS in Physical Education")
+        self.comboBox.addItem("BS in Teacher Education")
+
+
 
         self.addStudentBtn = QtWidgets.QPushButton(self.frame_2)
         self.addStudentBtn.setGeometry(QtCore.QRect(580, 440, 211, 31))
@@ -489,7 +495,7 @@ class RegisterStudentWindow(object):
         course = self.comboBox.currentText()
         srcode = self.srcodetext.text()
         age = self.comboBox1.currentText()
-        image_path = self.imageFilePath  # Use the imageFilePath attribute
+        image_path = self.imageFilePath  
 
         if not (first_name and middle_name and last_name and srcode and image_path):
             print("Please provide all the required student details.")
@@ -498,25 +504,34 @@ class RegisterStudentWindow(object):
             dialog.exec_()
             return
 
+        department = ""
+        if course in ["BS in Accountancy", "BS in Management Accounting", "BS in Business Administration", "BS in Hospitality Management", "BS in Tourism Management"]:
+            department = "CABEIHM"
+        elif course in ["BA in Communication", "BS in Criminology", "BS in Food Technology", "BS in Psychology", "BS in Fisheries and Aquatic Sciences"]:
+            department = "CAS"
+        elif course in ["BS in Computer Science", "BS in Information Technology"]:
+            department = "CICS"
+        elif course in ["BS in Computer Engineering", "BS in Industrial Technology"]:
+            department = "CET"
+        elif course in ["BS in Nursing", "BS in Nutrition and Dietetics"]:
+            department = "CONAHS"
+        elif course in ["BS in Elementary Education", "BS in Secondary Education", "BS in Physical Education", "Professional Teacher Education"]:
+            department = "CTE"
+
         db = pymysql.connect(host="localhost", user="root", password="", db="pass_db")
         cursor = db.cursor()
 
-        # Insert student details
-        query = "INSERT INTO tbl_student (first_name, middle_name, last_name, course, sr_code, age) VALUES (%s, %s, %s, %s, %s, %s)"
-        values = (first_name, middle_name, last_name, course, srcode, age)
+        query = "INSERT INTO tbl_student (first_name, middle_name, last_name, course, department, sr_code, gender) VALUES (%s, %s, %s, %s, %s, %s, %s)"
+        values = (first_name, middle_name, last_name, course, department, srcode, age)
         cursor.execute(query, values)
         db.commit()
 
-        # Get the ID of the inserted student
         student_id = cursor.lastrowid
 
-        # Insert the image filename
         if image_path:
             image_filename = f"{first_name}-{last_name}-{student_id}{os.path.splitext(image_path)[1]}"
 
-            image_save_path = (
-                f"images/{image_filename}"  # Change 'img' to your desired folder path
-            )
+            image_save_path = f"images/{image_filename}"  # Change 'img' to your desired folder path
 
             # Save the image to the local drive
             os.rename(image_path, image_save_path)

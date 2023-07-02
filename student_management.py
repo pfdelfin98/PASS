@@ -267,7 +267,7 @@ class StudentManagementWindow(object):
         cursor = connection.cursor()
 
         # Fetch student data from the database
-        query = "SELECT id, first_name, middle_name, last_name, course, sr_code, age FROM tbl_student"
+        query = "SELECT id, first_name, middle_name, last_name, course, sr_code, gender FROM tbl_student"
         cursor.execute(query)
         students = cursor.fetchall()
 
@@ -284,7 +284,7 @@ class StudentManagementWindow(object):
             "Last Name",
             "Course",
             "SR Code",
-            "Age",
+            "Gender",
             "View Logs",
             "Edit",
             "Delete",
@@ -340,7 +340,7 @@ class StudentManagementWindow(object):
             QTimer.singleShot(1000, self.load_students)
             
         query = """
-        SELECT id, first_name, middle_name, last_name, course, sr_code
+        SELECT id, first_name, middle_name, last_name, course, sr_code, gender
         FROM tbl_student
         WHERE first_name LIKE %s
             OR last_name LIKE %s
@@ -362,6 +362,7 @@ class StudentManagementWindow(object):
             "Middle Name",
             "Last Name",
             "Course",
+            "Gender",
             "SR Code",
             "View Logs",
             "Edit",
