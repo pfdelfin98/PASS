@@ -214,8 +214,8 @@ class Ui_MainWindow(object):
         self.dashboard_window = QtWidgets.QMainWindow()
         self.ui = dashboard.Ui_Dashboard()
         self.ui.setupUi(self.dashboard_window)
-        self.ui.tableWidget.setParent(self.ui.centralwidget)
-        self.ui.load_logs()
+        # self.ui.tableWidget.setParent(self.ui.centralwidget)
+        # self.ui.load_logs()
         self.dashboard_window.show()
 
 
