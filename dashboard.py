@@ -36,8 +36,8 @@ class Ui_Dashboard(object):
         # For Excel File
         self.file_name = ""
         self.file_path = ""
-        self.folder_name = "logs"
-        self.folder_path = rf"C:\Users\SampleUser\Desktop\{self.folder_name}"  # Change this to your own file path
+        self.folder_name = "Analytics"
+        self.folder_path = rf"C:\Users\Sample\Desktop\{self.folder_name}"  # Change this to your own file path
 
     def setupUi(self, MainWindow):
         self.MainWindow = MainWindow
@@ -55,7 +55,6 @@ class Ui_Dashboard(object):
         # self.tableWidget = QTableWidget(self.centralwidget)
         # self.tableWidget.setGeometry(QtCore.QRect(310, 150, 850, 450))
         # self.tableWidget.setObjectName("tableWidget")
-
 
         scroll_area = QScrollArea()
         scroll_area.setWidgetResizable(True)
@@ -260,19 +259,16 @@ class Ui_Dashboard(object):
         self.searchComboBox.addItem("LABORATORY SCHOOL")
         self.searchComboBox.currentTextChanged.connect(self.search_logs)
 
-
         self.searchLabel = QtWidgets.QLabel(self.centralwidget)
         self.searchLabel.setGeometry(QtCore.QRect(710, 95, 70, 30))
         self.searchLabel.setObjectName("searchLabel")
         self.searchLabel.setText("Department:")
 
-
-        #BARCHART
+        # BARCHART
         self.barChart = QtWidgets.QWidget(self.centralwidget)
         self.barChart.setGeometry(QtCore.QRect(385, 180, 700, 400))
         self.barChart.setObjectName("barChart")
         self.barChartLayout = QtWidgets.QVBoxLayout(self.barChart)
-
 
         MainWindow.setCentralWidget(self.centralwidget)
         self.menubar = QtWidgets.QMenuBar(MainWindow)
@@ -297,8 +293,13 @@ class Ui_Dashboard(object):
 
     def retranslateUi(self, MainWindow):
         _translate = QtCore.QCoreApplication.translate
-        MainWindow.setWindowTitle(_translate("MainWindow", "MainWindow"))
-        self.label_9.setText(_translate("MainWindow", "Admin Panel"))
+        MainWindow.setWindowTitle(
+            _translate(
+                "MainWindow",
+                "PASS: Personalized Authentication and Student Surveillance",
+            )
+        )
+        self.label_9.setText(_translate("MainWindow", "      PASS"))
         self.dashboardBtn.setText(_translate("MainWindow", "Dashboard"))
         self.logsBtn.setText(_translate("MainWindow", "Logs"))
         self.faceRecognitionBtn.setText(_translate("MainWindow", "Facial Recognition"))
@@ -309,12 +310,6 @@ class Ui_Dashboard(object):
         self.aboutBtn.setText(_translate("MainWindow", "About System"))
         self.exitBtn.setText(_translate("MainWindow", "Exit"))
         self.exitBtn_2.setText(_translate("MainWindow", "Logout"))
-        self.label.setText(
-            _translate(
-                "MainWindow",
-                "PASS: Personalized Authentication and Student Surveillance",
-            )
-        )
         self.label_10.setText(_translate("MainWindow", "Dashboard"))
 
     # def load_logs(self):
@@ -396,15 +391,13 @@ class Ui_Dashboard(object):
 
     #     cursor.close()
 
-        # Schedule the next update after 1 second
-        # QTimer.singleShot(1000, self.load_logs)
-
+    # Schedule the next update after 1 second
+    # QTimer.singleShot(1000, self.load_logs)
 
     def start_loading_students(self):
         # Start loading the students initially
         # self.load_logs()
         print("Load Students")
-
 
     def open_facial_recognition(self):
         from facial_recognition import FacialRecognitionWindow
@@ -448,7 +441,6 @@ class Ui_Dashboard(object):
         self.ui.setupUi(self.admin_login_window)
         self.admin_login_window.show()
 
-
     def open_logs(self):
         print("Opening Logs...")
         self.MainWindow.hide()
@@ -459,102 +451,148 @@ class Ui_Dashboard(object):
         self.ui.load_logs()
         self.logs_window.show()
 
-
     def search_logs(self):
-        selected_department = self.searchComboBox.currentText()
+        self.selected_department = self.searchComboBox.currentText()
+        current_date = datetime.now().date()
 
         # Connect to the MySQL database
         connection = pymysql.connect(
-            host='localhost',
-            user='root',
-            password='',
-            database='pass_db'
+            host="localhost", user="root", password="", database="pass_db"
         )
+        self.categories = []
+        self.male_log_counts = []
+        self.female_log_counts = []
 
         try:
-            # Execute the query and fetch the age and gender data
+            # Execute the query and fetch the gender and gender data
             cursor = connection.cursor()
-            query = f"SELECT gender, COUNT(tbl_logs.id) AS count FROM tbl_student LEFT JOIN tbl_logs ON tbl_logs.student_id = tbl_student.id WHERE department = '{selected_department}' GROUP BY gender"
+            query = f"SELECT \
+                        s.course, \
+                        SUM(CASE WHEN s.gender = 'male' THEN 1 ELSE 0 END) AS male_log_count, \
+                        SUM(CASE WHEN s.gender = 'female' THEN 1 ELSE 0 END) AS female_log_count \
+                    FROM \
+                        tbl_student s \
+                    JOIN \
+                        tbl_logs l ON s.id = l.student_id \
+                    WHERE s.department = '{self.selected_department}' AND l.date_log = '{current_date}' AND l.log_type = 'LOGGED_IN' \
+                    GROUP BY s.course"
             cursor.execute(query)
-            genders = []
-            male_counts = []
-            female_counts = []
-            for row in cursor.fetchall():
-                gender, count = row
-                genders.append(gender)
-                if gender == 'Male':
-                    female_counts.append(int(count))
-                    female_counts.append(0)
-                else:
-                    male_counts.append(0)
-                    male_counts.append(int(count))
+            if cursor.rowcount > 0:
+                for row in cursor.fetchall():
+                    course, male_counts, female_counts = row
+                    self.categories.append(course)
+                    self.male_log_counts.append(male_counts)
+                    self.female_log_counts.append(female_counts)
 
-            for i in reversed(range(self.barChartLayout.count())):
-                self.barChartLayout.itemAt(i).widget().setParent(None)
-
-            if gender and (male_counts or female_counts):
-                fig, ax = plt.subplots()
-                width = 0.35
-                male_bar = ax.bar(genders, male_counts, width, label='Male')
-                female_bar = ax.bar(genders, female_counts, width, bottom=male_counts, label='Female')
-                ax.set_xlabel(selected_department)
-                ax.set_ylabel('Log Count')
-                ax.set_title('')
-                ax.tick_params(axis='x')
-                ax.set_xticks(genders)
-                ax.legend()
-
-                canvas = FigureCanvas(fig)
-                self.barChartLayout.addWidget(canvas)
-                canvas.draw()
+            else:
+                self.male_log_counts = [0]
+                self.female_log_counts = [0]
 
         finally:
             connection.close()
 
+        for i in reversed(range(self.barChartLayout.count())):
+            self.barChartLayout.itemAt(i).widget().setParent(None)
+
+        figure, ax = plt.subplots()
+
+        self.draw_bar_graph(ax)
+
+        canvas = FigureCanvas(figure)
+
+        self.barChartLayout.addWidget(canvas)
+
+    def draw_bar_graph(self, ax):
+        bar_width = 0.35
+        x = np.arange(len(self.categories))
+
+        ax.clear()
+
+        ax.bar(
+            x - bar_width / 2,
+            self.male_log_counts,
+            width=bar_width,
+            label="Male",
+            color="#4F81BD",
+        )
+        ax.bar(
+            x + bar_width / 2,
+            self.female_log_counts,
+            width=bar_width,
+            label="Female",
+            color="#C0504D",
+        )
+
+        yvalue = ax.get_ybound()[1]
+        ax.set_xlabel("Courses")
+        ax.set_ylabel("Count")
+        ax.set_ybound(upper=(yvalue * 2) / 1.5)
+        ax.set_title(f"Logs Analytics for {self.selected_department} Department")
+        ax.set_xticks(x)
+        ax.set_xticklabels(self.categories)
+        ax.legend()
+
     def export_data_to_excel(self):
+        from openpyxl.chart import BarChart, Reference
+
         # Connect to the MySQL database
+        current_date = datetime.now().date()
         connection = pymysql.connect(
             host="localhost", user="root", password="", database="pass_db"
         )
 
         try:
-            # Create a cursor object to execute SQL queries
+            # Execute the query and fetch the gender and gender data
             cursor = connection.cursor()
+            query = f"SELECT \
+                        s.course, \
+                        SUM(CASE WHEN s.gender = 'male' THEN 1 ELSE 0 END) AS male_log_count, \
+                        SUM(CASE WHEN s.gender = 'female' THEN 1 ELSE 0 END) AS female_log_count \
+                    FROM \
+                        tbl_student s \
+                    JOIN \
+                        tbl_logs l ON s.id = l.student_id \
+                    WHERE s.department = '{self.selected_department}' AND l.date_log = '{current_date}' AND l.log_type = 'LOGGED_IN' \
+                    GROUP BY s.course"
+            cursor.execute(query)
+            chart_data = cursor.fetchall()
 
-            # Retrieve data from the tbl_student table
-            select_query = "SELECT CONCAT(tbl_student.first_name, ' ', tbl_student.last_name) AS student_name, tbl_student.course, tbl_student.sr_code, tbl_logs.date_log, tbl_logs.time_log FROM tbl_logs LEFT JOIN tbl_student ON tbl_logs.student_id = tbl_student.id"
-            cursor.execute(select_query)
-            student_data = cursor.fetchall()
+            categories = ("Course", "Male", "Female")
+            rows = [categories]  # Column headers for excel file
+            for row in chart_data:
+                rows.append(row)
 
             # Create a new Excel workbook and select the active sheet
-            workbook = openpyxl.Workbook()
-            sheet = workbook.active
+            workbook = openpyxl.Workbook(write_only=True)
+            sheet = workbook.create_sheet()
 
-            # Write the column headers
-            sheet["A1"] = "Student Name"
-            sheet["B1"] = "Course"
-            sheet["C1"] = "SR Code"
-            sheet["D1"] = "Date Log"
-            sheet["E1"] = "Time Log"
+            for _ in rows:
+                sheet.append(_)
 
-            # Set column width for date columns
-            date_columns = ["D", "E"]  # Columns D and E represent the date columns
-            for column in date_columns:
-                sheet.column_dimensions[
-                    column
-                ].width = 15  # Adjust the width as per your preference
+            # Bar Chart Config
+            chart1 = BarChart()
+            chart1.type = "col"
+            chart1.style = 10
+            chart1.title = "Dashboard"
+            chart1.y_axis.title = "Count"
+            chart1.x_axis.title = "Courses"
+            chart1.height = 10
+            chart1.width = 20
 
-            for row_index, student in enumerate(student_data, start=2):
-                sheet.cell(row=row_index, column=1).value = student[0]
-                sheet.cell(row=row_index, column=2).value = student[1]
-                sheet.cell(row=row_index, column=3).value = student[2]
-                sheet.cell(row=row_index, column=4).value = student[3]
-                sheet.cell(row=row_index, column=5).value = student[4]
+            chart_data = Reference(
+                sheet, min_col=2, min_row=1, max_row=len(rows), max_col=3
+            )
+            categories = Reference(sheet, min_col=1, min_row=2, max_row=len(rows))
+            chart1.add_data(chart_data, titles_from_data=True)
+            chart1.shape = 5
+            sheet.add_chart(chart1, "E2")
 
             # Save the Excel file
             current_datetime = datetime.now()
             formatted_datetime = current_datetime.strftime("%Y-%m-%d_%H-%M-%S")
-            self.file_name = f"logs_data_{formatted_datetime}.xlsx"
+            self.file_name = (
+                f"Analytics_{self.selected_department}_{formatted_datetime}.xlsx"
+            )
 
             # Save the Excel file inside the "folder_path" folder
             self.file_path = rf"{self.folder_path}\{self.file_name}"
