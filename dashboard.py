@@ -472,36 +472,43 @@ class Ui_Dashboard(object):
         )
 
         try:
-            # Execute the query and fetch the age and gender data
+            # Execute the query and fetch the course and gender data
             cursor = connection.cursor()
-            query = f"SELECT gender, COUNT(tbl_logs.id) AS count FROM tbl_student LEFT JOIN tbl_logs ON tbl_logs.student_id = tbl_student.id WHERE department = '{selected_department}' GROUP BY gender"
+            query = f"SELECT course, gender, COUNT(tbl_logs.id) AS count FROM tbl_student LEFT JOIN tbl_logs ON tbl_logs.student_id = tbl_student.id WHERE department = '{selected_department}' GROUP BY course, gender"
             cursor.execute(query)
-            genders = []
-            male_counts = []
-            female_counts = []
+
+            # Create dictionaries to store the data for plotting
+            data = {}
+            courses = set()
+
             for row in cursor.fetchall():
-                gender, count = row
-                genders.append(gender)
-                if gender == 'Male':
-                    female_counts.append(int(count))
-                    female_counts.append(0)
-                else:
-                    male_counts.append(0)
-                    male_counts.append(int(count))
+                course, gender, count = row
+                courses.add(course)
+
+                if course not in data:
+                    data[course] = {'Male': 0, 'Female': 0}
+
+                data[course][gender] = int(count)
 
             for i in reversed(range(self.barChartLayout.count())):
                 self.barChartLayout.itemAt(i).widget().setParent(None)
 
-            if gender and (male_counts or female_counts):
+            if courses:
                 fig, ax = plt.subplots()
                 width = 0.35
-                male_bar = ax.bar(genders, male_counts, width, label='Male')
-                female_bar = ax.bar(genders, female_counts, width, bottom=male_counts, label='Female')
-                ax.set_xlabel(selected_department)
+                x = range(len(courses))
+
+                male_counts = [data[course]['Male'] for course in courses]
+                female_counts = [data[course]['Female'] for course in courses]
+
+                male_bar = ax.bar(x, male_counts, width, label='Male')
+                female_bar = ax.bar(x, female_counts, width, label='Female', bottom=male_counts)
+
+                ax.set_xlabel('Course')
                 ax.set_ylabel('Log Count')
-                ax.set_title('')
-                ax.tick_params(axis='x')
-                ax.set_xticks(genders)
+                ax.set_title('Gender Distribution by Course')
+                ax.set_xticks(x)
+                ax.set_xticklabels(courses)
                 ax.legend()
 
                 canvas = FigureCanvas(fig)
@@ -510,6 +517,7 @@ class Ui_Dashboard(object):
 
         finally:
             connection.close()
+
 
     def export_data_to_excel(self):
         # Connect to the MySQL database
