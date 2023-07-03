@@ -138,7 +138,6 @@ class RegisterStudentWindow(object):
 
         self.pushButton.setObjectName("pushButton")
 
-
         self.pushButton2 = QtWidgets.QPushButton(self.frame)
         self.pushButton2.setGeometry(QtCore.QRect(40, 250, 221, 31))
         font = QtGui.QFont()
@@ -267,7 +266,6 @@ class RegisterStudentWindow(object):
         self.imageLabel.setText("Gender")
         self.imageLabel.setFont(font)
 
-
         self.comboBox1 = QtWidgets.QComboBox(self.frame_2)
         self.comboBox1.setGeometry(QtCore.QRect(380, 310, 211, 40))
         font = QtGui.QFont()
@@ -280,7 +278,6 @@ class RegisterStudentWindow(object):
         self.comboBox1.addItem("Male")
         self.comboBox1.addItem("Female")
 
-
         self.ageLabel = QtWidgets.QLabel(self.frame_2)
         self.ageLabel.setGeometry(QtCore.QRect(40, 410, 311, 31))
         font = QtGui.QFont()
@@ -292,7 +289,6 @@ class RegisterStudentWindow(object):
         self.ageLabel.setObjectName("ageLabel")
         self.ageLabel.setText("Age")
 
-
         self.imageLabel = QtWidgets.QLabel(self.frame_2)
         self.imageLabel.setGeometry(QtCore.QRect(40, 370, 311, 31))
         font = QtGui.QFont()
@@ -303,8 +299,6 @@ class RegisterStudentWindow(object):
         self.imageLabel.setStyleSheet("color: rgb(26, 26, 26);")
         self.imageLabel.setObjectName("imageLabel")
         self.imageLabel.setText("Student Image")
-
-
 
         self.uploadImageBtn = QtWidgets.QPushButton(self.frame_2)
         self.uploadImageBtn.setGeometry(QtCore.QRect(40, 400, 211, 40))
@@ -322,7 +316,7 @@ class RegisterStudentWindow(object):
         self.imageStatusLabel.setStyleSheet("color: rgb(26, 26, 26);")
 
         self.lastNameText = QtWidgets.QPlainTextEdit(self.frame_2)
-        self.lastNameText.setGeometry(QtCore.QRect(40, 230, 311, 31))   
+        self.lastNameText.setGeometry(QtCore.QRect(40, 230, 311, 31))
         font = QtGui.QFont()
         font.setFamily("Arial")
         font.setPointSize(12)
@@ -390,8 +384,6 @@ class RegisterStudentWindow(object):
         self.comboBox.addItem("BS in Physical Education")
         self.comboBox.addItem("BS in Teacher Education")
 
-
-
         self.addStudentBtn = QtWidgets.QPushButton(self.frame_2)
         self.addStudentBtn.setGeometry(QtCore.QRect(580, 440, 211, 31))
         font = QtGui.QFont()
@@ -432,8 +424,13 @@ class RegisterStudentWindow(object):
 
     def retranslateUi(self, MainWindow):
         _translate = QtCore.QCoreApplication.translate
-        MainWindow.setWindowTitle(_translate("MainWindow", "MainWindow"))
-        self.label_9.setText(_translate("MainWindow", "Admin Panel"))
+        MainWindow.setWindowTitle(
+            _translate(
+                "MainWindow",
+                "PASS: Personalized Authentication and Student Surveillance",
+            )
+        )
+        self.label_9.setText(_translate("MainWindow", "      PASS"))
         self.faceRecognitionBtn.setText(_translate("MainWindow", "Facial Recognition"))
         self.registerStudentBtn.setText(
             _translate("MainWindow", "Student Registration")
@@ -444,12 +441,6 @@ class RegisterStudentWindow(object):
         self.pushButton.setText(_translate("MainWindow", "Dashboard"))
         self.pushButton2.setText(_translate("MainWindow", "Logs"))
 
-        self.label.setText(
-            _translate(
-                "MainWindow",
-                "PASS: Personalized Authentication and Student Surveillance",
-            )
-        )
         self.label_10.setText(_translate("MainWindow", "Student Registration"))
         self.label_11.setText(_translate("MainWindow", "New Student Form"))
         self.label_12.setText(_translate("MainWindow", "First Name"))
@@ -495,7 +486,7 @@ class RegisterStudentWindow(object):
         course = self.comboBox.currentText()
         srcode = self.srcodetext.text()
         age = self.comboBox1.currentText()
-        image_path = self.imageFilePath  
+        image_path = self.imageFilePath
 
         if not (first_name and middle_name and last_name and srcode and image_path):
             print("Please provide all the required student details.")
@@ -504,19 +495,7 @@ class RegisterStudentWindow(object):
             dialog.exec_()
             return
 
-        department = ""
-        if course in ["BS in Accountancy", "BS in Management Accounting", "BS in Business Administration", "BS in Hospitality Management", "BS in Tourism Management"]:
-            department = "CABEIHM"
-        elif course in ["BA in Communication", "BS in Criminology", "BS in Food Technology", "BS in Psychology", "BS in Fisheries and Aquatic Sciences"]:
-            department = "CAS"
-        elif course in ["BS in Computer Science", "BS in Information Technology"]:
-            department = "CICS"
-        elif course in ["BS in Computer Engineering", "BS in Industrial Technology"]:
-            department = "CET"
-        elif course in ["BS in Nursing", "BS in Nutrition and Dietetics"]:
-            department = "CONAHS"
-        elif course in ["BS in Elementary Education", "BS in Secondary Education", "BS in Physical Education", "Professional Teacher Education"]:
-            department = "CTE"
+        department = self.get_department(course)
 
         db = pymysql.connect(host="localhost", user="root", password="", db="pass_db")
         cursor = db.cursor()
@@ -531,7 +510,9 @@ class RegisterStudentWindow(object):
         if image_path:
             image_filename = f"{first_name}-{last_name}-{student_id}{os.path.splitext(image_path)[1]}"
 
-            image_save_path = f"images/{image_filename}"  # Change 'img' to your desired folder path
+            image_save_path = (
+                f"images/{image_filename}"  # Change 'img' to your desired folder path
+            )
 
             # Save the image to the local drive
             os.rename(image_path, image_save_path)
@@ -557,6 +538,45 @@ class RegisterStudentWindow(object):
         # Clear the image file path
         self.imageFilePath = None
         encodegenerator()
+
+    def get_department(self, course):
+        departments = {
+            "CABEIHM": [
+                "BS in Accountancy",
+                "BS in Management Accounting",
+                "BS in Business Administration",
+                "BS in Hospitality Management",
+                "BS in Tourism Management",
+            ],
+            "CAS": [
+                "BA in Communication",
+                "BS in Criminology",
+                "BS in Food Technology",
+                "BS in Psychology",
+                "BS in Fisheries and Aquatic Sciences",
+            ],
+            "CICS": ["BS in Computer Science", "BS in Information Technology"],
+            "CET": ["BS in Computer Engineering", "BS in Industrial Technology"],
+            "CONAHS": ["BS in Nursing", "BS in Nutrition and Dietetics"],
+            "CTE": [
+                "BS in Elementary Education",
+                "BS in Secondary Education",
+                "BS in Physical Education",
+                "Professional Teacher Education",
+            ],
+        }
+        departments_casefold = {}
+
+        for key, value in departments.items():
+            departments_casefold[key] = [course.casefold() for course in value]
+
+        department = None
+        for dept, courses in departments_casefold.items():
+            if course.casefold() in courses:
+                department = dept
+                break
+
+        return department
 
     def open_dashboard(self):
         print("Opening Dashboard...")
@@ -596,7 +616,6 @@ class RegisterStudentWindow(object):
         # Load the students in the table
         self.ui.load_students()
         self.student_management_window.show()
-
 
     def open_logs(self):
         print("Opening Logs...")

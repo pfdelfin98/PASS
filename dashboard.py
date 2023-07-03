@@ -37,7 +37,7 @@ class Ui_Dashboard(object):
         self.file_name = ""
         self.file_path = ""
         self.folder_name = "Analytics"
-        self.folder_path = rf"C:\Users\SampleUser\Desktop\{self.folder_name}"  # Change this to your own file path
+        self.folder_path = rf"C:\Users\Sample\Desktop\{self.folder_name}"  # Change this to your own file path
 
     def setupUi(self, MainWindow):
         self.MainWindow = MainWindow
@@ -293,8 +293,13 @@ class Ui_Dashboard(object):
 
     def retranslateUi(self, MainWindow):
         _translate = QtCore.QCoreApplication.translate
-        MainWindow.setWindowTitle(_translate("MainWindow", "MainWindow"))
-        self.label_9.setText(_translate("MainWindow", "Admin Panel"))
+        MainWindow.setWindowTitle(
+            _translate(
+                "MainWindow",
+                "PASS: Personalized Authentication and Student Surveillance",
+            )
+        )
+        self.label_9.setText(_translate("MainWindow", "      PASS"))
         self.dashboardBtn.setText(_translate("MainWindow", "Dashboard"))
         self.logsBtn.setText(_translate("MainWindow", "Logs"))
         self.faceRecognitionBtn.setText(_translate("MainWindow", "Facial Recognition"))
@@ -305,12 +310,6 @@ class Ui_Dashboard(object):
         self.aboutBtn.setText(_translate("MainWindow", "About System"))
         self.exitBtn.setText(_translate("MainWindow", "Exit"))
         self.exitBtn_2.setText(_translate("MainWindow", "Logout"))
-        self.label.setText(
-            _translate(
-                "MainWindow",
-                "PASS: Personalized Authentication and Student Surveillance",
-            )
-        )
         self.label_10.setText(_translate("MainWindow", "Dashboard"))
 
     # def load_logs(self):
@@ -553,7 +552,7 @@ class Ui_Dashboard(object):
                         tbl_student s \
                     JOIN \
                         tbl_logs l ON s.id = l.student_id \
-                    WHERE s.department = '{self.selected_department}' AND l.date_log = {current_date} AND l.log_type = 'LOGGED_IN' \
+                    WHERE s.department = '{self.selected_department}' AND l.date_log = '{current_date}' AND l.log_type = 'LOGGED_IN' \
                     GROUP BY s.course"
             cursor.execute(query)
             chart_data = cursor.fetchall()
@@ -585,7 +584,6 @@ class Ui_Dashboard(object):
             )
             categories = Reference(sheet, min_col=1, min_row=2, max_row=len(rows))
             chart1.add_data(chart_data, titles_from_data=True)
-            chart1.set_categories(categories)
             chart1.shape = 5
             sheet.add_chart(chart1, "E2")
 
