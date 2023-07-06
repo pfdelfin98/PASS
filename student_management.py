@@ -159,7 +159,6 @@ class StudentManagementWindow(object):
 
         self.pushButton.setObjectName("pushButton")
 
-
         self.pushButton2 = QtWidgets.QPushButton(self.frame)
         self.pushButton2.setGeometry(QtCore.QRect(40, 250, 221, 31))
         font = QtGui.QFont()
@@ -234,8 +233,13 @@ class StudentManagementWindow(object):
 
     def retranslateUi(self, MainWindow):
         _translate = QtCore.QCoreApplication.translate
-        MainWindow.setWindowTitle(_translate("MainWindow", "Student Management"))
-        self.label_9.setText(_translate("MainWindow", "Admin Panel"))
+        MainWindow.setWindowTitle(
+            _translate(
+                "MainWindow",
+                "PASS: Personalized Authentication and Student Surveillance",
+            )
+        )
+        self.label_9.setText(_translate("MainWindow", "      PASS"))
         self.pushButton.setText(_translate("MainWindow", "Dashboard"))
         self.pushButton2.setText(_translate("MainWindow", "Logs"))
         self.faceRecognitionBtn.setText(_translate("MainWindow", "Facial Recognition"))
@@ -245,19 +249,12 @@ class StudentManagementWindow(object):
         self.studentMgmtBtn.setText(_translate("MainWindow", "Student Management"))
         self.exitBtn.setText(_translate("MainWindow", "Exit"))
         self.exitBtn_2.setText(_translate("MainWindow", "Logout"))
-        self.label.setText(
-            _translate(
-                "MainWindow",
-                "PASS: Personalized Authentication and Student Surveillance",
-            )
-        )
         self.label_10.setText(_translate("MainWindow", "Student Management"))
 
     def load_students(self):
         if self.search_has_input:
+            return
 
-            return 
-        
         connection = pymysql.connect(
             host="localhost", user="root", password="", db="pass_db"
         )
@@ -325,7 +322,6 @@ class StudentManagementWindow(object):
         # # Schedule the next update after 1 second
         # QTimer.singleShot(1000, self.load_students)
 
-
     def search_logs(self, search_text, load_students=True):
         connection = pymysql.connect(
             host="localhost", user="root", password="", db="pass_db"
@@ -338,7 +334,7 @@ class StudentManagementWindow(object):
         else:
             self.search_has_input = False
             QTimer.singleShot(1000, self.load_students)
-            
+
         query = """
         SELECT id, first_name, middle_name, last_name, course, sr_code, gender
         FROM tbl_student
@@ -348,7 +344,9 @@ class StudentManagementWindow(object):
             OR course LIKE %s
         """
         search_pattern = f"%{search_text}%"  # Add wildcards for partial matching
-        cursor.execute(query, (search_pattern, search_pattern, search_pattern, search_pattern))
+        cursor.execute(
+            query, (search_pattern, search_pattern, search_pattern, search_pattern)
+        )
         students = cursor.fetchall()
 
         row_count = len(students)
@@ -442,8 +440,6 @@ class StudentManagementWindow(object):
         # self.ui.tableWidget.setParent(self.ui.centralwidget)
         # self.ui.load_logs()
         self.dashboard_window.show()
-
-
 
     def open_logs(self):
         print("Opening Logs...")

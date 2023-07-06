@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1
--- Generation Time: Jul 06, 2023 at 05:58 PM
+-- Generation Time: Jul 03, 2023 at 04:25 AM
 -- Server version: 10.4.27-MariaDB
 -- PHP Version: 8.2.0
 
@@ -51,7 +51,7 @@ CREATE TABLE `tbl_logs` (
   `student_id` int(11) NOT NULL,
   `date_log` date NOT NULL DEFAULT current_timestamp(),
   `time_log` time NOT NULL DEFAULT current_timestamp(),
-  `log_type` text NOT NULL
+  `log_type` char(50) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 -- --------------------------------------------------------
@@ -70,6 +70,8 @@ CREATE TABLE `tbl_student` (
   `gender` text NOT NULL,
   `department` text NOT NULL,
   `image` text NOT NULL,
+  `gender` varchar(50) NOT NULL,
+  `department` varchar(50) NOT NULL,
   `status` text NOT NULL DEFAULT 'Active',
   `date_created` datetime NOT NULL DEFAULT current_timestamp()
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
@@ -120,13 +122,13 @@ ALTER TABLE `tbl_admin`
 -- AUTO_INCREMENT for table `tbl_logs`
 --
 ALTER TABLE `tbl_logs`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=6;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;
 
 --
 -- AUTO_INCREMENT for table `tbl_student`
 --
 ALTER TABLE `tbl_student`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=21;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;
 COMMIT;
 
 /*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;

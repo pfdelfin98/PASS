@@ -4,10 +4,15 @@ import pymysql
 import dashboard
 from error_login import ErrorDialog
 
+
 class Ui_MainWindow(object):
     def setupUi(self, MainWindow):
-        self.MainWindow = MainWindow 
-        MainWindow.setWindowFlags(MainWindow.windowFlags() & ~QtCore.Qt.WindowMinimizeButtonHint & ~QtCore.Qt.WindowMaximizeButtonHint)
+        self.MainWindow = MainWindow
+        MainWindow.setWindowFlags(
+            MainWindow.windowFlags()
+            & ~QtCore.Qt.WindowMinimizeButtonHint
+            & ~QtCore.Qt.WindowMaximizeButtonHint
+        )
         MainWindow.setObjectName("MainWindow")
         MainWindow.resize(917, 600)
         MainWindow.setStyleSheet("background-color: rgb(247, 247, 247);")
@@ -36,8 +41,10 @@ class Ui_MainWindow(object):
         font.setPointSize(11)
         font.setBold(True)
         self.label_6.setFont(font)
-        self.label_6.setStyleSheet("color: rgb(255, 255, 255);\n" "text-align: center;\n")
-      
+        self.label_6.setStyleSheet(
+            "color: rgb(255, 255, 255);\n" "text-align: center;\n"
+        )
+
         self.label_6.setObjectName("label_6")
         self.label_7 = QtWidgets.QLabel(self.frame)
         self.label_7.setGeometry(QtCore.QRect(53, 340, 381, 41))
@@ -46,7 +53,9 @@ class Ui_MainWindow(object):
         font.setPointSize(11)
         font.setBold(True)
         self.label_7.setFont(font)
-        self.label_7.setStyleSheet("color: rgb(255, 255, 255);\n" "text-align: center;\n")
+        self.label_7.setStyleSheet(
+            "color: rgb(255, 255, 255);\n" "text-align: center;\n"
+        )
         self.label_7.setObjectName("label_7")
         self.label_8 = QtWidgets.QLabel(self.frame)
         self.label_8.setGeometry(QtCore.QRect(73, 370, 381, 41))
@@ -55,7 +64,9 @@ class Ui_MainWindow(object):
         font.setPointSize(11)
         font.setBold(True)
         self.label_8.setFont(font)
-        self.label_8.setStyleSheet("color: rgb(255, 255, 255);\n" "text-align: center;\n")
+        self.label_8.setStyleSheet(
+            "color: rgb(255, 255, 255);\n" "text-align: center;\n"
+        )
         self.label_8.setObjectName("label_8")
         self.label_4 = QtWidgets.QLabel(self.frame)
         self.label_4.setGeometry(QtCore.QRect(130, 60, 170, 160))
@@ -65,8 +76,9 @@ class Ui_MainWindow(object):
         self.label_4.setObjectName("label_4")
         self.frame_2 = QtWidgets.QFrame(self.centralwidget)
         self.frame_2.setGeometry(QtCore.QRect(470, 70, 391, 411))
-        self.frame_2.setStyleSheet("background-color: rgb(255, 255, 255);\n"
-"border-radius: 5px;")
+        self.frame_2.setStyleSheet(
+            "background-color: rgb(255, 255, 255);\n" "border-radius: 5px;"
+        )
         self.frame_2.setFrameShape(QtWidgets.QFrame.StyledPanel)
         self.frame_2.setFrameShadow(QtWidgets.QFrame.Raised)
         self.frame_2.setObjectName("frame_2")
@@ -76,8 +88,9 @@ class Ui_MainWindow(object):
         font.setFamily("Arial")
         font.setPointSize(12)
         self.usernameText.setFont(font)
-        self.usernameText.setStyleSheet("border-radius:5px;\n"
-"background-color: rgb(247, 247, 247);")
+        self.usernameText.setStyleSheet(
+            "border-radius:5px;\n" "background-color: rgb(247, 247, 247);"
+        )
         self.usernameText.setObjectName("usernameText")
         self.label_2 = QtWidgets.QLabel(self.frame_2)
         self.label_2.setGeometry(QtCore.QRect(40, 110, 131, 21))
@@ -100,8 +113,9 @@ class Ui_MainWindow(object):
         font = QtGui.QFont()
         font.setFamily("Arial")
         self.lineEdit.setFont(font)
-        self.lineEdit.setStyleSheet("border-radius:5px;\n"
-"background-color: rgb(247, 247, 247);")
+        self.lineEdit.setStyleSheet(
+            "border-radius:5px;\n" "background-color: rgb(247, 247, 247);"
+        )
         self.lineEdit.setEchoMode(QtWidgets.QLineEdit.Password)
         self.lineEdit.setObjectName("lineEdit")
         self.loginButton = QtWidgets.QPushButton(self.frame_2)
@@ -112,9 +126,11 @@ class Ui_MainWindow(object):
         font.setKerning(True)
         self.loginButton.setFont(font)
         self.loginButton.setAutoFillBackground(False)
-        self.loginButton.setStyleSheet("background-color: rgb(255, 80, 80);\n"
-"color: rgb(255, 255, 255);\n"
-"border-radius: 5px;")
+        self.loginButton.setStyleSheet(
+            "background-color: rgb(255, 80, 80);\n"
+            "color: rgb(255, 255, 255);\n"
+            "border-radius: 5px;"
+        )
         self.loginButton.setAutoDefault(False)
         self.loginButton.setDefault(False)
         self.loginButton.setFlat(False)
@@ -138,16 +154,24 @@ class Ui_MainWindow(object):
 
         self.retranslateUi(MainWindow)
         QtCore.QMetaObject.connectSlotsByName(MainWindow)
-      
+
         self.loginButton.clicked.connect(self.login)
 
     def retranslateUi(self, MainWindow):
         _translate = QtCore.QCoreApplication.translate
         MainWindow.setWindowTitle(_translate("MainWindow", "MainWindow"))
         self.label_5.setText(_translate("MainWindow", "Welcome to PASS!"))
-        self.label_6.setText(_translate("MainWindow", "Personalized Authentication and Student Surveillance"))
-        self.label_7.setText(_translate("MainWindow", "A Face Recognition and Detection System"))
-        self.label_8.setText(_translate("MainWindow", "for Real-Time Student Identification."))
+        self.label_6.setText(
+            _translate(
+                "MainWindow", "Personalized Authentication and Student Surveillance"
+            )
+        )
+        self.label_7.setText(
+            _translate("MainWindow", "A Face Recognition and Detection System")
+        )
+        self.label_8.setText(
+            _translate("MainWindow", "for Real-Time Student Identification.")
+        )
         self.usernameText.setPlaceholderText(_translate("MainWindow", "Username"))
         self.label_2.setText(_translate("MainWindow", "Usename"))
         self.label.setText(_translate("MainWindow", "Login"))
@@ -155,17 +179,13 @@ class Ui_MainWindow(object):
         self.loginButton.setText(_translate("MainWindow", "Login"))
         self.label_3.setText(_translate("MainWindow", "Password"))
 
-
     def login(self):
         # Get the entered username and password
         username = self.usernameText.toPlainText()
         password = self.lineEdit.text()
 
         # Perform database connection and login validation
-        db = pymysql.connect(host='localhost',
-                             user='root',
-                             password='',
-                             db='pass_db')
+        db = pymysql.connect(host="localhost", user="root", password="", db="pass_db")
         cursor = db.cursor()
 
         # Perform the login query
@@ -194,11 +214,9 @@ class Ui_MainWindow(object):
         self.dashboard_window = QtWidgets.QMainWindow()
         self.ui = dashboard.Ui_Dashboard()
         self.ui.setupUi(self.dashboard_window)
-        self.ui.tableWidget.setParent(self.ui.centralwidget)
-        self.ui.load_logs()
+        # self.ui.tableWidget.setParent(self.ui.centralwidget)
+        # self.ui.load_logs()
         self.dashboard_window.show()
-
-
 
 
 if __name__ == "__main__":
@@ -208,4 +226,3 @@ if __name__ == "__main__":
     ui.setupUi(MainWindow)
     MainWindow.show()
     sys.exit(app.exec_())
-
