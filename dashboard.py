@@ -464,7 +464,7 @@ class Ui_Dashboard(object):
         self.female_log_counts = []
 
         try:
-            # Execute the query and fetch the gender and gender data
+            # Execute the query and fetch the course and gender data
             cursor = connection.cursor()
             query = f"SELECT \
                         s.course, \
