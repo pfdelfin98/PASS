@@ -13,12 +13,14 @@ import register_student
 import student_management
 import admin_login
 import dashboard
+import archive_management
 from edit_student import EditStudentDialog
 from delete_student import DeleteStudentDialog
 from view_logs import ViewLogsDialog
 from PyQt5.QtCore import QTimer
 from datetime import datetime
-
+from archive_student import DeleteStudentDialog
+from archive_management import ArchiveManagementWindow
 
 class StudentManagementWindow(object):
     def __init__(self) -> None:
@@ -36,23 +38,28 @@ class StudentManagementWindow(object):
             & ~QtCore.Qt.WindowMaximizeButtonHint
         )
         MainWindow.setObjectName("MainWindow")
-        MainWindow.resize(1200, 700)
+                # MainWindow.resize(1200, 700)
+        self.MainWindow.showMaximized()
+        MainWindow.setWindowFlags(
+            MainWindow.windowFlags()
+            & ~QtCore.Qt.WindowCloseButtonHint  # Remove the close button
+        )
         self.imageFilePath = None
         self.centralwidget = QtWidgets.QWidget(MainWindow)
         self.centralwidget.setObjectName("centralwidget")
         # Add table widget
         self.tableWidget = QTableWidget(self.centralwidget)
-        self.tableWidget.setGeometry(QtCore.QRect(310, 150, 850, 450))
+        self.tableWidget.setGeometry(QtCore.QRect(310, 150, 1240, 600))
         self.tableWidget.setObjectName("tableWidget")
 
         self.searchLineEdit = QtWidgets.QLineEdit(self.centralwidget)
-        self.searchLineEdit.setGeometry(QtCore.QRect(780, 95, 200, 30))
+        self.searchLineEdit.setGeometry(QtCore.QRect(1050, 95, 200, 30))
         self.searchLineEdit.setObjectName("searchLineEdit")
         self.searchLineEdit.textChanged.connect(self.search_logs)
         self.search_has_input = False
 
         self.searchLabel = QtWidgets.QLabel(self.centralwidget)
-        self.searchLabel.setGeometry(QtCore.QRect(730, 95, 70, 30))
+        self.searchLabel.setGeometry(QtCore.QRect(1000, 95, 70, 30))
         self.searchLabel.setObjectName("searchLabel")
         self.searchLabel.setText("Search:")
 
@@ -65,7 +72,7 @@ class StudentManagementWindow(object):
         self.label_4 = QtWidgets.QLabel(self.frame)
         self.label_4.setGeometry(QtCore.QRect(80, 20, 101, 91))
         self.label_4.setText("")
-        self.label_4.setPixmap(QtGui.QPixmap("img/logo.png"))
+        self.label_4.setPixmap(QtGui.QPixmap("img/logo2.png"))
         self.label_4.setScaledContents(True)
         self.label_4.setObjectName("label_4")
         self.label_9 = QtWidgets.QLabel(self.frame)
@@ -175,19 +182,19 @@ class StudentManagementWindow(object):
 
         self.pushButton2.setObjectName("pushButton2")
 
-        self.frame_3 = QtWidgets.QFrame(self.centralwidget)
-        self.frame_3.setGeometry(QtCore.QRect(261, -1, 2000, 61))
-        self.frame_3.setStyleSheet("background-color: rgb(255, 255, 255);")
-        self.frame_3.setFrameShape(QtWidgets.QFrame.StyledPanel)
-        self.frame_3.setFrameShadow(QtWidgets.QFrame.Raised)
-        self.frame_3.setObjectName("frame_3")
-        self.label = QtWidgets.QLabel(self.frame_3)
-        self.label.setGeometry(QtCore.QRect(20, 10, 671, 41))
-        font = QtGui.QFont()
-        font.setFamily("Arial")
-        font.setPointSize(12)
-        self.label.setFont(font)
-        self.label.setObjectName("label")
+        # self.frame_3 = QtWidgets.QFrame(self.centralwidget)
+        # self.frame_3.setGeometry(QtCore.QRect(261, -1, 2000, 61))
+        # self.frame_3.setStyleSheet("background-color: rgb(255, 255, 255);")
+        # self.frame_3.setFrameShape(QtWidgets.QFrame.StyledPanel)
+        # self.frame_3.setFrameShadow(QtWidgets.QFrame.Raised)
+        # self.frame_3.setObjectName("frame_3")
+        # self.label = QtWidgets.QLabel(self.frame_3)
+        # self.label.setGeometry(QtCore.QRect(20, 10, 671, 41))
+        # font = QtGui.QFont()
+        # font.setFamily("Arial")
+        # font.setPointSize(12)
+        # self.label.setFont(font)
+        # self.label.setObjectName("label")
         self.label_10 = QtWidgets.QLabel(self.centralwidget)
         self.label_10.setGeometry(QtCore.QRect(310, 90, 301, 51))
         font = QtGui.QFont()
@@ -199,14 +206,55 @@ class StudentManagementWindow(object):
         self.label_10.setStyleSheet("color:black;")
         self.label_10.setObjectName("label_10")
 
+
+        archivesButton = QtWidgets.QPushButton(self.centralwidget)
+        archivesButton.setGeometry(QtCore.QRect(1280, 90, 121, 40))
+        archivesButton.setObjectName("archivesButton")
+        archivesButton.setText("Archives")
+        archivesButton.setStyleSheet(
+            '''
+            QPushButton {
+                background-color: #dc3545;  
+                border: none;
+                color: white;
+                padding: 8px 16px;
+                border-radius: 4px;
+                font-family: Arial;
+                font-size: 8pt;
+            }
+
+            QPushButton:hover {
+                background-color: #c82333;  
+            }
+            '''
+        )
+        archivesButton.clicked.connect(self.open_archives)
+
         self.exportDataBtn = QtWidgets.QPushButton(self.centralwidget)
-        self.exportDataBtn.setGeometry(QtCore.QRect(1035, 90, 121, 40))
+        self.exportDataBtn.setGeometry(QtCore.QRect(1420, 90, 121, 40))
         font = QtGui.QFont()
         font.setFamily("Arial")
         font.setPointSize(8)
         self.exportDataBtn.setFont(font)
         self.exportDataBtn.setObjectName("exportDataBtn")
         self.exportDataBtn.setText("Export Data")
+        self.exportDataBtn.setStyleSheet(
+            '''
+            QPushButton {
+                background-color: #dc3545;  
+                border: none;
+                color: white;
+                padding: 8px 16px;
+                border-radius: 4px;
+                font-family: Arial;
+                font-size: 8pt;
+            }
+
+            QPushButton:hover {
+                background-color: #c82333;  
+            }
+            '''
+        )
         self.exportDataBtn.clicked.connect(self.export_data_to_excel)
 
         MainWindow.setCentralWidget(self.centralwidget)
@@ -234,8 +282,8 @@ class StudentManagementWindow(object):
 
     def retranslateUi(self, MainWindow):
         _translate = QtCore.QCoreApplication.translate
-        MainWindow.setWindowTitle(_translate("MainWindow", "Student Management"))
-        self.label_9.setText(_translate("MainWindow", "Admin Panel"))
+        MainWindow.setWindowTitle(_translate("MainWindow", "Personalized Authentication and Student Screening"))
+        self.label_9.setText(_translate("MainWindow", "      PASS"))
         self.pushButton.setText(_translate("MainWindow", "Dashboard"))
         self.pushButton2.setText(_translate("MainWindow", "Logs"))
         self.faceRecognitionBtn.setText(_translate("MainWindow", "Facial Recognition"))
@@ -245,12 +293,12 @@ class StudentManagementWindow(object):
         self.studentMgmtBtn.setText(_translate("MainWindow", "Student Management"))
         self.exitBtn.setText(_translate("MainWindow", "Exit"))
         self.exitBtn_2.setText(_translate("MainWindow", "Logout"))
-        self.label.setText(
-            _translate(
-                "MainWindow",
-                "PASS: Personalized Authentication and Student Surveillance",
-            )
-        )
+        # self.label.setText(
+        #     _translate(
+        #         "MainWindow",
+        #         "PASS: Personalized Authentication and Student Surveillance",
+        #     )
+        # )
         self.label_10.setText(_translate("MainWindow", "Student Management"))
 
     def load_students(self):
@@ -267,7 +315,7 @@ class StudentManagementWindow(object):
         cursor = connection.cursor()
 
         # Fetch student data from the database
-        query = "SELECT id, first_name, middle_name, last_name, course, sr_code, gender FROM tbl_student"
+        query = "SELECT id, first_name, middle_name, last_name, course, sr_code, gender FROM tbl_student where status = 'Active'"
         cursor.execute(query)
         students = cursor.fetchall()
 
@@ -284,10 +332,10 @@ class StudentManagementWindow(object):
             "Last Name",
             "Course",
             "SR Code",
-            "Gender",
+            "Sex",
             "View Logs",
             "Edit",
-            "Delete",
+            "Archive",
         ]
         self.tableWidget.setHorizontalHeaderLabels(header_labels)
 
@@ -304,12 +352,48 @@ class StudentManagementWindow(object):
             edit_button.clicked.connect(
                 lambda checked, student_id=student_id: self.edit_student(student_id)
             )
+            edit_button.setStyleSheet(
+                '''
+                QPushButton {
+                    background-color: #007bff;  /* Bootstrap primary color */
+                    border: none;
+                    color: white;
+                    padding: 8px 16px;
+                    border-radius: 4px;
+                    font-family: Arial;
+                    font-size: 8pt;
+                }
+
+                QPushButton:hover {
+                    background-color: #0069d9;  /* Darker shade on hover */
+                }
+                '''
+            )
+
+
             self.tableWidget.setCellWidget(i, column_count - 2, edit_button)
 
             # Create and set the delete button
-            delete_button = QPushButton("Delete")
+            delete_button = QPushButton("Archive")
             delete_button.clicked.connect(
-                lambda checked, student_id=student_id: self.delete_student(student_id)
+                lambda checked, student_id=student_id: self.archive_student(student_id)
+            )
+            delete_button.setStyleSheet(
+                '''
+                QPushButton {
+                    background-color: #dc3545;  
+                    border: none;
+                    color: white;
+                    padding: 8px 16px;
+                    border-radius: 4px;
+                    font-family: Arial;
+                    font-size: 8pt;
+                }
+
+                QPushButton:hover {
+                    background-color: #c82333;  /* Darker shade on hover */
+                }
+                '''
             )
             self.tableWidget.setCellWidget(i, column_count - 1, delete_button)
 
@@ -317,6 +401,23 @@ class StudentManagementWindow(object):
             view_logs_button = QPushButton("View Logs")
             view_logs_button.clicked.connect(
                 lambda checked, student_id=student_id: self.view_logs(student_id)
+            )
+            view_logs_button.setStyleSheet(
+                '''
+                QPushButton {
+                    background-color: #17a2b8;  /* Bootstrap info color */
+                    border: none;
+                    color: white;
+                    padding: 8px 16px;
+                    border-radius: 4px;
+                    font-family: Arial;
+                    font-size: 8pt;
+                }
+
+                QPushButton:hover {
+                    background-color: #138496;  /* Darker shade on hover */
+                }
+                '''
             )
             self.tableWidget.setCellWidget(i, column_count - 3, view_logs_button)
 
@@ -342,7 +443,7 @@ class StudentManagementWindow(object):
         query = """
         SELECT id, first_name, middle_name, last_name, course, sr_code, gender
         FROM tbl_student
-        WHERE first_name LIKE %s
+        WHERE status = 'Active' and first_name LIKE %s
             OR last_name LIKE %s
             OR sr_code LIKE %s
             OR course LIKE %s
@@ -362,17 +463,17 @@ class StudentManagementWindow(object):
             "Middle Name",
             "Last Name",
             "Course",
-            "Gender",
             "SR Code",
+            "Sex",
             "View Logs",
             "Edit",
-            "Delete",
+            "Archive",
         ]
         self.tableWidget.setHorizontalHeaderLabels(header_labels)
 
         for i, student in enumerate(students):
             student_id = student[0]  # Get the student ID
-            for j in range(column_count - 4):  # Adjust the range
+            for j in range(column_count - 3):  # Adjust the range
                 item = QTableWidgetItem(
                     str(student[j + 1])
                 )  # Update the index of the student details
@@ -383,21 +484,72 @@ class StudentManagementWindow(object):
             edit_button.clicked.connect(
                 lambda checked, student_id=student_id: self.edit_student(student_id)
             )
-            self.tableWidget.setCellWidget(i, column_count - 3, edit_button)
+            edit_button.setStyleSheet(
+                '''
+                QPushButton {
+                    background-color: #007bff;  /* Bootstrap primary color */
+                    border: none;
+                    color: white;
+                    padding: 8px 16px;
+                    border-radius: 4px;
+                    font-family: Arial;
+                    font-size: 8pt;
+                }
+
+                QPushButton:hover {
+                    background-color: #0069d9;  /* Darker shade on hover */
+                }
+                '''
+            )
+            self.tableWidget.setCellWidget(i, column_count - 2, edit_button)
 
             # Create and set the delete button
-            delete_button = QPushButton("Delete")
+            delete_button = QPushButton("Archive")
             delete_button.clicked.connect(
-                lambda checked, student_id=student_id: self.delete_student(student_id)
+                lambda checked, student_id=student_id: self.archive_student(student_id)
             )
-            self.tableWidget.setCellWidget(i, column_count - 2, delete_button)
+            delete_button.setStyleSheet(
+                '''
+                QPushButton {
+                    background-color: #dc3545;  
+                    border: none;
+                    color: white;
+                    padding: 8px 16px;
+                    border-radius: 4px;
+                    font-family: Arial;
+                    font-size: 8pt;
+                }
+
+                QPushButton:hover {
+                    background-color: #c82333;  /* Darker shade on hover */
+                }
+                '''
+            )
+            self.tableWidget.setCellWidget(i, column_count - 1, delete_button)
 
             # Create and set the delete button
             view_logs_button = QPushButton("View Logs")
             view_logs_button.clicked.connect(
                 lambda checked, student_id=student_id: self.view_logs(student_id)
             )
-            self.tableWidget.setCellWidget(i, column_count - 4, view_logs_button)
+            view_logs_button.setStyleSheet(
+                '''
+                QPushButton {
+                    background-color: #17a2b8;  /* Bootstrap info color */
+                    border: none;
+                    color: white;
+                    padding: 8px 16px;
+                    border-radius: 4px;
+                    font-family: Arial;
+                    font-size: 8pt;
+                }
+
+                QPushButton:hover {
+                    background-color: #138496;  /* Darker shade on hover */
+                }
+                '''
+            )
+            self.tableWidget.setCellWidget(i, column_count - 3, view_logs_button)
 
         cursor.close()
         connection.close()
@@ -427,6 +579,13 @@ class StudentManagementWindow(object):
         dialog.setupUi(student_id)
         dialog.exec_()
 
+    def archive_student(self, student_id):
+        print("Archive Student ID:", student_id)
+        dialog = DeleteStudentDialog()
+        dialog.setupUi(student_id)
+        dialog.exec_()
+
+
     def open_dashboard(self):
         print("Opening Dashboard...")
         # self.MainWindow.hide()
@@ -454,6 +613,16 @@ class StudentManagementWindow(object):
         self.ui.tableWidget.setParent(self.ui.centralwidget)
         self.ui.load_logs()
         self.logs_window.show()
+
+    def open_archives(self):
+        print("Opening Archives...")
+        self.MainWindow.hide()
+        self.archives_window = QtWidgets.QMainWindow()
+        self.ui = archive_management.ArchiveManagementWindow()
+        self.ui.setupUi(self.archives_window)
+        self.ui.tableWidget.setParent(self.ui.centralwidget)
+        self.ui.load_students()
+        self.archives_window.show()
 
     def open_facial_recognition(self):
         from facial_recognition import FacialRecognitionWindow

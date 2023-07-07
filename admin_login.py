@@ -9,7 +9,7 @@ class Ui_MainWindow(object):
         self.MainWindow = MainWindow 
         MainWindow.setWindowFlags(MainWindow.windowFlags() & ~QtCore.Qt.WindowMinimizeButtonHint & ~QtCore.Qt.WindowMaximizeButtonHint)
         MainWindow.setObjectName("MainWindow")
-        MainWindow.resize(917, 600)
+        self.MainWindow.showMaximized()
         MainWindow.setStyleSheet("background-color: rgb(247, 247, 247);")
         self.centralwidget = QtWidgets.QWidget(MainWindow)
         self.centralwidget.setObjectName("centralwidget")
@@ -60,7 +60,7 @@ class Ui_MainWindow(object):
         self.label_4 = QtWidgets.QLabel(self.frame)
         self.label_4.setGeometry(QtCore.QRect(130, 60, 170, 160))
         self.label_4.setText("")
-        self.label_4.setPixmap(QtGui.QPixmap("img/logo.png"))
+        self.label_4.setPixmap(QtGui.QPixmap("img/logo2.png"))
         self.label_4.setScaledContents(True)
         self.label_4.setObjectName("label_4")
         self.frame_2 = QtWidgets.QFrame(self.centralwidget)

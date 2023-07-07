@@ -52,13 +52,13 @@ class ArchiveManagementWindow(object):
         self.tableWidget.setObjectName("tableWidget")
 
         self.searchLineEdit = QtWidgets.QLineEdit(self.centralwidget)
-        self.searchLineEdit.setGeometry(QtCore.QRect(1200, 95, 200, 30))
+        self.searchLineEdit.setGeometry(QtCore.QRect(1350, 95, 200, 30))
         self.searchLineEdit.setObjectName("searchLineEdit")
         self.searchLineEdit.textChanged.connect(self.search_logs)
         self.search_has_input = False
 
         self.searchLabel = QtWidgets.QLabel(self.centralwidget)
-        self.searchLabel.setGeometry(QtCore.QRect(1150, 95, 70, 30))
+        self.searchLabel.setGeometry(QtCore.QRect(1300, 95, 70, 30))
         self.searchLabel.setObjectName("searchLabel")
         self.searchLabel.setText("Search:")
 
@@ -326,22 +326,23 @@ class ArchiveManagementWindow(object):
             delete_button.clicked.connect(
                 lambda checked, student_id=student_id: self.delete_student(student_id)
             )
-            delete_button.setStyleSheet('''
+            delete_button.setStyleSheet(
+                '''
                 QPushButton {
-                    background-color: #dc3545; 
-                    color: #ffffff; /* Text color */
+                    background-color: #dc3545;  
                     border: none;
+                    color: white;
                     padding: 8px 16px;
-                    font-size: 12px;
-                    font-weight: bold;
+                    border-radius: 4px;
+                    font-family: Arial;
+                    font-size: 8pt;
                 }
+
                 QPushButton:hover {
-                    background-color: #c82333; /* Hover color */
+                    background-color: #c82333;  /* Darker shade on hover */
                 }
-                QPushButton:pressed {
-                    background-color: #bd2130; /* Pressed color */
-                }
-            ''')
+                '''
+            )
             self.tableWidget.setCellWidget(i, column_count - 1, delete_button)
 
             # Create and set the delete button
@@ -349,22 +350,23 @@ class ArchiveManagementWindow(object):
             view_logs_button.clicked.connect(
                 lambda checked, student_id=student_id: self.restore_student(student_id)
             )
-            view_logs_button.setStyleSheet('''
+            view_logs_button.setStyleSheet(
+                '''
                 QPushButton {
-                    background-color: #17a2b8; 
-                    color: #ffffff; /* Text color */
+                    background-color: #17a2b8;  /* Bootstrap info color */
                     border: none;
+                    color: white;
                     padding: 8px 16px;
-                    font-size: 12px;
-                    font-weight: bold;
+                    border-radius: 4px;
+                    font-family: Arial;
+                    font-size: 8pt;
                 }
+
                 QPushButton:hover {
-                    background-color: #138496; /* Hover color */
+                    background-color: #138496;  /* Darker shade on hover */
                 }
-                QPushButton:pressed {
-                    background-color: #117a8b; /* Pressed color */
-                }
-            ''')
+                '''
+            )
             self.tableWidget.setCellWidget(i, column_count - 2, view_logs_button)
 
         cursor.close()
