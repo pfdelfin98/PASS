@@ -25,6 +25,7 @@ from PyQt5.QtWidgets import (
 import openpyxl
 from datetime import datetime
 import matplotlib.pyplot as plt
+import auto_export_reset as auto
 
 
 class Logs(object):
@@ -35,8 +36,44 @@ class Logs(object):
         # For Excel File
         self.file_name = ""
         self.file_path = ""
-        self.folder_name = "logs"
+        self.folder_name = "Logs"
         self.folder_path = rf"C:\Users\SampleUser\Desktop\{self.folder_name}"  # Change this to your own file path
+
+        # Export and Delete Analytics Every Monday (Check Every Second)
+        self.day_of_export = auto.AutomaticExportResetLogs().day_of_export
+        self.timer_second = 2
+        self.timer = QTimer()
+        self.timer.timeout.connect(self.analytics_reset_export_check)
+        self.timer.start(self.timer_second * 1000)  # Execute every set self.time_second
+
+    def analytics_reset_export_check(self):
+        print(self.day_of_export)
+        auto_export = auto.AutomaticExportResetLogs()
+
+        current_date = datetime.now().date()
+        prev_sunday = current_date - timedelta(days=1)
+        prev_monday = current_date - timedelta(days=7)
+        current_weekday = current_date.weekday()
+
+        if auto.DAYS_IN_WEEK[current_weekday] == self.day_of_export:
+            if auto_export.check_if_logs_found(
+                prev_sunday=prev_sunday, prev_monday=prev_monday
+            ):
+                print("Exporting...")
+                auto_export.export_logs(
+                    prev_sunday=prev_sunday, prev_monday=prev_monday
+                )
+                auto_export.export_delete_analytics(
+                    prev_sunday=prev_sunday, prev_monday=prev_monday
+                )
+                print("Exporting Done!")
+            else:
+                self.timer.stop()
+                return
+        else:
+            print(f"Today is not {self.day_of_export}")
+            self.timer.stop()
+            return
 
     def setupUi(self, MainWindow):
         self.MainWindow = MainWindow

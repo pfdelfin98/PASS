@@ -14,12 +14,13 @@ import student_management
 import admin_login
 import dashboard
 import archive_management
+import auto_export_reset as auto
 from about_dialog import AboutDialog
 from edit_student import EditStudentDialog
 from delete_student import DeleteStudentDialog
 from view_logs import ViewLogsDialog
 from PyQt5.QtCore import QTimer
-from datetime import datetime
+from datetime import datetime, timedelta
 from archive_student import DeleteStudentDialog
 from archive_management import ArchiveManagementWindow
 
@@ -31,6 +32,41 @@ class StudentManagementWindow(object):
         self.file_path = ""
         self.folder_name = "student_logs"
         self.folder_path = rf"C:\Users\SampleUser\Desktop\{self.folder_name}"  # Change this to your own file path
+        # Export and Delete Analytics Every Monday (Check Every Second)
+        self.day_of_export = auto.AutomaticExportResetLogs().day_of_export
+        self.timer_second = 2
+        self.timer = QTimer()
+        self.timer.timeout.connect(self.analytics_reset_export_check)
+        self.timer.start(self.timer_second * 1000)  # Execute every set self.time_second
+
+    def analytics_reset_export_check(self):
+        print(self.day_of_export)
+        auto_export = auto.AutomaticExportResetLogs()
+
+        current_date = datetime.now().date()
+        prev_sunday = current_date - timedelta(days=1)
+        prev_monday = current_date - timedelta(days=7)
+        current_weekday = current_date.weekday()
+
+        if auto.DAYS_IN_WEEK[current_weekday] == self.day_of_export:
+            if auto_export.check_if_logs_found(
+                prev_sunday=prev_sunday, prev_monday=prev_monday
+            ):
+                print("Exporting...")
+                auto_export.export_logs(
+                    prev_sunday=prev_sunday, prev_monday=prev_monday
+                )
+                auto_export.export_delete_analytics(
+                    prev_sunday=prev_sunday, prev_monday=prev_monday
+                )
+                print("Exporting Done!")
+            else:
+                self.timer.stop()
+                return
+        else:
+            print(f"Today is not {self.day_of_export}")
+            self.timer.stop()
+            return
 
     def setupUi(self, MainWindow):
         self.MainWindow = MainWindow

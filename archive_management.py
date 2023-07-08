@@ -18,7 +18,8 @@ from delete_student import DeleteStudentDialog
 from restore_student import RestoreStudentDialog
 from view_logs import ViewLogsDialog
 from PyQt5.QtCore import QTimer
-from datetime import datetime
+from datetime import datetime, timedelta
+import auto_export_reset as auto
 
 
 class ArchiveManagementWindow(object):
@@ -28,6 +29,42 @@ class ArchiveManagementWindow(object):
         self.file_path = ""
         self.folder_name = "student_logs"
         self.folder_path = rf"C:\Users\SampleUser\Desktop\{self.folder_name}"  # Change this to your own file path
+
+        # Export and Delete Analytics Every Monday (Check Every Second)
+        self.day_of_export = auto.AutomaticExportResetLogs().day_of_export
+        self.timer_second = 2
+        self.timer = QTimer()
+        self.timer.timeout.connect(self.analytics_reset_export_check)
+        self.timer.start(self.timer_second * 1000)  # Execute every set self.time_second
+
+    def analytics_reset_export_check(self):
+        print(self.day_of_export)
+        auto_export = auto.AutomaticExportResetLogs()
+
+        current_date = datetime.now().date()
+        prev_sunday = current_date - timedelta(days=1)
+        prev_monday = current_date - timedelta(days=7)
+        current_weekday = current_date.weekday()
+
+        if auto.DAYS_IN_WEEK[current_weekday] == self.day_of_export:
+            if auto_export.check_if_logs_found(
+                prev_sunday=prev_sunday, prev_monday=prev_monday
+            ):
+                print("Exporting...")
+                auto_export.export_logs(
+                    prev_sunday=prev_sunday, prev_monday=prev_monday
+                )
+                auto_export.export_delete_analytics(
+                    prev_sunday=prev_sunday, prev_monday=prev_monday
+                )
+                print("Exporting Done!")
+            else:
+                self.timer.stop()
+                return
+        else:
+            print(f"Today is not {self.day_of_export}")
+            self.timer.stop()
+            return
 
     def setupUi(self, MainWindow):
         self.MainWindow = MainWindow
@@ -216,7 +253,7 @@ class ArchiveManagementWindow(object):
         # # Apply stylesheet to the button
         # self.exportDataBtn.setStyleSheet('''
         #     QPushButton {
-        #         background-color: #dc3545; 
+        #         background-color: #dc3545;
         #         color: #ffffff; /* Text color */
         #         border: none;
         #         padding: 8px 16px;
@@ -320,14 +357,13 @@ class ArchiveManagementWindow(object):
                 )  # Update the index of the student details
                 self.tableWidget.setItem(i, j, item)  # Update the column index
 
-
             # Create and set the delete button
             delete_button = QPushButton("Delete")
             delete_button.clicked.connect(
                 lambda checked, student_id=student_id: self.delete_student(student_id)
             )
             delete_button.setStyleSheet(
-                '''
+                """
                 QPushButton {
                     background-color: #dc3545;  
                     border: none;
@@ -341,7 +377,7 @@ class ArchiveManagementWindow(object):
                 QPushButton:hover {
                     background-color: #c82333;  /* Darker shade on hover */
                 }
-                '''
+                """
             )
             self.tableWidget.setCellWidget(i, column_count - 1, delete_button)
 
@@ -351,7 +387,7 @@ class ArchiveManagementWindow(object):
                 lambda checked, student_id=student_id: self.restore_student(student_id)
             )
             view_logs_button.setStyleSheet(
-                '''
+                """
                 QPushButton {
                     background-color: #17a2b8;  /* Bootstrap info color */
                     border: none;
@@ -365,7 +401,7 @@ class ArchiveManagementWindow(object):
                 QPushButton:hover {
                     background-color: #138496;  /* Darker shade on hover */
                 }
-                '''
+                """
             )
             self.tableWidget.setCellWidget(i, column_count - 2, view_logs_button)
 
@@ -432,7 +468,8 @@ class ArchiveManagementWindow(object):
             delete_button.clicked.connect(
                 lambda checked, student_id=student_id: self.delete_student(student_id)
             )
-            delete_button.setStyleSheet('''
+            delete_button.setStyleSheet(
+                """
                 QPushButton {
                     background-color: #dc3545; 
                     color: #ffffff; /* Text color */
@@ -447,7 +484,8 @@ class ArchiveManagementWindow(object):
                 QPushButton:pressed {
                     background-color: #bd2130; /* Pressed color */
                 }
-            ''')
+            """
+            )
             self.tableWidget.setCellWidget(i, column_count - 1, delete_button)
 
             # Create and set the delete button
@@ -455,7 +493,8 @@ class ArchiveManagementWindow(object):
             view_logs_button.clicked.connect(
                 lambda checked, student_id=student_id: self.restore_student(student_id)
             )
-            view_logs_button.setStyleSheet('''
+            view_logs_button.setStyleSheet(
+                """
                 QPushButton {
                     background-color: #17a2b8; 
                     color: #ffffff; /* Text color */
@@ -470,7 +509,8 @@ class ArchiveManagementWindow(object):
                 QPushButton:pressed {
                     background-color: #117a8b; /* Pressed color */
                 }
-            ''')
+            """
+            )
             self.tableWidget.setCellWidget(i, column_count - 2, view_logs_button)
 
         cursor.close()

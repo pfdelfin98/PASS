@@ -10,19 +10,55 @@ import logs
 import pymysql
 from PyQt5.QtWidgets import QFileDialog
 from PyQt5 import QtCore, QtGui, QtWidgets
-import face_recognition
-from PyQt5.QtWidgets import QMainWindow, QTableWidget, QTableWidgetItem
-import register_student
-import cv2
-import pickle
-import numpy as np
+from PyQt5.QtCore import QTimer
 from about_dialog import AboutDialog
 from success_dialog import SuccessDialog
 from error_dialog2 import ErrorDialog
 from error_image import ErrorImageDialog
 
+from datetime import datetime, timedelta
+
+import auto_export_reset as auto
+
 
 class RegisterStudentWindow(object):
+    def __init__(self):
+        # Export and Delete Analytics Every Monday (Check Every Second)
+        self.day_of_export = auto.AutomaticExportResetLogs().day_of_export
+        self.timer_second = 2
+        self.timer = QTimer()
+        self.timer.timeout.connect(self.analytics_reset_export_check)
+        self.timer.start(self.timer_second * 1000)  # Execute every set self.time_second
+
+    def analytics_reset_export_check(self):
+        print(self.day_of_export)
+        auto_export = auto.AutomaticExportResetLogs()
+
+        current_date = datetime.now().date()
+        prev_sunday = current_date - timedelta(days=1)
+        prev_monday = current_date - timedelta(days=7)
+        current_weekday = current_date.weekday()
+
+        if auto.DAYS_IN_WEEK[current_weekday] == self.day_of_export:
+            if auto_export.check_if_logs_found(
+                prev_sunday=prev_sunday, prev_monday=prev_monday
+            ):
+                print("Exporting...")
+                auto_export.export_logs(
+                    prev_sunday=prev_sunday, prev_monday=prev_monday
+                )
+                auto_export.export_delete_analytics(
+                    prev_sunday=prev_sunday, prev_monday=prev_monday
+                )
+                print("Exporting Done!")
+            else:
+                self.timer.stop()
+                return
+        else:
+            print(f"Today is not {self.day_of_export}")
+            self.timer.stop()
+            return
+
     def setupUi(self, MainWindow):
         self.MainWindow = MainWindow
         MainWindow.setWindowFlags(
