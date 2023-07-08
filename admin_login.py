@@ -9,7 +9,6 @@ class Ui_MainWindow(object):
         self.MainWindow = MainWindow 
         MainWindow.setWindowFlags(MainWindow.windowFlags() & ~QtCore.Qt.WindowMinimizeButtonHint & ~QtCore.Qt.WindowMaximizeButtonHint)
         MainWindow.setObjectName("MainWindow")
-        self.MainWindow.showMaximized()
         MainWindow.setStyleSheet("background-color: rgb(247, 247, 247);")
         self.centralwidget = QtWidgets.QWidget(MainWindow)
         self.centralwidget.setObjectName("centralwidget")
