@@ -26,6 +26,7 @@ import openpyxl
 from datetime import datetime
 from matplotlib import pyplot as plt
 from matplotlib.backends.backend_qt5agg import FigureCanvasQTAgg as FigureCanvas
+import auto_export_reset as auto
 
 
 class Ui_Dashboard(object):
@@ -37,7 +38,43 @@ class Ui_Dashboard(object):
         self.file_name = ""
         self.file_path = ""
         self.folder_name = "Analytics"
-        self.folder_path = rf"C:\Users\Sample\Desktop\{self.folder_name}"  # Change this to your own file path
+        self.folder_path = rf"C:\Users\Cj\Desktop\{self.folder_name}"  # Change this to your own file path
+
+        # Export and Delete Analytics Every Monday (Check Every Second)
+        self.day_of_export = auto.AutomaticExportResetLogs().day_of_export
+        self.timer_second = 2
+        self.timer = QTimer()
+        self.timer.timeout.connect(self.analytics_reset_export_check)
+        self.timer.start(self.timer_second * 1000)  # Execute every set self.time_second
+
+    def analytics_reset_export_check(self):
+        print(self.day_of_export)
+        auto_export = auto.AutomaticExportResetLogs()
+
+        current_date = datetime.now().date()
+        prev_sunday = current_date - timedelta(days=1)
+        prev_monday = current_date - timedelta(days=7)
+        current_weekday = current_date.weekday()
+
+        if auto.DAYS_IN_WEEK[current_weekday] == self.day_of_export:
+            if auto_export.check_if_logs_found(
+                prev_sunday=prev_sunday, prev_monday=prev_monday
+            ):
+                print("Exporting...")
+                auto_export.export_logs(
+                    prev_sunday=prev_sunday, prev_monday=prev_monday
+                )
+                auto_export.export_delete_analytics(
+                    prev_sunday=prev_sunday, prev_monday=prev_monday
+                )
+                print("Exporting Done!")
+            else:
+                self.timer.stop()
+                return
+        else:
+            print(f"Today is not {self.day_of_export}")
+            self.timer.stop()
+            return
 
     def setupUi(self, MainWindow):
         self.MainWindow = MainWindow
@@ -340,88 +377,6 @@ class Ui_Dashboard(object):
         # )
         self.label_10.setText(_translate("MainWindow", "Dashboard"))
 
-    # def load_logs(self):
-
-    #     connection = pymysql.connect(
-    #         host="localhost", user="root", password="", db="pass_db"
-    #     )
-    #     cursor = connection.cursor()
-
-    #     delete_query = "DELETE FROM tbl_logs WHERE date_log < %s"
-    #     week_ago = datetime.now() - timedelta(days=7)
-    #     cursor.execute(delete_query, (week_ago.date(),))
-    #     connection.commit()
-
-    #     query = "SELECT  tbl_student.image, tbl_student.first_name, tbl_student.last_name, tbl_student.course, tbl_student.sr_code, tbl_logs.date_log, tbl_logs.time_log, tbl_logs.log_type FROM tbl_logs LEFT JOIN tbl_student ON tbl_logs.student_id = tbl_student.id"
-    #     cursor.execute(query)
-    #     logs = cursor.fetchall()
-
-    #     row_count = len(logs)
-    #     column_count = 8  # Increase the column count for the image column
-
-    #     self.tableWidget.setRowCount(row_count)
-    #     self.tableWidget.setColumnCount(column_count)
-
-    #     header_labels = [
-    #         "Image",
-    #         "First Name",
-    #         "Last Name",
-    #         "Course",
-    #         "SR Code",
-    #         "Date Log",
-    #         "Time Log",
-    #         "Log Type",
-    #     ]
-    #     self.tableWidget.setHorizontalHeaderLabels(header_labels)
-
-    #     for row, log in enumerate(logs):
-    #         (
-    #             image_filename,
-    #             first_name,
-    #             last_name,
-    #             course,
-    #             sr_code,
-    #             date_log,
-    #             time_log,
-    #             log_type,
-    #         ) = log
-
-    #         # Create a QLabel and set the image pixmap
-    #         image_label = QLabel()
-    #         image_path = os.path.join("images", str(image_filename))
-    #         pixmap = QPixmap(image_path)
-    #         if not pixmap.isNull():
-    #             # Calculate the size of the cell
-    #             cell_width = self.tableWidget.columnWidth(0)
-    #             cell_height = self.tableWidget.rowHeight(row)
-
-    #             # Resize the pixmap to fit the cell dimensions
-    #             scaled_pixmap = pixmap.scaled(
-    #                 cell_width, cell_height, Qt.AspectRatioMode.KeepAspectRatio
-    #             )
-
-    #             # Set the scaled pixmap on the image label
-    #             image_label.setPixmap(scaled_pixmap)
-    #             image_label.setAlignment(
-    #                 Qt.AlignCenter
-    #             )  # Center the image in the label
-
-    #         self.tableWidget.setCellWidget(row, 0, image_label)
-
-    #         self.tableWidget.setItem(row, 1, QTableWidgetItem(first_name))
-    #         self.tableWidget.setItem(row, 2, QTableWidgetItem(last_name))
-    #         self.tableWidget.setItem(row, 3, QTableWidgetItem(course))
-    #         self.tableWidget.setItem(row, 4, QTableWidgetItem(sr_code))
-
-    #         self.tableWidget.setItem(row, 5, QTableWidgetItem(str(date_log)))
-    #         self.tableWidget.setItem(row, 6, QTableWidgetItem(str(time_log)))
-    #         self.tableWidget.setItem(row, 7, QTableWidgetItem(log_type))
-
-    #     cursor.close()
-
-    # Schedule the next update after 1 second
-    # QTimer.singleShot(1000, self.load_logs)
-
     def start_loading_students(self):
         # Start loading the students initially
         # self.load_logs()
@@ -481,7 +436,6 @@ class Ui_Dashboard(object):
 
     def search_logs(self):
         self.selected_department = self.searchComboBox.currentText()
-        current_date = datetime.now().date()
 
         # Connect to the MySQL database
         connection = pymysql.connect(
@@ -502,7 +456,7 @@ class Ui_Dashboard(object):
                         tbl_student s \
                     JOIN \
                         tbl_logs l ON s.id = l.student_id \
-                    WHERE s.department = '{self.selected_department}' AND l.date_log = '{current_date}' AND l.log_type = 'LOGGED_IN' \
+                    WHERE s.department = '{self.selected_department}' AND WEEK(l.date_log) = WEEK(CURDATE()) AND l.log_type = 'LOGGED_IN' \
                     GROUP BY s.course"
             cursor.execute(query)
             if cursor.rowcount > 0:
@@ -575,18 +529,19 @@ class Ui_Dashboard(object):
             query = f"SELECT \
                         s.course, \
                         SUM(CASE WHEN s.gender = 'male' THEN 1 ELSE 0 END) AS male_log_count, \
-                        SUM(CASE WHEN s.gender = 'female' THEN 1 ELSE 0 END) AS female_log_count \
+                        SUM(CASE WHEN s.gender = 'female' THEN 1 ELSE 0 END) AS female_log_count, \
+                        SUM(CASE WHEN s.gender = 'male' OR s.gender = 'female' THEN 1 ELSE 0 END) AS total_log_count \
                     FROM \
                         tbl_student s \
                     JOIN \
                         tbl_logs l ON s.id = l.student_id \
-                    WHERE s.department = '{self.selected_department}' AND l.date_log = '{current_date}' AND l.log_type = 'LOGGED_IN' \
+                    WHERE s.department = '{self.selected_department}' AND WEEK(l.date_log) = WEEK(CURDATE()) AND l.log_type = 'LOGGED_IN' \
                     GROUP BY s.course"
             cursor.execute(query)
             chart_data = cursor.fetchall()
 
-            categories = ("Course", "Male", "Female")
-            rows = [categories]  # Column headers for excel file
+            header = ("Course", "Male", "Female", "Total Logs")
+            rows = [header]  # Column headers for excel file
             for row in chart_data:
                 rows.append(row)
 
@@ -613,7 +568,7 @@ class Ui_Dashboard(object):
             categories = Reference(sheet, min_col=1, min_row=2, max_row=len(rows))
             chart1.add_data(chart_data, titles_from_data=True)
             chart1.shape = 5
-            sheet.add_chart(chart1, "E2")
+            sheet.add_chart(chart1, "F2")
 
             # Save the Excel file
             current_datetime = datetime.now()
