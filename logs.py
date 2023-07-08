@@ -47,24 +47,28 @@ class Logs(object):
         )
 
         MainWindow.setObjectName("MainWindow")
-        MainWindow.resize(1200, 700)
+        self.MainWindow.showMaximized()
+        MainWindow.setWindowFlags(
+            MainWindow.windowFlags()
+            & ~QtCore.Qt.WindowCloseButtonHint  # Remove the close button
+        )
         self.centralwidget = QtWidgets.QWidget(MainWindow)
         self.centralwidget.setObjectName("centralwidget")
         # Add table widget
         self.tableWidget = QTableWidget(self.centralwidget)
-        self.tableWidget.setGeometry(QtCore.QRect(310, 150, 850, 450))
+        self.tableWidget.setGeometry(QtCore.QRect(310, 150, 1240, 450))
         self.tableWidget.setObjectName("tableWidget")
 
         # search bar
         self.searchLineEdit = QtWidgets.QLineEdit(self.centralwidget)
-        self.searchLineEdit.setGeometry(QtCore.QRect(780, 95, 200, 30))
+        self.searchLineEdit.setGeometry(QtCore.QRect(1180, 95, 200, 30))
         self.searchLineEdit.setObjectName("searchLineEdit")
         self.searchLineEdit.textChanged.connect(self.search_logs)
 
         self.search_has_input = False
 
         self.searchLabel = QtWidgets.QLabel(self.centralwidget)
-        self.searchLabel.setGeometry(QtCore.QRect(730, 95, 70, 30))
+        self.searchLabel.setGeometry(QtCore.QRect(1130, 95, 70, 30))
         self.searchLabel.setObjectName("searchLabel")
         self.searchLabel.setText("Search:")
 
@@ -79,7 +83,7 @@ class Logs(object):
         self.label_4 = QtWidgets.QLabel(self.frame)
         self.label_4.setGeometry(QtCore.QRect(80, 20, 101, 91))
         self.label_4.setText("")
-        self.label_4.setPixmap(QtGui.QPixmap("img/logo.png"))
+        self.label_4.setPixmap(QtGui.QPixmap("img/logo2.png"))
         self.label_4.setScaledContents(True)
         self.label_4.setObjectName("label_4")
         self.label_9 = QtWidgets.QLabel(self.frame)
@@ -225,19 +229,19 @@ class Logs(object):
         )
         self.aboutBtn.setObjectName("aboutBtn")
 
-        self.frame_3 = QtWidgets.QFrame(self.centralwidget)
-        self.frame_3.setGeometry(QtCore.QRect(261, -1, 2000, 61))
-        self.frame_3.setStyleSheet("background-color: rgb(255, 255, 255);")
-        self.frame_3.setFrameShape(QtWidgets.QFrame.StyledPanel)
-        self.frame_3.setFrameShadow(QtWidgets.QFrame.Raised)
-        self.frame_3.setObjectName("frame_3")
-        self.label = QtWidgets.QLabel(self.frame_3)
-        self.label.setGeometry(QtCore.QRect(20, 10, 671, 41))
-        font = QtGui.QFont()
-        font.setFamily("Arial")
-        font.setPointSize(12)
-        self.label.setFont(font)
-        self.label.setObjectName("label")
+        # self.frame_3 = QtWidgets.QFrame(self.centralwidget)
+        # self.frame_3.setGeometry(QtCore.QRect(261, -1, 2000, 61))
+        # self.frame_3.setStyleSheet("background-color: rgb(255, 255, 255);")
+        # self.frame_3.setFrameShape(QtWidgets.QFrame.StyledPanel)
+        # self.frame_3.setFrameShadow(QtWidgets.QFrame.Raised)
+        # self.frame_3.setObjectName("frame_3")
+        # self.label = QtWidgets.QLabel(self.frame_3)
+        # self.label.setGeometry(QtCore.QRect(20, 10, 671, 41))
+        # font = QtGui.QFont()
+        # font.setFamily("Arial")
+        # font.setPointSize(12)
+        # self.label.setFont(font)
+        # self.label.setObjectName("label")
         self.label_10 = QtWidgets.QLabel(self.centralwidget)
         self.label_10.setGeometry(QtCore.QRect(310, 90, 201, 51))
         font = QtGui.QFont()
@@ -250,13 +254,30 @@ class Logs(object):
         self.label_10.setObjectName("label_10")
 
         self.exportDataBtn = QtWidgets.QPushButton(self.centralwidget)
-        self.exportDataBtn.setGeometry(QtCore.QRect(1035, 90, 121, 40))
+        self.exportDataBtn.setGeometry(QtCore.QRect(1420, 90, 121, 40))
         font = QtGui.QFont()
         font.setFamily("Arial")
         font.setPointSize(8)
         self.exportDataBtn.setFont(font)
         self.exportDataBtn.setObjectName("exportDataBtn")
         self.exportDataBtn.setText("Export Data")
+        self.exportDataBtn.setStyleSheet(
+            """
+            QPushButton {
+                background-color: #dc3545;  
+                border: none;
+                color: white;
+                padding: 8px 16px;
+                border-radius: 4px;
+                font-family: Arial;
+                font-size: 8pt;
+            }
+
+            QPushButton:hover {
+                background-color: #c82333;  
+            }
+            """
+        )
         self.exportDataBtn.clicked.connect(self.export_data_to_excel)
 
         MainWindow.setCentralWidget(self.centralwidget)
@@ -299,6 +320,12 @@ class Logs(object):
         self.aboutBtn.setText(_translate("MainWindow", "About System"))
         self.exitBtn.setText(_translate("MainWindow", "Exit"))
         self.exitBtn_2.setText(_translate("MainWindow", "Logout"))
+        self.label.setText(
+            _translate(
+                "MainWindow",
+                "PASS: Personalized Authentication and Student Surveillance",
+            )
+        )
         self.label_10.setText(_translate("MainWindow", "Logs"))
 
     def load_logs(self):

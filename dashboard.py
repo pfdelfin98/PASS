@@ -48,7 +48,12 @@ class Ui_Dashboard(object):
         )
 
         MainWindow.setObjectName("MainWindow")
-        MainWindow.resize(1200, 700)
+        # MainWindow.resize(1200, 700)
+        self.MainWindow.showMaximized()
+        MainWindow.setWindowFlags(
+            MainWindow.windowFlags()
+            & ~QtCore.Qt.WindowCloseButtonHint  # Remove the close button
+        )
         self.centralwidget = QtWidgets.QWidget(MainWindow)
         self.centralwidget.setObjectName("centralwidget")
         # Add table widget
@@ -67,7 +72,7 @@ class Ui_Dashboard(object):
         self.label_4 = QtWidgets.QLabel(self.frame)
         self.label_4.setGeometry(QtCore.QRect(80, 20, 101, 91))
         self.label_4.setText("")
-        self.label_4.setPixmap(QtGui.QPixmap("img/logo.png"))
+        self.label_4.setPixmap(QtGui.QPixmap("img/logo2.png"))
         self.label_4.setScaledContents(True)
         self.label_4.setObjectName("label_4")
         self.label_9 = QtWidgets.QLabel(self.frame)
@@ -213,19 +218,19 @@ class Ui_Dashboard(object):
         )
         self.aboutBtn.setObjectName("aboutBtn")
 
-        self.frame_3 = QtWidgets.QFrame(self.centralwidget)
-        self.frame_3.setGeometry(QtCore.QRect(261, -1, 2000, 61))
-        self.frame_3.setStyleSheet("background-color: rgb(255, 255, 255);")
-        self.frame_3.setFrameShape(QtWidgets.QFrame.StyledPanel)
-        self.frame_3.setFrameShadow(QtWidgets.QFrame.Raised)
-        self.frame_3.setObjectName("frame_3")
-        self.label = QtWidgets.QLabel(self.frame_3)
-        self.label.setGeometry(QtCore.QRect(20, 10, 671, 41))
-        font = QtGui.QFont()
-        font.setFamily("Arial")
-        font.setPointSize(12)
-        self.label.setFont(font)
-        self.label.setObjectName("label")
+        # self.frame_3 = QtWidgets.QFrame(self.centralwidget)
+        # self.frame_3.setGeometry(QtCore.QRect(261, -1, 2000, 61))
+        # self.frame_3.setStyleSheet("background-color: rgb(255, 255, 255);")
+        # self.frame_3.setFrameShape(QtWidgets.QFrame.StyledPanel)
+        # self.frame_3.setFrameShadow(QtWidgets.QFrame.Raised)
+        # self.frame_3.setObjectName("frame_3")
+        # self.label = QtWidgets.QLabel(self.frame_3)
+        # self.label.setGeometry(QtCore.QRect(20, 10, 671, 41))
+        # font = QtGui.QFont()
+        # font.setFamily("Arial")
+        # font.setPointSize(12)
+        # self.label.setFont(font)
+        # self.label.setObjectName("label")
         self.label_10 = QtWidgets.QLabel(self.centralwidget)
         self.label_10.setGeometry(QtCore.QRect(310, 90, 201, 51))
         font = QtGui.QFont()
@@ -238,17 +243,34 @@ class Ui_Dashboard(object):
         self.label_10.setObjectName("label_10")
 
         self.exportDataBtn = QtWidgets.QPushButton(self.centralwidget)
-        self.exportDataBtn.setGeometry(QtCore.QRect(1035, 90, 121, 40))
+        self.exportDataBtn.setGeometry(QtCore.QRect(1420, 90, 121, 40))
         font = QtGui.QFont()
         font.setFamily("Arial")
         font.setPointSize(8)
         self.exportDataBtn.setFont(font)
         self.exportDataBtn.setObjectName("exportDataBtn")
         self.exportDataBtn.setText("Export Data")
+        self.exportDataBtn.setStyleSheet(
+            """
+            QPushButton {
+                background-color: #dc3545;  
+                border: none;
+                color: white;
+                padding: 8px 16px;
+                border-radius: 4px;
+                font-family: Arial;
+                font-size: 8pt;
+            }
+
+            QPushButton:hover {
+                background-color: #c82333;  
+            }
+            """
+        )
         self.exportDataBtn.clicked.connect(self.export_data_to_excel)
 
         self.searchComboBox = QtWidgets.QComboBox(self.centralwidget)
-        self.searchComboBox.setGeometry(QtCore.QRect(780, 95, 200, 30))
+        self.searchComboBox.setGeometry(QtCore.QRect(1180, 95, 200, 30))
         self.searchComboBox.setObjectName("searchComboBox")
         self.searchComboBox.addItem("CABEIHM")
         self.searchComboBox.addItem("CAS")
@@ -260,13 +282,13 @@ class Ui_Dashboard(object):
         self.searchComboBox.currentTextChanged.connect(self.search_logs)
 
         self.searchLabel = QtWidgets.QLabel(self.centralwidget)
-        self.searchLabel.setGeometry(QtCore.QRect(710, 95, 70, 30))
+        self.searchLabel.setGeometry(QtCore.QRect(1100, 95, 70, 30))
         self.searchLabel.setObjectName("searchLabel")
         self.searchLabel.setText("Department:")
 
         # BARCHART
         self.barChart = QtWidgets.QWidget(self.centralwidget)
-        self.barChart.setGeometry(QtCore.QRect(385, 180, 700, 400))
+        self.barChart.setGeometry(QtCore.QRect(385, 180, 1100, 500))
         self.barChart.setObjectName("barChart")
         self.barChartLayout = QtWidgets.QVBoxLayout(self.barChart)
 
@@ -310,6 +332,12 @@ class Ui_Dashboard(object):
         self.aboutBtn.setText(_translate("MainWindow", "About System"))
         self.exitBtn.setText(_translate("MainWindow", "Exit"))
         self.exitBtn_2.setText(_translate("MainWindow", "Logout"))
+        self.label.setText(
+            _translate(
+                "MainWindow",
+                "PASS: Personalized Authentication and Student Surveillance",
+            )
+        )
         self.label_10.setText(_translate("MainWindow", "Dashboard"))
 
     # def load_logs(self):
@@ -464,7 +492,7 @@ class Ui_Dashboard(object):
         self.female_log_counts = []
 
         try:
-            # Execute the query and fetch the gender and gender data
+            # Execute the query and fetch the course and gender data
             cursor = connection.cursor()
             query = f"SELECT \
                         s.course, \

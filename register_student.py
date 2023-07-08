@@ -30,7 +30,12 @@ class RegisterStudentWindow(object):
             & ~QtCore.Qt.WindowMaximizeButtonHint
         )
         MainWindow.setObjectName("MainWindow")
-        MainWindow.resize(1200, 700)
+        # MainWindow.resize(1200, 700)
+        self.MainWindow.showMaximized()
+        MainWindow.setWindowFlags(
+            MainWindow.windowFlags()
+            & ~QtCore.Qt.WindowCloseButtonHint  # Remove the close button
+        )
         self.imageFilePath = None
         self.centralwidget = QtWidgets.QWidget(MainWindow)
         self.centralwidget.setObjectName("centralwidget")
@@ -43,7 +48,7 @@ class RegisterStudentWindow(object):
         self.label_4 = QtWidgets.QLabel(self.frame)
         self.label_4.setGeometry(QtCore.QRect(80, 20, 101, 91))
         self.label_4.setText("")
-        self.label_4.setPixmap(QtGui.QPixmap("img/logo.png"))
+        self.label_4.setPixmap(QtGui.QPixmap("img/logo2.png"))
         self.label_4.setScaledContents(True)
         self.label_4.setObjectName("label_4")
         self.label_9 = QtWidgets.QLabel(self.frame)
@@ -153,19 +158,19 @@ class RegisterStudentWindow(object):
 
         self.pushButton2.setObjectName("pushButton2")
 
-        self.frame_3 = QtWidgets.QFrame(self.centralwidget)
-        self.frame_3.setGeometry(QtCore.QRect(261, -1, 2000, 70))
-        self.frame_3.setStyleSheet("background-color: rgb(255, 255, 255);")
-        self.frame_3.setFrameShape(QtWidgets.QFrame.StyledPanel)
-        self.frame_3.setFrameShadow(QtWidgets.QFrame.Raised)
-        self.frame_3.setObjectName("frame_3")
-        self.label = QtWidgets.QLabel(self.frame_3)
-        self.label.setGeometry(QtCore.QRect(20, 10, 671, 41))
-        font = QtGui.QFont()
-        font.setFamily("Arial")
-        font.setPointSize(12)
-        self.label.setFont(font)
-        self.label.setObjectName("label")
+        # self.frame_3 = QtWidgets.QFrame(self.centralwidget)
+        # self.frame_3.setGeometry(QtCore.QRect(261, -1, 2000, 70))
+        # self.frame_3.setStyleSheet("background-color: rgb(255, 255, 255);")
+        # self.frame_3.setFrameShape(QtWidgets.QFrame.StyledPanel)
+        # self.frame_3.setFrameShadow(QtWidgets.QFrame.Raised)
+        # self.frame_3.setObjectName("frame_3")
+        # self.label = QtWidgets.QLabel(self.frame_3)
+        # self.label.setGeometry(QtCore.QRect(20, 10, 671, 41))
+        # font = QtGui.QFont()
+        # font.setFamily("Arial")
+        # font.setPointSize(12)
+        # self.label.setFont(font)
+        # self.label.setObjectName("label")
         self.label_10 = QtWidgets.QLabel(self.centralwidget)
         self.label_10.setGeometry(QtCore.QRect(310, 80, 300, 51))
         font = QtGui.QFont()
@@ -177,7 +182,7 @@ class RegisterStudentWindow(object):
         self.label_10.setStyleSheet("color:black;")
         self.label_10.setObjectName("label_10")
         self.frame_2 = QtWidgets.QFrame(self.centralwidget)
-        self.frame_2.setGeometry(QtCore.QRect(310, 160, 821, 500))
+        self.frame_2.setGeometry(QtCore.QRect(310, 160, 1240, 500))
         self.frame_2.setStyleSheet("background-color: rgb(255, 255, 255);\n")
         self.frame_2.setFrameShape(QtWidgets.QFrame.StyledPanel)
         self.frame_2.setFrameShadow(QtWidgets.QFrame.Raised)
@@ -196,7 +201,7 @@ class RegisterStudentWindow(object):
         self.label_12.setGeometry(QtCore.QRect(40, 80, 161, 51))
         font = QtGui.QFont()
         font.setFamily("Arial")
-        font.setPointSize(12)
+        font.setPointSize(10)
         font.setBold(True)
         font.setWeight(75)
         self.label_12.setFont(font)
@@ -206,17 +211,17 @@ class RegisterStudentWindow(object):
         self.label_13.setGeometry(QtCore.QRect(380, 80, 161, 51))
         font = QtGui.QFont()
         font.setFamily("Arial")
-        font.setPointSize(12)
+        font.setPointSize(10)
         font.setBold(True)
         font.setWeight(75)
         self.label_13.setFont(font)
         self.label_13.setStyleSheet("color: rgb(26, 26, 26);")
         self.label_13.setObjectName("label_13")
         self.label_14 = QtWidgets.QLabel(self.frame_2)
-        self.label_14.setGeometry(QtCore.QRect(40, 180, 161, 51))
+        self.label_14.setGeometry(QtCore.QRect(740, 80, 161, 51))
         font = QtGui.QFont()
         font.setFamily("Arial")
-        font.setPointSize(12)
+        font.setPointSize(10)
         font.setBold(True)
         font.setWeight(75)
         self.label_14.setFont(font)
@@ -226,7 +231,7 @@ class RegisterStudentWindow(object):
         self.label_15.setGeometry(QtCore.QRect(380, 180, 161, 51))
         font = QtGui.QFont()
         font.setFamily("Arial")
-        font.setPointSize(12)
+        font.setPointSize(10)
         font.setBold(True)
         font.setWeight(75)
         self.label_15.setFont(font)
@@ -236,7 +241,7 @@ class RegisterStudentWindow(object):
         self.firstNameText.setGeometry(QtCore.QRect(40, 130, 311, 31))
         font = QtGui.QFont()
         font.setFamily("Arial")
-        font.setPointSize(12)
+        font.setPointSize(10)
         self.firstNameText.setFont(font)
         self.firstNameText.setStyleSheet(
             "border-radius:5px;\n" "background-color: rgb(247, 247, 247);"
@@ -247,7 +252,7 @@ class RegisterStudentWindow(object):
         self.middleNameText.setGeometry(QtCore.QRect(380, 130, 311, 31))
         font = QtGui.QFont()
         font.setFamily("Arial")
-        font.setPointSize(12)
+        font.setPointSize(10)
         self.middleNameText.setFont(font)
         self.middleNameText.setStyleSheet(
             "border-radius:5px;\n" "background-color: rgb(247, 247, 247);"
@@ -257,20 +262,20 @@ class RegisterStudentWindow(object):
 
         font = QtGui.QFont()
         font.setFamily("Arial")
-        font.setPointSize(12)
+        font.setPointSize(10)
         font.setBold(True)
 
         self.imageLabel = QtWidgets.QLabel(self.frame_2)
-        self.imageLabel.setGeometry(QtCore.QRect(380, 280, 211, 21))
+        self.imageLabel.setGeometry(QtCore.QRect(740, 190, 211, 21))
         self.imageLabel.setObjectName("imageLabel")
-        self.imageLabel.setText("Gender")
+        self.imageLabel.setText("Sex")
         self.imageLabel.setFont(font)
 
         self.comboBox1 = QtWidgets.QComboBox(self.frame_2)
-        self.comboBox1.setGeometry(QtCore.QRect(380, 310, 211, 40))
+        self.comboBox1.setGeometry(QtCore.QRect(740, 230, 311, 31))
         font = QtGui.QFont()
         font.setFamily("Arial")
-        font.setPointSize(12)
+        font.setPointSize(10)
         self.comboBox1.setFont(font)
         self.comboBox1.setStyleSheet(
             "border-radius:5px;\n" "background-color: rgb(247, 247, 247);"
@@ -278,22 +283,11 @@ class RegisterStudentWindow(object):
         self.comboBox1.addItem("Male")
         self.comboBox1.addItem("Female")
 
-        self.ageLabel = QtWidgets.QLabel(self.frame_2)
-        self.ageLabel.setGeometry(QtCore.QRect(40, 410, 311, 31))
-        font = QtGui.QFont()
-        font.setFamily("Arial")
-        font.setPointSize(12)
-        font.setBold(True)
-        self.ageLabel.setFont(font)
-        self.ageLabel.setStyleSheet("color: rgb(26, 26, 26);")
-        self.ageLabel.setObjectName("ageLabel")
-        self.ageLabel.setText("Age")
-
         self.imageLabel = QtWidgets.QLabel(self.frame_2)
-        self.imageLabel.setGeometry(QtCore.QRect(40, 370, 311, 31))
+        self.imageLabel.setGeometry(QtCore.QRect(40, 290, 311, 31))
         font = QtGui.QFont()
         font.setFamily("Arial")
-        font.setPointSize(12)
+        font.setPointSize(10)
         font.setBold(True)
         self.imageLabel.setFont(font)
         self.imageLabel.setStyleSheet("color: rgb(26, 26, 26);")
@@ -301,25 +295,37 @@ class RegisterStudentWindow(object):
         self.imageLabel.setText("Student Image")
 
         self.uploadImageBtn = QtWidgets.QPushButton(self.frame_2)
-        self.uploadImageBtn.setGeometry(QtCore.QRect(40, 400, 211, 40))
+        self.uploadImageBtn.setGeometry(QtCore.QRect(40, 330, 211, 40))
         self.uploadImageBtn.setStyleSheet(
-            "background-color: rgb(255, 80, 80);"
-            "color: rgb(255, 255, 255);"
-            "border-radius: 5px;"
+            """
+                QPushButton {
+                    background-color: #dc3545;  
+                    border: none;
+                    color: white;
+                    padding: 8px 16px;
+                    border-radius: 4px;
+                    font-family: Arial;
+                    font-size: 8pt;
+                }
+
+                QPushButton:hover {
+                    background-color: #c82333;  /* Darker shade on hover */
+                }
+                """
         )
         self.uploadImageBtn.setObjectName("uploadImageBtn")
         self.uploadImageBtn.clicked.connect(self.uploadImage)
 
         self.imageStatusLabel = QtWidgets.QLabel(self.frame_2)
-        self.imageStatusLabel.setGeometry(QtCore.QRect(380, 360, 211, 21))
+        self.imageStatusLabel.setGeometry(QtCore.QRect(40, 370, 211, 21))
         self.imageStatusLabel.setObjectName("imageStatusLabel")
         self.imageStatusLabel.setStyleSheet("color: rgb(26, 26, 26);")
 
         self.lastNameText = QtWidgets.QPlainTextEdit(self.frame_2)
-        self.lastNameText.setGeometry(QtCore.QRect(40, 230, 311, 31))
+        self.lastNameText.setGeometry(QtCore.QRect(740, 130, 311, 31))
         font = QtGui.QFont()
         font.setFamily("Arial")
-        font.setPointSize(12)
+        font.setPointSize(8)
         self.lastNameText.setFont(font)
         self.lastNameText.setStyleSheet(
             "border-radius:5px;\n" "background-color: rgb(247, 247, 247);"
@@ -328,20 +334,20 @@ class RegisterStudentWindow(object):
         self.lastNameText.setVerticalScrollBarPolicy(QtCore.Qt.ScrollBarAlwaysOff)
 
         self.srCodeLabel = QtWidgets.QLabel(self.frame_2)
-        self.srCodeLabel.setGeometry(QtCore.QRect(40, 280, 311, 31))
+        self.srCodeLabel.setGeometry(QtCore.QRect(40, 190, 311, 31))
         font = QtGui.QFont()
         font.setFamily("Arial")
-        font.setPointSize(12)
+        font.setPointSize(10)
         font.setBold(True)
         self.srCodeLabel.setFont(font)
         self.srCodeLabel.setStyleSheet("color: rgb(26, 26, 26);")
         self.srCodeLabel.setObjectName("srCodeLabel")
         self.srCodeLabel.setText("SR Code")
         self.srcodetext = QtWidgets.QLineEdit(self.frame_2)
-        self.srcodetext.setGeometry(QtCore.QRect(40, 315, 311, 31))
+        self.srcodetext.setGeometry(QtCore.QRect(40, 230, 311, 31))
         font = QtGui.QFont()
         font.setFamily("Arial")
-        font.setPointSize(12)
+        font.setPointSize(10)
         self.srcodetext.setFont(font)
         self.srcodetext.setStyleSheet(
             "border-radius:5px;\n" "background-color: rgb(247, 247, 247);"
@@ -356,7 +362,7 @@ class RegisterStudentWindow(object):
         self.comboBox.setGeometry(QtCore.QRect(380, 230, 311, 31))
         font = QtGui.QFont()
         font.setFamily("Arial")
-        font.setPointSize(12)
+        font.setPointSize(10)
         self.comboBox.setFont(font)
         self.comboBox.setStyleSheet(
             "border-radius:5px;\n" "background-color: rgb(247, 247, 247);"
@@ -384,8 +390,44 @@ class RegisterStudentWindow(object):
         self.comboBox.addItem("BS in Physical Education")
         self.comboBox.addItem("BS in Teacher Education")
 
+        # search bar
+        self.searchLineEdit = QtWidgets.QLineEdit(self.centralwidget)
+        self.searchLineEdit.setGeometry(QtCore.QRect(1200, 95, 200, 30))
+        self.searchLineEdit.setObjectName("searchLineEdit")
+
+        self.searchLabel = QtWidgets.QLabel(self.centralwidget)
+        self.searchLabel.setGeometry(QtCore.QRect(1130, 95, 70, 30))
+        self.searchLabel.setObjectName("searchLabel")
+        self.searchLabel.setText("Import Data:")
+
+        self.exportDataBtn = QtWidgets.QPushButton(self.centralwidget)
+        self.exportDataBtn.setGeometry(QtCore.QRect(1420, 94, 121, 31))
+        font = QtGui.QFont()
+        font.setFamily("Arial")
+        font.setPointSize(10)
+        self.exportDataBtn.setFont(font)
+        self.exportDataBtn.setObjectName("exportDataBtn")
+        self.exportDataBtn.setText("Enter")
+        self.exportDataBtn.setStyleSheet(
+            """
+            QPushButton {
+                background-color: #dc3545;  
+                border: none;
+                color: white;
+                padding: 8px 16px;
+                border-radius: 4px;
+                font-family: Arial;
+                font-size: 10pt;
+            }
+
+            QPushButton:hover {
+                background-color: #c82333;  
+            }
+            """
+        )
+
         self.addStudentBtn = QtWidgets.QPushButton(self.frame_2)
-        self.addStudentBtn.setGeometry(QtCore.QRect(580, 440, 211, 31))
+        self.addStudentBtn.setGeometry(QtCore.QRect(1000, 440, 211, 31))
         font = QtGui.QFont()
         font.setFamily("Arial")
         font.setPointSize(13)
@@ -393,9 +435,21 @@ class RegisterStudentWindow(object):
         self.addStudentBtn.setFont(font)
         self.addStudentBtn.setAutoFillBackground(False)
         self.addStudentBtn.setStyleSheet(
-            "background-color: rgb(227, 30, 36);\n"
-            "color: rgb(255, 255, 255);\n"
-            "border-radius: 5px;"
+            """
+                QPushButton {
+                    background-color: #dc3545;  
+                    border: none;
+                    color: white;
+                    padding: 10px 16px;
+                    border-radius: 4px;
+                    font-family: Arial;
+                    font-size: 8pt;
+                }
+
+                QPushButton:hover {
+                    background-color: #c82333;  /* Darker shade on hover */
+                }
+                """
         )
         self.addStudentBtn.setAutoDefault(False)
         self.addStudentBtn.setDefault(False)
@@ -441,6 +495,12 @@ class RegisterStudentWindow(object):
         self.pushButton.setText(_translate("MainWindow", "Dashboard"))
         self.pushButton2.setText(_translate("MainWindow", "Logs"))
 
+        self.label.setText(
+            _translate(
+                "MainWindow",
+                "PASS: Personalized Authentication and Student Surveillance",
+            )
+        )
         self.label_10.setText(_translate("MainWindow", "Student Registration"))
         self.label_11.setText(_translate("MainWindow", "New Student Form"))
         self.label_12.setText(_translate("MainWindow", "First Name"))
