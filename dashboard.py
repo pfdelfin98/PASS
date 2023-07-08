@@ -332,12 +332,12 @@ class Ui_Dashboard(object):
         self.aboutBtn.setText(_translate("MainWindow", "About System"))
         self.exitBtn.setText(_translate("MainWindow", "Exit"))
         self.exitBtn_2.setText(_translate("MainWindow", "Logout"))
-        self.label.setText(
-            _translate(
-                "MainWindow",
-                "PASS: Personalized Authentication and Student Surveillance",
-            )
-        )
+        # self.label.setText(
+        #     _translate(
+        #         "MainWindow",
+        #         "PASS: Personalized Authentication and Student Surveillance",
+        #     )
+        # )
         self.label_10.setText(_translate("MainWindow", "Dashboard"))
 
     # def load_logs(self):

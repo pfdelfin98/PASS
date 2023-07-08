@@ -14,6 +14,7 @@ import student_management
 import admin_login
 import dashboard
 import archive_management
+from about_dialog import AboutDialog
 from edit_student import EditStudentDialog
 from delete_student import DeleteStudentDialog
 from view_logs import ViewLogsDialog
@@ -152,6 +153,23 @@ class StudentManagementWindow(object):
         )
         self.exitBtn_2.setObjectName("exitBtn_2")
 
+        self.aboutBtn = QtWidgets.QPushButton(self.frame)
+        self.aboutBtn.setGeometry(QtCore.QRect(40, 550, 221, 31))
+        font = QtGui.QFont()
+        font.setFamily("Arial")
+        font.setPointSize(12)
+        self.aboutBtn.setFont(font)
+        self.aboutBtn.setStyleSheet(
+            " background-color: transparent;\n" "color: white;\n" ""
+        )
+        self.aboutBtn.setStyleSheet(
+            " background-color: transparent;\n"
+            "color: white;\n"
+            "text-align: left;\n"
+            ""
+        )
+        self.aboutBtn.setObjectName("aboutBtn")
+
         self.pushButton = QtWidgets.QPushButton(self.frame)
         self.pushButton.setGeometry(QtCore.QRect(40, 200, 221, 31))
         font = QtGui.QFont()
@@ -276,6 +294,7 @@ class StudentManagementWindow(object):
         self.studentMgmtBtn.clicked.connect(self.open_student_management)
         self.exitBtn.clicked.connect(QtWidgets.qApp.quit)
         self.exitBtn_2.clicked.connect(self.open_login_page)
+        self.aboutBtn.clicked.connect(self.open_about)
         self.pushButton.clicked.connect(self.open_dashboard)
         self.pushButton2.clicked.connect(self.open_logs)
 
@@ -295,14 +314,15 @@ class StudentManagementWindow(object):
             _translate("MainWindow", "Student Registration")
         )
         self.studentMgmtBtn.setText(_translate("MainWindow", "Student Management"))
+        self.aboutBtn.setText(_translate("MainWindow", "About System"))
         self.exitBtn.setText(_translate("MainWindow", "Exit"))
         self.exitBtn_2.setText(_translate("MainWindow", "Logout"))
-        self.label.setText(
-            _translate(
-                "MainWindow",
-                "PASS: Personalized Authentication and Student Surveillance",
-            )
-        )
+        # self.label.setText(
+        #     _translate(
+        #         "MainWindow",
+        #         "PASS: Personalized Authentication and Student Surveillance",
+        #     )
+        # )
         self.label_10.setText(_translate("MainWindow", "Student Management"))
 
     def load_students(self):
@@ -631,6 +651,12 @@ class StudentManagementWindow(object):
         # Add your code to open facial recognition here
         print("Opening Facial Recognition...")
         face_recognition.face_recognition_func()
+
+    def open_about(self):
+        print("Opening About System Dialog")
+        dialog = AboutDialog()
+        dialog.setupUi()
+        dialog.show()
 
     def open_register_student(self):
         # Add your code to open register student here
