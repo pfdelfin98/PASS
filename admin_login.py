@@ -10,7 +10,6 @@ class Ui_MainWindow(object):
         self.MainWindow = MainWindow
         MainWindow.setWindowFlags(
             MainWindow.windowFlags()
-            & ~QtCore.Qt.WindowMinimizeButtonHint
             & ~QtCore.Qt.WindowMaximizeButtonHint
         )
         MainWindow.setObjectName("MainWindow")
@@ -159,11 +158,11 @@ class Ui_MainWindow(object):
 
     def retranslateUi(self, MainWindow):
         _translate = QtCore.QCoreApplication.translate
-        MainWindow.setWindowTitle(_translate("MainWindow", "MainWindow"))
+        MainWindow.setWindowTitle(_translate("MainWindow", "Personalized Authentication and Student Screening"))
         self.label_5.setText(_translate("MainWindow", "Welcome to PASS!"))
         self.label_6.setText(
             _translate(
-                "MainWindow", "Personalized Authentication and Student Surveillance"
+                "MainWindow", "Personalized Authentication and Student Screening"
             )
         )
         self.label_7.setText(

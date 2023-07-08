@@ -81,7 +81,6 @@ class Ui_Dashboard(object):
         MainWindow.setWindowFlags(
             MainWindow.windowFlags()
             & ~QtCore.Qt.WindowMinimizeButtonHint
-            & ~QtCore.Qt.WindowMaximizeButtonHint
         )
 
         MainWindow.setObjectName("MainWindow")
@@ -107,21 +106,21 @@ class Ui_Dashboard(object):
         self.frame.setFrameShadow(QtWidgets.QFrame.Raised)
         self.frame.setObjectName("frame")
         self.label_4 = QtWidgets.QLabel(self.frame)
-        self.label_4.setGeometry(QtCore.QRect(80, 20, 101, 91))
+        self.label_4.setGeometry(QtCore.QRect(80, 40, 101, 91))
         self.label_4.setText("")
         self.label_4.setPixmap(QtGui.QPixmap("img/logo2.png"))
         self.label_4.setScaledContents(True)
         self.label_4.setObjectName("label_4")
-        self.label_9 = QtWidgets.QLabel(self.frame)
-        self.label_9.setGeometry(QtCore.QRect(44, 110, 201, 51))
-        font = QtGui.QFont()
-        font.setFamily("Arial")
-        font.setPointSize(20)
-        font.setBold(True)
-        font.setWeight(75)
-        self.label_9.setFont(font)
-        self.label_9.setStyleSheet("color: rgb(255, 255, 255);")
-        self.label_9.setObjectName("label_9")
+        # self.label_9 = QtWidgets.QLabel(self.frame)
+        # self.label_9.setGeometry(QtCore.QRect(44, 110, 201, 51))
+        # font = QtGui.QFont()
+        # font.setFamily("Arial")
+        # font.setPointSize(20)
+        # font.setBold(True)
+        # font.setWeight(75)
+        # self.label_9.setFont(font)
+        # self.label_9.setStyleSheet("color: rgb(255, 255, 255);")
+        # self.label_9.setObjectName("label_9")
 
         self.dashboardBtn = QtWidgets.QPushButton(self.frame)
         self.dashboardBtn.setGeometry(QtCore.QRect(40, 200, 221, 31))
@@ -355,10 +354,9 @@ class Ui_Dashboard(object):
         MainWindow.setWindowTitle(
             _translate(
                 "MainWindow",
-                "PASS: Personalized Authentication and Student Surveillance",
+                "PASS: Personalized Authentication and Student Screening",
             )
         )
-        self.label_9.setText(_translate("MainWindow", "      PASS"))
         self.dashboardBtn.setText(_translate("MainWindow", "Dashboard"))
         self.logsBtn.setText(_translate("MainWindow", "Logs"))
         self.faceRecognitionBtn.setText(_translate("MainWindow", "Facial Recognition"))

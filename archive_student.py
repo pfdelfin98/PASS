@@ -1,10 +1,14 @@
 import sys
 import os
 import shutil
+from PyQt5 import QtWidgets
+from PyQt5.QtWidgets import (
+    QPushButton
+)
 from PyQt5.QtWidgets import QApplication, QDialog, QLabel, QPushButton, QDesktopWidget
 import pymysql
 from encodegenerator import encodegenerator
-
+import archive_management
 
 class DeleteStudentDialog(QDialog):
     def setupUi(self, student_id):
@@ -55,6 +59,7 @@ class DeleteStudentDialog(QDialog):
                 connection.commit()
 
                 print("Student archived successfully!")
+
 
                 # Delete the image file if it exists
             if image_path:

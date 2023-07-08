@@ -71,7 +71,6 @@ class ArchiveManagementWindow(object):
         MainWindow.setWindowFlags(
             MainWindow.windowFlags()
             & ~QtCore.Qt.WindowMinimizeButtonHint
-            & ~QtCore.Qt.WindowMaximizeButtonHint
         )
         MainWindow.setObjectName("MainWindow")
         # MainWindow.resize(1200, 700)
@@ -106,21 +105,12 @@ class ArchiveManagementWindow(object):
         self.frame.setFrameShadow(QtWidgets.QFrame.Raised)
         self.frame.setObjectName("frame")
         self.label_4 = QtWidgets.QLabel(self.frame)
-        self.label_4.setGeometry(QtCore.QRect(80, 20, 101, 91))
+        self.label_4.setGeometry(QtCore.QRect(80, 40, 101, 91))
         self.label_4.setText("")
         self.label_4.setPixmap(QtGui.QPixmap("img/logo2.png"))
         self.label_4.setScaledContents(True)
         self.label_4.setObjectName("label_4")
-        self.label_9 = QtWidgets.QLabel(self.frame)
-        self.label_9.setGeometry(QtCore.QRect(44, 110, 201, 51))
-        font = QtGui.QFont()
-        font.setFamily("Arial")
-        font.setPointSize(20)
-        font.setBold(True)
-        font.setWeight(75)
-        self.label_9.setFont(font)
-        self.label_9.setStyleSheet("color: rgb(255, 255, 255);")
-        self.label_9.setObjectName("label_9")
+
         self.faceRecognitionBtn = QtWidgets.QPushButton(self.frame)
         self.faceRecognitionBtn.setGeometry(QtCore.QRect(40, 300, 221, 31))
         font = QtGui.QFont()
@@ -298,10 +288,9 @@ class ArchiveManagementWindow(object):
         MainWindow.setWindowTitle(
             _translate(
                 "MainWindow",
-                "PASS: Personalized Authentication and Student Surveillance",
+                "PASS: Personalized Authentication and Student Screening",
             )
         )
-        self.label_9.setText(_translate("MainWindow", "      PASS"))
         self.pushButton.setText(_translate("MainWindow", "Dashboard"))
         self.pushButton2.setText(_translate("MainWindow", "Logs"))
         self.faceRecognitionBtn.setText(_translate("MainWindow", "Facial Recognition"))
