@@ -22,6 +22,7 @@ from datetime import datetime
 from archive_student import DeleteStudentDialog
 from archive_management import ArchiveManagementWindow
 
+
 class StudentManagementWindow(object):
     def __init__(self) -> None:
         # For Excel File
@@ -38,7 +39,7 @@ class StudentManagementWindow(object):
             & ~QtCore.Qt.WindowMaximizeButtonHint
         )
         MainWindow.setObjectName("MainWindow")
-                # MainWindow.resize(1200, 700)
+        # MainWindow.resize(1200, 700)
         self.MainWindow.showMaximized()
         MainWindow.setWindowFlags(
             MainWindow.windowFlags()
@@ -166,7 +167,6 @@ class StudentManagementWindow(object):
 
         self.pushButton.setObjectName("pushButton")
 
-
         self.pushButton2 = QtWidgets.QPushButton(self.frame)
         self.pushButton2.setGeometry(QtCore.QRect(40, 250, 221, 31))
         font = QtGui.QFont()
@@ -206,13 +206,12 @@ class StudentManagementWindow(object):
         self.label_10.setStyleSheet("color:black;")
         self.label_10.setObjectName("label_10")
 
-
         archivesButton = QtWidgets.QPushButton(self.centralwidget)
         archivesButton.setGeometry(QtCore.QRect(1280, 90, 121, 40))
         archivesButton.setObjectName("archivesButton")
         archivesButton.setText("Archives")
         archivesButton.setStyleSheet(
-            '''
+            """
             QPushButton {
                 background-color: #dc3545;  
                 border: none;
@@ -226,7 +225,7 @@ class StudentManagementWindow(object):
             QPushButton:hover {
                 background-color: #c82333;  
             }
-            '''
+            """
         )
         archivesButton.clicked.connect(self.open_archives)
 
@@ -239,7 +238,7 @@ class StudentManagementWindow(object):
         self.exportDataBtn.setObjectName("exportDataBtn")
         self.exportDataBtn.setText("Export Data")
         self.exportDataBtn.setStyleSheet(
-            '''
+            """
             QPushButton {
                 background-color: #dc3545;  
                 border: none;
@@ -253,7 +252,7 @@ class StudentManagementWindow(object):
             QPushButton:hover {
                 background-color: #c82333;  
             }
-            '''
+            """
         )
         self.exportDataBtn.clicked.connect(self.export_data_to_excel)
 
@@ -282,7 +281,12 @@ class StudentManagementWindow(object):
 
     def retranslateUi(self, MainWindow):
         _translate = QtCore.QCoreApplication.translate
-        MainWindow.setWindowTitle(_translate("MainWindow", "Personalized Authentication and Student Screening"))
+        MainWindow.setWindowTitle(
+            _translate(
+                "MainWindow",
+                "PASS: Personalized Authentication and Student Surveillance",
+            )
+        )
         self.label_9.setText(_translate("MainWindow", "      PASS"))
         self.pushButton.setText(_translate("MainWindow", "Dashboard"))
         self.pushButton2.setText(_translate("MainWindow", "Logs"))
@@ -293,19 +297,18 @@ class StudentManagementWindow(object):
         self.studentMgmtBtn.setText(_translate("MainWindow", "Student Management"))
         self.exitBtn.setText(_translate("MainWindow", "Exit"))
         self.exitBtn_2.setText(_translate("MainWindow", "Logout"))
-        # self.label.setText(
-        #     _translate(
-        #         "MainWindow",
-        #         "PASS: Personalized Authentication and Student Surveillance",
-        #     )
-        # )
+        self.label.setText(
+            _translate(
+                "MainWindow",
+                "PASS: Personalized Authentication and Student Surveillance",
+            )
+        )
         self.label_10.setText(_translate("MainWindow", "Student Management"))
 
     def load_students(self):
         if self.search_has_input:
+            return
 
-            return 
-        
         connection = pymysql.connect(
             host="localhost", user="root", password="", db="pass_db"
         )
@@ -353,7 +356,7 @@ class StudentManagementWindow(object):
                 lambda checked, student_id=student_id: self.edit_student(student_id)
             )
             edit_button.setStyleSheet(
-                '''
+                """
                 QPushButton {
                     background-color: #007bff;  /* Bootstrap primary color */
                     border: none;
@@ -367,9 +370,8 @@ class StudentManagementWindow(object):
                 QPushButton:hover {
                     background-color: #0069d9;  /* Darker shade on hover */
                 }
-                '''
+                """
             )
-
 
             self.tableWidget.setCellWidget(i, column_count - 2, edit_button)
 
@@ -379,7 +381,7 @@ class StudentManagementWindow(object):
                 lambda checked, student_id=student_id: self.archive_student(student_id)
             )
             delete_button.setStyleSheet(
-                '''
+                """
                 QPushButton {
                     background-color: #dc3545;  
                     border: none;
@@ -393,7 +395,7 @@ class StudentManagementWindow(object):
                 QPushButton:hover {
                     background-color: #c82333;  /* Darker shade on hover */
                 }
-                '''
+                """
             )
             self.tableWidget.setCellWidget(i, column_count - 1, delete_button)
 
@@ -403,7 +405,7 @@ class StudentManagementWindow(object):
                 lambda checked, student_id=student_id: self.view_logs(student_id)
             )
             view_logs_button.setStyleSheet(
-                '''
+                """
                 QPushButton {
                     background-color: #17a2b8;  /* Bootstrap info color */
                     border: none;
@@ -417,7 +419,7 @@ class StudentManagementWindow(object):
                 QPushButton:hover {
                     background-color: #138496;  /* Darker shade on hover */
                 }
-                '''
+                """
             )
             self.tableWidget.setCellWidget(i, column_count - 3, view_logs_button)
 
@@ -425,7 +427,6 @@ class StudentManagementWindow(object):
 
         # # Schedule the next update after 1 second
         # QTimer.singleShot(1000, self.load_students)
-
 
     def search_logs(self, search_text, load_students=True):
         connection = pymysql.connect(
@@ -439,7 +440,7 @@ class StudentManagementWindow(object):
         else:
             self.search_has_input = False
             QTimer.singleShot(1000, self.load_students)
-            
+
         query = """
         SELECT id, first_name, middle_name, last_name, course, sr_code, gender
         FROM tbl_student
@@ -449,7 +450,9 @@ class StudentManagementWindow(object):
             OR course LIKE %s
         """
         search_pattern = f"%{search_text}%"  # Add wildcards for partial matching
-        cursor.execute(query, (search_pattern, search_pattern, search_pattern, search_pattern))
+        cursor.execute(
+            query, (search_pattern, search_pattern, search_pattern, search_pattern)
+        )
         students = cursor.fetchall()
 
         row_count = len(students)
@@ -485,7 +488,7 @@ class StudentManagementWindow(object):
                 lambda checked, student_id=student_id: self.edit_student(student_id)
             )
             edit_button.setStyleSheet(
-                '''
+                """
                 QPushButton {
                     background-color: #007bff;  /* Bootstrap primary color */
                     border: none;
@@ -499,7 +502,7 @@ class StudentManagementWindow(object):
                 QPushButton:hover {
                     background-color: #0069d9;  /* Darker shade on hover */
                 }
-                '''
+                """
             )
             self.tableWidget.setCellWidget(i, column_count - 2, edit_button)
 
@@ -509,7 +512,7 @@ class StudentManagementWindow(object):
                 lambda checked, student_id=student_id: self.archive_student(student_id)
             )
             delete_button.setStyleSheet(
-                '''
+                """
                 QPushButton {
                     background-color: #dc3545;  
                     border: none;
@@ -523,7 +526,7 @@ class StudentManagementWindow(object):
                 QPushButton:hover {
                     background-color: #c82333;  /* Darker shade on hover */
                 }
-                '''
+                """
             )
             self.tableWidget.setCellWidget(i, column_count - 1, delete_button)
 
@@ -533,7 +536,7 @@ class StudentManagementWindow(object):
                 lambda checked, student_id=student_id: self.view_logs(student_id)
             )
             view_logs_button.setStyleSheet(
-                '''
+                """
                 QPushButton {
                     background-color: #17a2b8;  /* Bootstrap info color */
                     border: none;
@@ -547,7 +550,7 @@ class StudentManagementWindow(object):
                 QPushButton:hover {
                     background-color: #138496;  /* Darker shade on hover */
                 }
-                '''
+                """
             )
             self.tableWidget.setCellWidget(i, column_count - 3, view_logs_button)
 
@@ -585,7 +588,6 @@ class StudentManagementWindow(object):
         dialog.setupUi(student_id)
         dialog.exec_()
 
-
     def open_dashboard(self):
         print("Opening Dashboard...")
         # self.MainWindow.hide()
@@ -601,8 +603,6 @@ class StudentManagementWindow(object):
         # self.ui.tableWidget.setParent(self.ui.centralwidget)
         # self.ui.load_logs()
         self.dashboard_window.show()
-
-
 
     def open_logs(self):
         print("Opening Logs...")

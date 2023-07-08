@@ -262,7 +262,7 @@ class Logs(object):
         self.exportDataBtn.setObjectName("exportDataBtn")
         self.exportDataBtn.setText("Export Data")
         self.exportDataBtn.setStyleSheet(
-            '''
+            """
             QPushButton {
                 background-color: #dc3545;  
                 border: none;
@@ -276,7 +276,7 @@ class Logs(object):
             QPushButton:hover {
                 background-color: #c82333;  
             }
-            '''
+            """
         )
         self.exportDataBtn.clicked.connect(self.export_data_to_excel)
 
@@ -303,7 +303,12 @@ class Logs(object):
 
     def retranslateUi(self, MainWindow):
         _translate = QtCore.QCoreApplication.translate
-        MainWindow.setWindowTitle(_translate("MainWindow", "Personalized Authentication and Student Screening"))
+        MainWindow.setWindowTitle(
+            _translate(
+                "MainWindow",
+                "PASS: Personalized Authentication and Student Surveillance",
+            )
+        )
         self.label_9.setText(_translate("MainWindow", "      PASS"))
         self.dashboardBtn.setText(_translate("MainWindow", "Dashboard"))
         self.logsBtn.setText(_translate("MainWindow", "Logs"))
@@ -315,12 +320,12 @@ class Logs(object):
         self.aboutBtn.setText(_translate("MainWindow", "About System"))
         self.exitBtn.setText(_translate("MainWindow", "Exit"))
         self.exitBtn_2.setText(_translate("MainWindow", "Logout"))
-        # self.label.setText(
-        #     _translate(
-        #         "MainWindow",
-        #         "PASS: Personalized Authentication and Student Surveillance",
-        #     )
-        # )
+        self.label.setText(
+            _translate(
+                "MainWindow",
+                "PASS: Personalized Authentication and Student Surveillance",
+            )
+        )
         self.label_10.setText(_translate("MainWindow", "Logs"))
 
     def load_logs(self):
