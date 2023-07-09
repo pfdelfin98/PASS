@@ -5,12 +5,7 @@ import os
 import pickle
 import pymysql
 from datetime import datetime, timedelta
-
-"""
-    [TODO] - Add feature to send logs first logged in of the day and
-    after 10 minutes the next send logs will be sent as logged out then
-    don't send logs for the next 10 minutes
-"""
+import screeninfo
 
 
 class FacialRecognitionWindow(object):
@@ -25,11 +20,20 @@ class FacialRecognitionWindow(object):
         self.valid_face_accuracy_value = 0.5
         self.retries = 3
 
+        # Video size configuration
+        screen = screeninfo.get_monitors()[0]
+        width, height = screen.width, screen.height
+        self.video_width = width
+        self.video_height = height
+        self.x = -5  # Adjust for screen pop up position
+        self.y = 20  # Adjust for screen pop up position
+
     def face_recognition_func(self):
         cap = cv2.VideoCapture(0, cv2.CAP_DSHOW)
 
-        cap.set(cv2.CAP_PROP_FRAME_WIDTH, 640)
-        cap.set(cv2.CAP_PROP_FRAME_HEIGHT, 480)
+        cap.set(cv2.CAP_PROP_FRAME_WIDTH, self.video_width)
+        cap.set(cv2.CAP_PROP_FRAME_HEIGHT, self.video_height)
+        cap.set(cv2.CAP_PROP_FPS, 25)
 
         # Importing student images
         folderModePath = "images"
@@ -167,8 +171,10 @@ class FacialRecognitionWindow(object):
 
                     else:
                         self.detect_face_time = 0
-
-                cv2.imshow("frame", frame)
+                window_name = "Face Recognition"
+                cv2.namedWindow(window_name, cv2.WINDOW_FULLSCREEN)
+                cv2.moveWindow(window_name, self.x, self.y)
+                cv2.imshow(window_name, frame)
 
                 key = cv2.waitKey(1)
                 if key == ord("q"):

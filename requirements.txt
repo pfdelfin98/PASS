@@ -6,3 +6,4 @@ PyMySQL==1.0.3
 PyQt5==5.15.9
 PyQt5_sip==12.12.1
 matplotlib==3.7.1
+screeninfo==0.8.1
