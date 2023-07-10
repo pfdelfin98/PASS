@@ -4,7 +4,7 @@ import shutil
 from PyQt5.QtWidgets import QApplication, QDialog, QLabel, QPushButton, QDesktopWidget
 import pymysql
 from encodegenerator import encodegenerator
-
+import subprocess
 
 class RestoreStudentDialog(QDialog):
     def setupUi(self, student_id):

@@ -27,17 +27,17 @@ class Ui_MainWindow(object):
         self.label_5.setGeometry(QtCore.QRect(90, 210, 271, 111))
         font = QtGui.QFont()
         font.setFamily("Arial")
-        font.setPointSize(20)
+        font.setPointSize(18)
         font.setBold(True)
         font.setWeight(75)
         self.label_5.setFont(font)
         self.label_5.setStyleSheet("color: rgb(255, 255, 255);")
         self.label_5.setObjectName("label_5")
         self.label_6 = QtWidgets.QLabel(self.frame)
-        self.label_6.setGeometry(QtCore.QRect(23, 310, 381, 41))
+        self.label_6.setGeometry(QtCore.QRect(33, 310, 381, 41))
         font = QtGui.QFont()
         font.setFamily("Arial")
-        font.setPointSize(11)
+        font.setPointSize(9)
         font.setBold(True)
         self.label_6.setFont(font)
         self.label_6.setStyleSheet(
@@ -46,10 +46,10 @@ class Ui_MainWindow(object):
 
         self.label_6.setObjectName("label_6")
         self.label_7 = QtWidgets.QLabel(self.frame)
-        self.label_7.setGeometry(QtCore.QRect(53, 340, 381, 41))
+        self.label_7.setGeometry(QtCore.QRect(63, 340, 381, 41))
         font = QtGui.QFont()
         font.setFamily("Arial")
-        font.setPointSize(11)
+        font.setPointSize(9)
         font.setBold(True)
         self.label_7.setFont(font)
         self.label_7.setStyleSheet(
@@ -57,10 +57,10 @@ class Ui_MainWindow(object):
         )
         self.label_7.setObjectName("label_7")
         self.label_8 = QtWidgets.QLabel(self.frame)
-        self.label_8.setGeometry(QtCore.QRect(73, 370, 381, 41))
+        self.label_8.setGeometry(QtCore.QRect(83, 370, 381, 41))
         font = QtGui.QFont()
         font.setFamily("Arial")
-        font.setPointSize(11)
+        font.setPointSize(9)
         font.setBold(True)
         self.label_8.setFont(font)
         self.label_8.setStyleSheet(
@@ -90,6 +90,15 @@ class Ui_MainWindow(object):
         self.usernameText.setStyleSheet(
             "border-radius:5px;\n" "background-color: rgb(247, 247, 247);"
         )
+        scrollbar = self.usernameText.verticalScrollBar()
+        scrollbar.setStyleSheet(
+            "QScrollBar::add-line:vertical {"
+            "    border: none;"
+            "    background: none;"
+            "    width: 0px;"
+            "    height: 0px;"
+            "}"
+        )
         self.usernameText.setObjectName("usernameText")
         self.label_2 = QtWidgets.QLabel(self.frame_2)
         self.label_2.setGeometry(QtCore.QRect(40, 110, 131, 21))
@@ -116,6 +125,7 @@ class Ui_MainWindow(object):
             "border-radius:5px;\n" "background-color: rgb(247, 247, 247);"
         )
         self.lineEdit.setEchoMode(QtWidgets.QLineEdit.Password)
+
         self.lineEdit.setObjectName("lineEdit")
         self.loginButton = QtWidgets.QPushButton(self.frame_2)
         self.loginButton.setGeometry(QtCore.QRect(40, 290, 311, 41))

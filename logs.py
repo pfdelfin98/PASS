@@ -77,11 +77,11 @@ class Logs(object):
 
     def setupUi(self, MainWindow):
         self.MainWindow = MainWindow
-        MainWindow.setWindowFlags(
-            MainWindow.windowFlags()
-            & ~QtCore.Qt.WindowMinimizeButtonHint
-            & ~QtCore.Qt.WindowMaximizeButtonHint
-        )
+        # MainWindow.setWindowFlags(
+        #     MainWindow.windowFlags()
+        #     & ~QtCore.Qt.WindowMinimizeButtonHint
+        #     & ~QtCore.Qt.WindowMaximizeButtonHint
+        # )
 
         MainWindow.setObjectName("MainWindow")
         self.MainWindow.showMaximized()

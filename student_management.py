@@ -70,10 +70,10 @@ class StudentManagementWindow(object):
 
     def setupUi(self, MainWindow):
         self.MainWindow = MainWindow
-        MainWindow.setWindowFlags(
-            MainWindow.windowFlags()
-            & ~QtCore.Qt.WindowMinimizeButtonHint
-        )
+        # MainWindow.setWindowFlags(
+        #     MainWindow.windowFlags()
+        #     & ~QtCore.Qt.WindowMinimizeButtonHint
+        # )
         MainWindow.setObjectName("MainWindow")
         # MainWindow.resize(1200, 700)
         self.MainWindow.showMaximized()
@@ -350,6 +350,8 @@ class StudentManagementWindow(object):
         # )
         self.label_10.setText(_translate("MainWindow", "Student Management"))
 
+        QTimer.singleShot(1000, self.load_students)
+
     def load_students(self):
         if self.search_has_input:
             return
@@ -472,6 +474,7 @@ class StudentManagementWindow(object):
 
         # # Schedule the next update after 1 second
         # QTimer.singleShot(1000, self.load_students)
+
 
     def search_logs(self, search_text, load_students=True):
         connection = pymysql.connect(
@@ -632,6 +635,7 @@ class StudentManagementWindow(object):
         dialog = DeleteStudentDialog()
         dialog.setupUi(student_id)
         dialog.exec_()
+        self.load_students()
 
     def open_dashboard(self):
         print("Opening Dashboard...")

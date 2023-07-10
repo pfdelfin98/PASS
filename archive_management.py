@@ -68,10 +68,10 @@ class ArchiveManagementWindow(object):
 
     def setupUi(self, MainWindow):
         self.MainWindow = MainWindow
-        MainWindow.setWindowFlags(
-            MainWindow.windowFlags()
-            & ~QtCore.Qt.WindowMinimizeButtonHint
-        )
+        # MainWindow.setWindowFlags(
+        #     MainWindow.windowFlags()
+        #     & ~QtCore.Qt.WindowMinimizeButtonHint
+        # )
         MainWindow.setObjectName("MainWindow")
         # MainWindow.resize(1200, 700)
         self.MainWindow.showMaximized()
@@ -302,6 +302,8 @@ class ArchiveManagementWindow(object):
         self.exitBtn_2.setText(_translate("MainWindow", "Logout"))
         self.label_10.setText(_translate("MainWindow", "Archive Management"))
 
+        QTimer.singleShot(1000, self.load_students)
+
     def load_students(self):
         if self.search_has_input:
             return
@@ -396,8 +398,8 @@ class ArchiveManagementWindow(object):
 
         cursor.close()
 
-        # # Schedule the next update after 1 second
-        # QTimer.singleShot(1000, self.load_students)
+        
+        QTimer.singleShot(1000, self.load_students)
 
     def search_logs(self, search_text, load_students=True):
         connection = pymysql.connect(

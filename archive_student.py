@@ -9,6 +9,8 @@ from PyQt5.QtWidgets import QApplication, QDialog, QLabel, QPushButton, QDesktop
 import pymysql
 from encodegenerator import encodegenerator
 import archive_management
+import student_management
+import importlib
 
 class DeleteStudentDialog(QDialog):
     def setupUi(self, student_id):
@@ -57,7 +59,6 @@ class DeleteStudentDialog(QDialog):
 
                 # Commit the changes to the database
                 connection.commit()
-
                 print("Student archived successfully!")
 
 
@@ -86,8 +87,13 @@ class DeleteStudentDialog(QDialog):
             connection.close()
             encodegenerator()
 
+
+
         # Close the dialog
-        self.close()
+        self.close()        
+
+
+
 
     def center_dialog(self):
         screen_geo = QDesktopWidget().screenGeometry()
@@ -102,4 +108,5 @@ if __name__ == "__main__":
     dialog.setupUi(1)  # Pass the student ID here for testing
     dialog.center_dialog()  # Center the dialog on the screen
     dialog.exec_()
+    
     sys.exit(app.exec_())

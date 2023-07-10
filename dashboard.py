@@ -78,10 +78,10 @@ class Ui_Dashboard(object):
 
     def setupUi(self, MainWindow):
         self.MainWindow = MainWindow
-        MainWindow.setWindowFlags(
-            MainWindow.windowFlags()
-            & ~QtCore.Qt.WindowMinimizeButtonHint
-        )
+        # MainWindow.setWindowFlags(
+        #     MainWindow.windowFlags()
+        #     & ~QtCore.Qt.WindowMinimizeButtonHint
+        # )
 
         MainWindow.setObjectName("MainWindow")
         # MainWindow.resize(1200, 700)

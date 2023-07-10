@@ -61,10 +61,10 @@ class RegisterStudentWindow(object):
 
     def setupUi(self, MainWindow):
         self.MainWindow = MainWindow
-        MainWindow.setWindowFlags(
-            MainWindow.windowFlags()
-            & ~QtCore.Qt.WindowMinimizeButtonHint
-        )
+        # MainWindow.setWindowFlags(
+        #     MainWindow.windowFlags()
+        #     & ~QtCore.Qt.WindowMinimizeButtonHint
+        # )
         MainWindow.setObjectName("MainWindow")
         # MainWindow.resize(1200, 700)
         self.MainWindow.showMaximized()
@@ -349,7 +349,7 @@ class RegisterStudentWindow(object):
                     padding: 8px 16px;
                     border-radius: 4px;
                     font-family: Arial;
-                    font-size: 8pt;
+                    font-size: 10pt;
                 }
 
                 QPushButton:hover {
@@ -369,7 +369,7 @@ class RegisterStudentWindow(object):
         self.lastNameText.setGeometry(QtCore.QRect(740, 130, 311, 31))
         font = QtGui.QFont()
         font.setFamily("Arial")
-        font.setPointSize(8)
+        font.setPointSize(10)
         self.lastNameText.setFont(font)
         self.lastNameText.setStyleSheet(
             "border-radius:5px;\n" "background-color: rgb(247, 247, 247);"
@@ -440,7 +440,11 @@ class RegisterStudentWindow(object):
         self.searchLineEdit.setObjectName("searchLineEdit")
 
         self.searchLabel = QtWidgets.QLabel(self.centralwidget)
-        self.searchLabel.setGeometry(QtCore.QRect(1130, 95, 70, 30))
+        self.searchLabel.setGeometry(QtCore.QRect(1110, 95, 70, 30))
+        font = QtGui.QFont()
+        font.setFamily("Arial")
+        font.setPointSize(10)
+        self.searchLabel.setFont(font)
         self.searchLabel.setObjectName("searchLabel")
         self.searchLabel.setText("Import Data:")
 
@@ -487,7 +491,7 @@ class RegisterStudentWindow(object):
                     padding: 10px 16px;
                     border-radius: 4px;
                     font-family: Arial;
-                    font-size: 8pt;
+                    font-size: 10pt;
                 }
 
                 QPushButton:hover {
